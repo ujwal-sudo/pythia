@@ -1,4 +1,4 @@
-# Pythia-160M Data Pipeline
+# Pythia
 
 This repository contains the data-engineering foundation for **Pythia-160M**, a compact 160M-parameter Python code language model trained from scratch under the C3AN framework.
 
