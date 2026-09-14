@@ -1,0 +1,26 @@
+PYTHIA-160M DATA PREPARATION REPORT
+
+Stage 1 — Foundation
+- Python docs: 96 records
+- Think Python: 293 records
+- Automate the Boring Stuff: 162 records
+
+Stage 2 — Problem Solving
+- Stack Overflow: not yet prepared
+- CodeSearchNet: not yet prepared
+
+Stage 3 — Complexity
+- Jupyter: not yet prepared
+- The Stack: not yet prepared
+
+Total raw size: not measured yet
+Total candidate records: 551
+Syntax-valid records: 444
+Total retained preliminary records: 444
+
+Sources blocked/gated: none
+License/provenance issues: CC-BY-NC-SA (Think Python), CC-BY-NC (ATPS), PSF License (Python docs)
+Disk usage: not measured
+Incomplete work: Stage 2/3 not yet prepared
+
+Next recommended step: prepare Stage 2 (Stack Overflow, CodeSearchNet) and Stage 3 (Jupyter, The Stack)

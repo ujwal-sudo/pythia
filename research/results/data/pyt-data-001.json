@@ -1,0 +1,82 @@
+{
+  "experiment_id": "PYT-DATA-001",
+  "date": "2026-09-15",
+  "git_commit": "42e2f53d09fbec4f38a8a4aa994d9da171bd1cfc",
+  "dataset_versions": {
+    "thinkpython": {
+      "source": "Think Python 2nd Edition",
+      "source_url": "https://greenteapress.com/thinkpython/",
+      "raw_data_path": "data/raw/textbooks/thinkpython_code.jsonl",
+      "raw_record_count": 293,
+      "sha256": "6a59f9584dd38a36ac26f2a76885708a0298be33de21e299315c586c293b2118"
+    },
+    "atbs": {
+      "source": "Automate the Boring Stuff with Python 3rd Edition",
+      "source_url": "https://automatetheboringstuff.com/3e/",
+      "raw_data_path": "data/raw/textbooks/atbs3e_code.jsonl",
+      "raw_record_count": 123,
+      "sha256": "3011f35cfe1f93813f658d01b65aae85b65d1f4a114745fbe52aa476c5983414"
+    }
+  },
+  "filtering_configuration": {
+    "min_provisional_token_length": 50,
+    "max_provisional_token_length": 2048,
+    "min_comment_ratio": 0.1,
+    "pep8_max_violations": 5,
+    "pep8_implementation": "pycodestyle 2.14.0",
+    "ast_validator": {
+      "module": "scripts.validators.ast_validator",
+      "function": "validate_python",
+      "path": "scripts/validators/ast_validator.py"
+    }
+  },
+  "provisional_token_count_method": "whitespace-based text.split() count; labeled provisional because final Pythia tokenizer does not exist yet",
+  "exact_counts": {
+    "thinkpython": {
+      "examined": 293,
+      "syntax_valid": 287,
+      "provisional_token_count_lt_50": 293,
+      "below_comment_ratio_0.1": 276,
+      "pep8_rejected": 0,
+      "exact_duplicate_hashes": 56,
+      "retained": 0,
+      "notes": "Matches OP Session 2 results; corresponds to Stage 1 baseline"
+    },
+    "atbs": {
+      "examined": 123,
+      "syntax_valid": 56,
+      "provisional_token_count_lt_50": 106,
+      "below_comment_ratio_0.1": 107,
+      "pep8_rejected": 13,
+      "retained": 5,
+      "notes": "Matches OP Session 2 results for ATSS only (excludes Ch1); v3 file has 162 total including Ch1"
+    }
+  },
+  "known_limitation": "Provisional whitespace-based token counting; educational code examples often lack internal comments but have external textbook prose; code-only documentation rule may be inappropriate for tutorial/exercise data",
+  "interpretation": "Under current strict preliminary Stage 1 filtering, Think Python retained 0/293 and ATBS retained 5/123. Outcomes may be strongly affected by token counting methodology and code-only documentation requirements.",
+  "next_experiment": {
+    "id": "PYT-DATA-002",
+    "name": "Policy comparison: token-length vs context-aware filtering",
+    "policies": {
+      "Policy_A": "Strict current code-only filter (baseline)",
+      "Policy_B": "Final-tokenizer-based length filtering",
+      "Policy_C": "Context-aware educational examples preserving surrounding textbook explanation as metadata"
+    },
+    "action": "Do NOT implement Policies B or C yet. Define them as planned experiments only."
+  },
+  "output_files": {
+    "thinkpython_filtered": "data/filtered/stage1/thinkpython_filtered.jsonl",
+    "atbs_filtered": "data/filtered/stage1/atbs_filtered.jsonl",
+    "atbs_ch1_filtered": "data/filtered/stage1/atbs3e_ch1_filtered.jsonl",
+    "manifest": "data/filtered/stage1/stage1_manifest.json"
+  },
+  "baseline_references": {
+    "thinkpython_filtered_v3": "data/filtered/stage1/thinkpython_filtered_v3.jsonl (293 records)",
+    "atbs_filtered_v3": "data/filtered/stage1/atbs_filtered_v3.jsonl (162 records = 123 ATBS + 39 ATBS Ch1)",
+    "atbs3e_ch1_raw": "data/raw/textbooks/atbs3e_ch1_code.jsonl (39 records, raw source)",
+    "stage1_manifest": "data/filtered/stage1/stage1_manifest.json",
+    "experiment_log": "research/experiment_log.md",
+    "project_status": "research/project_status.md",
+    "task_registry": "research/task_registry.md"
+  }
+}

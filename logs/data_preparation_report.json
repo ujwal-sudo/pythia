@@ -1,0 +1,27 @@
+{
+  "records_examined": 551,
+  "records_syntax_valid": 444,
+  "records_syntax_invalid": 107,
+  "records_too_short_provisional": 0,
+  "records_too_long_provisional": 0,
+  "records_pep8_rejected": 0,
+  "records_below_comment_threshold": 511,
+  "records_exact_duplicates": 153,
+  "records_retained": 444,
+  "average_comment_ratio": 0.0485,
+  "average_pep8_violations": 0.0,
+  "license_distribution": {
+    "Python Software Foundation License": 96,
+    "CC-BY-NC-SA": 293,
+    "CC-BY-NC": 162
+  },
+  "stage": 1,
+  "sources": [
+    "python_docs",
+    "thinkpython",
+    "atbs"
+  ],
+  "provisional_token_count_method": "char_count // 4 (rough GPT-2 estimate, final Pythia tokenizer pending)",
+  "pep8_max_violations": 5,
+  "min_comment_ratio": 0.1
+}

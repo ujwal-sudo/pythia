@@ -1,0 +1,103 @@
+{
+  "generation_date": "2026-09-15",
+  "filter_config": {
+    "min_token_length": 50,
+    "max_token_length": 2048,
+    "min_comment_ratio": 0.1,
+    "pep8_max_violations": 5
+  },
+  "sources": {
+    "thinkpython": {
+      "record_count": 293,
+      "syntax_valid": 287,
+      "retained": 287,
+      "source_path": "data/raw/textbooks/thinkpython_code.jsonl",
+      "source_url": "https://greenteapress.com/thinkpython/",
+      "edition": "Think Python, 2nd Edition"
+    },
+    "atbs": {
+      "record_count": 162,
+      "syntax_valid": 67,
+      "retained": 67,
+      "source_path": "data/raw/textbooks/atbs_filtered_v3.jsonl",
+      "source_url": "https://automatetheboringstuff.com/",
+      "edition": "Automate the Boring Stuff with Python, 3rd Edition"
+    },
+    "atbs_ch1": {
+      "record_count": 39,
+      "syntax_valid": 11,
+      "retained": 1,
+      "source_path": "data/raw/textbooks/atbs3e_ch1_code.jsonl",
+      "source_url": "https://automatetheboringstuff.com/3e/chapter1.html",
+      "edition": "Automate the Boring Stuff with Python, 3rd Edition, Chapter 1"
+    },
+    "python_docs": {
+      "record_count": 96,
+      "syntax_valid": 90,
+      "retained": 90,
+      "source_path": "data/raw/python_docs/python_tutorial_code.jsonl",
+      "source_url": "https://docs.python.org/3/",
+      "edition": "Python 3.14 documentation"
+    }
+  },
+  "counts": {
+    "thinkpython": {
+      "name": "Think Python",
+      "total": 293,
+      "valid": 287,
+      "too_short": 293,
+      "too_long": 0,
+      "below_threshold": 276,
+      "pep8_rejected": 0,
+      "retained": 0,
+      "avg_code_len": 10.52901023890785,
+      "median_code_len": 10,
+      "avg_comment_ratio": 0.059233449477351915,
+      "avg_pep8": 1.024390243902439,
+      "pep8_violation_breakdown": {
+        "1": 283,
+        "4": 1,
+        "3": 1,
+        "2": 2
+      }
+    },
+    "atbs": {
+      "name": "ATBS",
+      "total": 123,
+      "valid": 56,
+      "too_short": 106,
+      "too_long": 0,
+      "below_threshold": 107,
+      "pep8_rejected": 13,
+      "retained": 5,
+      "avg_code_len": 202.60162601626016,
+      "median_code_len": 139,
+      "avg_comment_ratio": 0.082285175142318,
+      "avg_pep8": 1.4285714285714286,
+      "pep8_violation_breakdown": {
+        "1": 39,
+        "2": 11,
+        "3": 5,
+        "4": 1
+      }
+    },
+    "atbs_ch1": {
+      "name": "ATBS Ch1",
+      "total": 39,
+      "valid": 11,
+      "too_short": 36,
+      "too_long": 0,
+      "below_threshold": 35,
+      "pep8_rejected": 10,
+      "retained": 1,
+      "avg_code_len": 103.3076923076923,
+      "median_code_len": 63,
+      "avg_comment_ratio": 0.19393939393939394,
+      "avg_pep8": 1.0,
+      "pep8_violation_breakdown": {
+        "1": 11
+      }
+    }
+  },
+  "exact_duplicates": 153
+}

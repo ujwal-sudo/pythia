@@ -1,0 +1,16 @@
+{
+  "candidate_count": 10030,
+  "documentation_version": "3.14",
+  "download_url": "https://docs.python.org/3.14/archives/python-3.14-docs-html.zip",
+  "license": "Python Software Foundation License",
+  "license_url": "https://docs.python.org/3/license.html",
+  "output_path": "/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/data/filtered/stage1/python_docs.jsonl",
+  "raw_path": "/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/data/raw/python_docs/python-3.14-docs-html.zip",
+  "report_path": "/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/logs/python_docs_report.json",
+  "retained_count": 317,
+  "retrieved_at": "2026-09-14T20:25:24+00:00",
+  "sha256": "44e94d921af3e1c4f46e6dd3a39d606e6847e37e9c3be22700a354de38a9a92f",
+  "source": "python_docs",
+  "source_url": "https://docs.python.org/3.14/",
+  "valid_python_count": 4512
+}

@@ -1,0 +1,17 @@
+{
+  "average_code_length": 190.63120567375887,
+  "average_comment_ratio": 0.09397514795230189,
+  "average_pep8_violations": 1.6365248226950355,
+  "blocks_examined": 10030,
+  "exact_duplicates": 5102,
+  "low_documentation": 569,
+  "median_code_length": 106.0,
+  "output_path": "/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/data/filtered/stage1/python_docs.jsonl",
+  "pep8_rejected": 38,
+  "python_candidates": 10030,
+  "retained": 317,
+  "syntax_invalid": 416,
+  "syntax_valid": 4512,
+  "too_long": 0,
+  "too_short": 3588
+}
