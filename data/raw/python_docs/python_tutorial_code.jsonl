@@ -1,0 +1,96 @@
+{"code": "Got your back.", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/introduction.html"}
+{"code": "s[:i] + s[i:]", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/introduction.html"}
+{"code": "str.format()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/introduction.html"}
+{"code": "list.append()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/introduction.html"}
+{"code": "enumerate()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "(x, y) = point", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "__match_args__", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "__match_args__", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "[x, y, *rest]", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "(x, y,\n*rest)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "{\"bandwidth\": b, \"latency\": l}", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "\"bandwidth\"", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "result.append(a)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "obj.methodname", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "result = result + [a]", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "ask_ok('Do you really want to quit?')", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "ask_ok('OK to overwrite the file?', 2)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "ask_ok('OK to overwrite the file?', 2, 'Come on, only yes or no!')", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "kwarg=value", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "parrot(voltage=1000)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "standard_arg", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "pos_only_arg", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "kwd_only_arg", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "lambda a, b: a+b", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "list.sort()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "__annotations__", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "a = f(1, 2) + g(3, 4)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "UpperCamelCase", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "lowercase_with_underscores", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/controlflow.html"}
+{"code": "modname.itemname", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "import fibo", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "importlib.reload()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "import importlib;\nimportlib.reload(modulename)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sys.builtin_module_names", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "site-packages", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "__pycache__", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "module.version.pyc", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "__pycache__/spam.cpython-33.pyc", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "__init__.py", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "__init__.py", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound.effects.echo", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "echofilter()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from package import item", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "ImportError", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "import item.subitem.subsubitem", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from sound.effects import *", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "__init__.py", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from package import *", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound/effects/__init__.py", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from sound.effects import *", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound.effects", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound/effects/__init__.py", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from sound.effects import *", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from sound.effects import *", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound.effects", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound.effects", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "__init__.py", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "__init__.py", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound.effects", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from...import", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from package import\nspecific_submodule", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound.filters.vocoder", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "sound.effects", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from\nsound.effects import echo", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "from module import name", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/modules.html"}
+{"code": "ZeroDivisionError", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/errors.html"}
+{"code": "KeyboardInterrupt", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/errors.html"}
+{"code": "BaseException", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/errors.html"}
+{"code": "SyntaxWarning", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/errors.html"}
+{"code": "ExceptionGroup", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/errors.html"}
+{"code": "add_note(note)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/errors.html"}
+{"code": "modname.funcname", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "modname.the_answer = 42", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "del modname.the_answer", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "\"A simple example class\"", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "x = MyClass()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "'hello world'", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "hello world", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "MyClass.f(x)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "object.__class__", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "BaseClassName", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "DerivedClassName()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "BaseClassName.methodname(self,\narguments)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "isinstance()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "isinstance(obj, int)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "obj.__class__", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "issubclass()", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "issubclass(bool, int)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "issubclass(float, int)", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "DerivedClassName", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "_classname__spam", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "MappingSubclass", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "_Mapping__update", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "_MappingSubclass__update", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "dataclasses", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}
+{"code": "StopIteration", "source": "python_docs", "section": "unknown", "url": "https://docs.python.org/3/tutorial/classes.html"}

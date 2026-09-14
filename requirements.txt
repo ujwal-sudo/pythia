@@ -1,0 +1,11 @@
+datasets
+huggingface_hub
+beautifulsoup4
+requests
+pycodestyle
+tiktoken
+tqdm
+jsonlines
+gitpython
+pandas
+numpy
