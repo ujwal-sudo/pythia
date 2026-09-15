@@ -1,57 +1,61 @@
 # Run Registry
 
-This is the canonical index of reproducible runs.
+Canonical registry for meaningful runs. `UNKNOWN` is used when a field is not recoverable. Historical run details are preserved and discrepancies are explicit.
 
-## Experiment ID Format
+## Canonical format
 
-Use `EXP-YYYYMMDD-AREA-NNN`.
+```text
+Run/Experiment ID:
+Date:
+Owner:
+Git commit:
+Dataset version:
+Tokenizer version:
+Model version:
+Hardware:
+Software environment:
+Random seed:
+Command:
+Input artifacts:
+Output artifacts:
+Result:
+Notes:
+```
 
-Areas:
+## Registered runs
 
-- `TOK`: tokenizer
-- `DATA`: dataset and filtering
-- `MODEL`: architecture/checkpoint
-- `TRAIN`: training
-- `EVAL`: evaluation
-- `ABL`: ablation
-- `NS`: neurosymbolic feedback
+### EXP-20260915-DATA-001 — Python documentation processing
 
-## Registered Runs
+- **Run/Experiment ID:** EXP-20260915-DATA-001
+- **Date:** 2026-09-15T00:00:00+00:00 to 2026-09-15T20:25:24+00:00 (historical record)
+- **Owner:** UNKNOWN
+- **Git commit:** UNKNOWN
+- **Dataset version:** UNKNOWN (documentation version recorded as 3.14)
+- **Tokenizer version:** `provisional_python_tokenize_significant_tokens_v1`
+- **Model version:** N/A
+- **Hardware:** UNKNOWN
+- **Software environment:** UNKNOWN (no experiment-specific snapshot in `research/reproducibility/software_versions.md`)
+- **Random seed:** none
+- **Command:** `python3 -m scripts.scrapers.python_docs --process --raw-path data/raw/python_docs/python-3.14-docs-html.zip`
+- **Input artifacts:** `data/raw/python_docs/python-3.14-docs-html.zip` (SHA-256 `44e94d921af3e1c4f46e6dd3a39d606e6847e37e9c3be22700a354de38a9a92f`)
+- **Output artifacts:** Recorded: `data/filtered/stage1/python_docs.jsonl` (317 records), `data/raw/python_docs/manifest.json`, `logs/python_docs_report.json`. Current filesystem: manifest and report exist; recorded JSONL output is absent; `data/filtered/stage1/python_docs_filtered_v3.jsonl` exists with 96 records.
+- **Result:** Historical metrics: blocks_examined 10030; python_candidates 10030; syntax_valid 4512; syntax_invalid 416; too_short 3588; too_long 0; low_documentation 569; pep8_rejected 38; exact_duplicates 5102; retained 317.
+- **Notes:** Historical record says the run was a takeover from a previous interrupted session and that a rerun confirmed the same counts. The output-path mismatch is a current blocker; do not silently replace the v3 artifact or historical report.
 
-### EXP-20260915-DATA-001
+### PYT-DATA-001 — Textbook filtering baseline
 
-Experiment ID: EXP-20260915-DATA-001
-Date started: 2026-09-15T00:00:00+00:00
-Date completed: 2026-09-15T20:25:24+00:00
-Status: completed
-Research question(s): Ingest and validate Python 3.14 documentation code examples for Stage 1 training candidates.
-Hypothesis: Official Python docs HTML archive can be processed into 317 retained Python code examples meeting minimum token count, comment ratio, and PEP8 violation thresholds.
-Code commit: UNKNOWN
-Config commit/hash: UNKNOWN
-Dataset version: 3.14
-Model version: N/A
-Tokenizer version: provisional_python_tokenize_significant_tokens_v1
-Input artifact paths:
-  - data/raw/python_docs/python-3.14-docs-html.zip (SHA-256: 44e94d921af3e1c4f46e6dd3a39d606e6847e37e9c3be22700a354de38a9a92f)
-Output artifact paths:
-  - data/filtered/stage1/python_docs.jsonl (317 records)
-  - data/raw/python_docs/manifest.json
-  - logs/python_docs_report.json
-Command: python3 -m scripts.scrapers.python_docs --process --raw-path data/raw/python_docs/python-3.14-docs-html.zip
-Random seed(s): none
-Hardware record: see hardware.md
-Software version record: see software_versions.md
-Metrics:
-  - blocks_examined: 10030
-  - python_candidates: 10030
-  - syntax_valid: 4512
-  - syntax_invalid: 416
-  - too_short: 3588
-  - too_long: 0
-  - low_documentation: 569
-  - pep8_rejected: 38
-  - exact_duplicates: 5102
-  - retained: 317
-Result summary: Successfully processed Python 3.14 documentation archive into 317 retained code examples. No duplicates introduced. All records syntax-valid. Provenance preserved via manifest SHA-256.
-Negative/null result preserved: n/a
-Notes: Processed using existing scraper and AST validator. Run was a takeover from a previous interrupted session. Original process completed with 317 retained; re-run confirmed same counts.
+- **Run/Experiment ID:** PYT-DATA-001
+- **Date:** 2026-09-15
+- **Owner:** OP
+- **Git commit:** `42e2f53d09fbec4f38a8a4aa994d9da171bd1cfc`
+- **Dataset version:** UNKNOWN (Think Python 2nd Edition and ATBS 3rd Edition are recorded; no formal `data-v...` version exists)
+- **Tokenizer version:** UNKNOWN (provisional whitespace-based `text.split()` count)
+- **Model version:** N/A
+- **Hardware:** UNKNOWN
+- **Software environment:** Python version UNKNOWN; pycodestyle 2.14.0 recorded; full environment UNKNOWN
+- **Random seed:** UNKNOWN
+- **Command:** UNKNOWN
+- **Input artifacts:** `data/raw/textbooks/thinkpython_code.jsonl` (SHA-256 `6a59f9584dd38a36ac26f2a76885708a0298be33de21e299315c586c293b2118`); `data/raw/textbooks/atbs3e_code.jsonl` (SHA-256 `3011f35cfe1f93813f658d01b65aae85b65d1f4a114745fbe52aa476c5983414`)
+- **Output artifacts:** Recorded legacy paths in `research/results/data/pyt-data-001.json` are absent. Current artifacts: `data/filtered/stage1/thinkpython_filtered_v3.jsonl` (293 records), `data/filtered/stage1/atbs_filtered_v3.jsonl` (162 records), `data/filtered/stage1/stage1_manifest.json`, and `research/results/data/pyt-data-001.json`.
+- **Result:** Think Python retained 0/293; ATBS retained 5/123 under the recorded strict baseline. The v3 files contain candidate records and are not verified strict filtered outputs.
+- **Notes:** Historical result JSON records the command-independent counts and planned follow-up `PYT-DATA-002`. Counts conflict with parts of `stage1_manifest.json`; reconciliation is required before reuse.
