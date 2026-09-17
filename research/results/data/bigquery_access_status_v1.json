@@ -1,0 +1,10 @@
+{
+  "bigquery_access": {
+    "available": false,
+    "credential_status": "NOT_AVAILABLE",
+    "message": "GCP Application Default Credentials not found. Set GOOGLE_APPLICATION_CREDENTIALS or use explicit service account credentials.",
+    "requirement": "GCP project with bigquery-public-data dataset access, or service account key file"
+  },
+  "timestamp": "2026-09-17",
+  "session": "Session 2 - Stack Overflow acquisition"
+}

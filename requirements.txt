@@ -9,3 +9,11 @@ jsonlines
 gitpython
 pandas
 numpy
+
+# Stack Overflow acquisition
+py7zr
+requests
+datasets
+huggingface_hub
+jsonlines
+tqdm

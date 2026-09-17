@@ -1,5 +1,12 @@
 import unittest
 from unittest.mock import patch
+import sys
+import os
+# Add project root to path so `scripts.*` can be imported
+# The test file lives under tests/, so parent is the pipeline root.
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 import tokenize
 

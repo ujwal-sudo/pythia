@@ -1,0 +1,39 @@
+{
+  "repositories_discovered": 5,
+  "repositories_acquired": 5,
+  "licenses": {
+    "CLEAR": 2,
+    "UNKNOWN": 0,
+    "RESTRICTED_OR_REVIEW": 3
+  },
+  "python_proportion": {
+    "files": 43,
+    "loc": 5746
+  },
+  "total_py_files": 43,
+  "generated_vendor": {
+    "scanned": 598,
+    "flagged": 0,
+    "retained": 598
+  },
+  "ast": {
+    "accepted": 31,
+    "rejected": 12,
+    "errors": 0
+  },
+  "documentation": {
+    "readme": 5,
+    "docs_dir": 2
+  },
+  "forks": {
+    "primary": 0,
+    "fork": 0
+  },
+  "pypi_overlap": {
+    "potential": 0,
+    "total": 5
+  },
+  "token_estimate": 86190,
+  "total_py_loc": 5746,
+  "total_files": 598
+}

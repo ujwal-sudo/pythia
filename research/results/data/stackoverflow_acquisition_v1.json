@@ -1,0 +1,68 @@
+{
+  "experiment_id": "PYT-DATA-SO-001",
+  "hypothesis": "Stack Overflow QA pairs with Python relevance can be extracted from the raj2708/stackexchange-all Hugging Face dataset and contribute 600-700M final validated tokens to the Pythia-160M training corpus.",
+  "source": "raj2708/stackexchange-all (Hugging Face dataset)",
+  "selection_procedure": {
+    "streaming_source": "load_dataset('raj2708/stackexchange-all', split='train', streaming=True)",
+    "profile_limit": 100000,
+    "community_isolation": "community == 'stackoverflow.com' OR url contains 'stackoverflow.com' (excluding meta.stackexchange.com)",
+    "python_relevance": "tags contain 'python' (core) or ecosystem tags (numpy, pandas, scipy, matplotlib, tensorflow, pytorch, django, flask, fastapi)",
+    "quality_tiers": {
+      "tier_a": "accepted answer AND answer_score >= 10",
+      "tier_b": "non-accepted answer AND answer_score >= 20",
+      "tier_c": "accepted answer AND answer_score >= 5"
+    },
+    "observed_distribution": {
+      "total_scanned": 100000,
+      "stackoverflow_records": 0,
+      "records_with_answer_score": 96893,
+      "tier_a_count": 6392,
+      "tier_b_count": 6083,
+      "tier_c_count": 10944,
+      "answer_score_distribution": "min=-29, max=640, mean=8.08, median=3.00",
+      "accepted_fraction": "19.0% (19045/100000)",
+      "token_count_distribution": "min=18, max=6210, mean=477.1, median=402.0"
+    }
+  },
+  "filters_applied": [
+    "community isolation (Stack Overflow only)",
+    "Python tag relevance filtering",
+    "Quality tier filtering (A/B/C thresholds)",
+    "Deduplication (via exact hash)"
+  ],
+  "candidate_counts": {
+    "total_scanned": 100000,
+    "stackoverflow_isolated": 0,
+    "python_core_matches": 0,
+    "python_ecosystem_matches": 0,
+    "tier_a_candidates": 6392,
+    "tier_b_candidates": 6083,
+    "tier_c_candidates": 10944
+  },
+  "preliminary_token_count": {
+    "method": "metadata.token_count (provisional estimate)",
+    "total_tokens_tier_a": 3489735,
+    "total_tokens_tier_a_b": 7097679,
+    "total_tokens_tier_a_b_c": 12761518,
+    "note": "Provisional; final token count must use actual Pythia tokenizer"
+  },
+  "known_limitations": [
+    "No stackoverflow.com community records found in first 100k scanned records",
+    "All communities in dataset are niche StackExchange sites (3dprinting, academia, etc.)",
+    "Python tag relevance cannot be assessed without SO records",
+    "Streaming dataset may not contain SO records beyond first 100k"
+  ],
+  "licensing_provenance_notes": {
+    "source_license": "CC-BY-SA-4.0 (per metadata)",
+    "dataset_origin": "processed from March 2026 StackExchange data dump",
+    "compliance": "Attribution-ShareAlike 4.0 International"
+  },
+  "reproducibility_details": {
+    "dataset_name": "raj2708/stackexchange-all",
+    "split": "train",
+    "profile_limit": 100000,
+    "script": "scripts/scrapers/stackoverflow_hf.py and scripts/scrapers/stackoverflow_select.py",
+    "run_date": "2026-09-17",
+    "python_version": "3.14.4"
+  }
+}

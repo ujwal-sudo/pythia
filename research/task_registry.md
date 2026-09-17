@@ -5,7 +5,7 @@ This registry is the persistent coordination index for the Pythia roadmap. Statu
 ## Current assignments
 
 - **OP current task:** PYTHIA-004 Textbooks — reconcile Stage 1 textbook artifacts and prepare the planned `PYT-DATA-002` policy comparison.
-- **CD current task:** PYTHIA-003 Python documentation processor — reconcile the missing documentation output path and inconsistent manifests/reports.
+- **CD current task:** PYTHIA-003 Python documentation processor — reconcile the missing documentation output path and inconsistent manifests/reports. **Reconciliation infrastructure now in place:** `research/decision_registry.md`, `research/experiment_registry.md`, `research/run_registry.md`, `research/tokenizer/`, `research/data_quality/`, `research/evaluation/`, `data/raw/peps/`, `data/sft/` subdirectories, and `data/filtered/stage4/` created.
 - **Lead current task:** maintain this coordination state and require filesystem/report/test verification before any completion claim.
 
 ## Coordination rules
@@ -40,6 +40,24 @@ This registry is the persistent coordination index for the Pythia roadmap. Statu
 - **Notes:** Foundation is filesystem-verified. Completion does not imply a final corpus, tokenizer, model, or evaluation exists.
 - **Last verified:** 2026-09-15
 - **Next action:** Use the foundation as the coordination baseline; do not infer downstream completion.
+
+## Configurable data root (infrastructure)
+
+- **Task ID:** PYTHIA-019
+- **Task:** Configurable data root with PYTHIA_DATA_ROOT env var
+- **Owner (OP/CD/Lead):** CD
+- **Status:** completed
+- **Priority:** high
+- **Dependencies:** PYTHIA-001
+- **Input:** Existing config.py with hardcoded `PROJECT_ROOT / "data"` paths
+- **Expected output:** `DATA_ROOT` with env var override, all canonical paths derive from `DATA_ROOT`, backward-compatible fallback when unset, validation helper script
+- **Actual output:** `config.py` updated with `DATA_ROOT = Path(os.environ.get("PYTHIA_DATA_ROOT", str(PROJECT_ROOT / "data")))`; canonical layout `RAW_DIR`, `FILTERED_DIR`, `FINAL_DIR`, `MANIFEST_DIR`, `SNAPSHOT_DIR` all from `DATA_ROOT`; `scripts/research/check_data_root.py` validation helper; `research/cloud_storage.md` policy document; all 36 existing tests pass unchanged; Google Drive mount `/mnt/pythia-cloud` verified read/write (~4.948 TiB free)
+- **Files changed:** `config.py`; `scripts/research/check_data_root.py`; `research/cloud_storage.md`; `research/project_status.md`; `research/task_registry.md`
+- **Experiment ID:** UNKNOWN
+- **Dataset version:** UNKNOWN
+- **Notes:** When `PYTHIA_DATA_ROOT=/mnt/pythia-cloud` is set, all large dataset paths resolve to the Google Drive mount. When unset, paths fall back to local `data/` directory. All existing data (60 GitHub repos, Stack Overflow, PyPI) remains in place; no acquisition, relocation, or deduplication was performed. Safety policy: do not move existing data; local repo remains fully functional without cloud mount.
+- **Last verified:** 2026-09-17
+- **Next action:** Monitor PATH configuration for new workstreams that may benefit from cloud-backed data root
 
 ## PYTHIA-002 — AST validator
 
@@ -100,18 +118,18 @@ This registry is the persistent coordination index for the Pythia roadmap. Statu
 - **Task ID:** PYTHIA-005
 - **Task:** Stack Overflow
 - **Owner (OP/CD/Lead):** OP
-- **Status:** blocked
+- **Status:** in_progress
 - **Priority:** high
 - **Dependencies:** PYTHIA-001; PYTHIA-002
-- **Input:** Stack Overflow source/API and `scripts/prepare_so.py`
+- **Input:** Stack Overflow source/API and `scripts/prepare_so.py` and `scripts/scrapers/stackoverflow_hf.py` and `scripts/scrapers/stackoverflow_bigquery.py`
 - **Expected output:** Immutable raw snapshot, provenance, validated candidates, manifest, and report
-- **Actual output:** Preparation script exists; `data/filtered/stage2/stackoverflow_candidates.jsonl` is empty; no raw snapshot, manifest, or successful report is present
-- **Files changed:** `scripts/prepare_so.py`; `data/filtered/stage2/stackoverflow_candidates.jsonl`
-- **Experiment ID:** UNKNOWN
-- **Dataset version:** UNKNOWN
-- **Notes:** No successful acquisition or preparation run is evidenced.
-- **Last verified:** 2026-09-15
-- **Next action:** Acquire a traceable source snapshot and run preparation into versioned artifacts.
+- **Actual output:** Preparation script exists; `data/filtered/stage2/stackoverflow_candidates.jsonl` is empty; no raw snapshot, manifest, or successful report is present; Phase 1 streaming sanity check completed with HF dataset `raj2708/stackexchange-all`; BigQuery public dataset extraction script created and tested (query construction and chunked output writing demonstrated); Phase 1 HF profiling classified as SOURCE_PROFILING_ONLY
+- **Files changed:** `scripts/prepare_so.py`; `scripts/scrapers/stackoverflow_hf.py`; `scripts/scrapers/stackoverflow_select.py`; `scripts/scrapers/stackoverflow_token_budget.py`; `scripts/scrapers/stackoverflow_bigquery.py`; `data/raw/stackoverflow/stackoverflow_candidates_v1.jsonl`; `data/raw/stackoverflow/stackoverflow_bigquery_candidates_v1_part-0001.jsonl`; `data/raw/stackoverflow/manifest.json`; `data/raw/stackoverflow/manifest_bigquery_v1.json`; `research/results/data/stackoverflow_acquisition_v1.json`; `research/results/data/stackoverflow_hf_source_profile_v1.json`; `research/results/data/stackoverflow_acquisition_v1.json`; `research/results/data/stackoverflow_bigquery_experiment_v1.json`
+- **Experiment ID:** PYT-DATA-SO-001; PYT-DATA-SO-002
+- **Dataset version:** raj2708/stackexchange-all (Phase 1 HF); bigquery-public-data.stackoverflow (Phase 2+)
+- **Notes:** Phase 1 HF profiling: 100k records scanned, 0 stackoverflow.com records found, all communities niche StackExchange sites. BigQuery extraction script demonstrates query construction and chunked output writing. Python relevance: python_core = <python> tag (primary); python_ecosystem = numpy, pandas, scipy, matplotlib, tensorflow, pytorch, django, flask, fastapi (separate metadata). Quality tiers: Tier A (accepted + score>=10), Tier B (non-accepted + score>=20), Tier C (accepted + score>=5). Token budget: preliminary metadata.token_count mean=477.1; final count needs Pythia tokenizer. Next action: execute small BigQuery query (100 records) to verify schema and output format, then controlled extraction run.
+- **Last verified:** 2026-09-17
+- **Next action:** Run small BigQuery query to verify schema mapping and output format (100-record milestone); if successful, begin controlled extraction with quality-tiered filtering
 
 ## PYTHIA-006 — Jupyter
 

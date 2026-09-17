@@ -1,0 +1,42 @@
+{
+  "experiment_id": "PYT-DATA-SO-HF-PROFILE-001",
+  "classification": "SOURCE_PROFILING_ONLY",
+  "source_dataset": "raj2708/stackexchange-all",
+  "source_url": "https://huggingface.co/datasets/raj2708/stackexchange-all",
+  "acquisition_method": "Hugging Face streaming",
+  "split": "train",
+  "profile_limit": 100000,
+  "findings": {
+    "total_streamed": 100000,
+    "stackoverflow_community_records": 0,
+    "records_by_community": {
+      "3dprinting.stackexchange.com": 10534,
+      "academia.stackexchange.com": 9466,
+      "3dprinting.meta.stackexchange.com": 385
+    },
+    "python_core_tag_count": 0,
+    "python_ecosystem_tag_count": 0,
+    "records_with_answer_score": 96893,
+    "score_distribution": {
+      "min": -29,
+      "max": 640,
+      "mean": 16.49,
+      "median": 7.0
+    },
+    "accepted_answer_fraction": "19.0% (19045/100000)",
+    "token_count_distribution": {
+      "min": 18,
+      "max": 6210,
+      "mean": 477.1,
+      "median": 402.0
+    }
+  },
+  "quality_tiers_provisional": {
+    "tier_a_accepted_ge10": 6392,
+    "tier_b_nonaccepted_ge20": 6083,
+    "tier_c_accepted_ge5": 10944
+  },
+  "conclusion": "No stackoverflow.com records found in first 100k streamed records. All communities are niche StackExchange sites. BigQuery public dataset recommended as primary source.",
+  "run_date": "2026-09-17",
+  "python_version": "3.14.4"
+}

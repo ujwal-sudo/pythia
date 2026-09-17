@@ -1,0 +1,61 @@
+{
+  "experiment_id": "PYT-DATA-SO-002",
+  "hypothesis": "A targeted BigQuery extraction of high-quality Python Stack Overflow answers can provide hundreds of millions of useful code/context tokens without requiring the full Stack Overflow database to be downloaded.",
+  "source": "bigquery-public-data.stackoverflow (posts_questions + posts_answers)",
+  "comparison_tiers": {
+    "tier_a": "accepted answer AND answer_score >= 10 (primary corpus)",
+    "tier_b": "non-accepted answer AND answer_score >= 20 (high-quality non-accepted)",
+    "tier_c": "accepted answer AND answer_score >= 5 (useful explanatory context)"
+  },
+  "expected_outcomes": {
+    "rows": "initial milestone: 100; full extraction: variable depending on query results",
+    "python_core_count": "to be measured from extraction",
+    "python_ecosystem_count": "to be measured (separate from core)",
+    "accepted_rate": "to be measured from extraction",
+    "code-containing_answer_count": "to be measured",
+    "provisional_token_estimate": "to be measured using answer body character // 4, then finalized with Pythia tokenizer"
+  },
+  "profiling_comparison": {
+    "hf_source_profile": "PYT-DATA-SO-HF-PROFILE-001",
+    "hf_findings": "0 stackoverflow.com records in first 100k streamed; all communities niche StackExchange sites",
+    "bigquery_advantage": "direct access to stackoverflow.com data via public dataset",
+    "next_steps": "small query (100 records) to verify schema and output format, then controlled extraction"
+  },
+  "filters_applied": [
+    "python_core tag filtering",
+    "minimum answer_score threshold (configurable: 5, 10, 20)",
+    "quality tier classification (A/B/C)",
+    "answer body preservation for code extraction"
+  ],
+  "known_limitations": [
+    "GCP credentials required for BigQuery access",
+    "No actual extraction yet - script demonstrates query construction only",
+    "Provisional token count using character//4; final count needs Pythia tokenizer",
+    "Python relevance limited to python_core + separately evaluated ecosystem tags",
+    "BigQuery access blocked - GCP credentials required for production extraction"
+  ],
+  "reproducibility_details": {
+    "dataset_name": "bigquery-public-data.stackoverflow",
+    "split": "posts_questions + posts_answers",
+    "script": "scripts/scrapers/stackoverflow_bigquery.py",
+    "run_date": "2026-09-17",
+    "python_version": "3.14.4",
+    "gcp_credential_requirement": "Application Default Credentials or explicit project configuration required"
+  },
+  "bigquery_access": {
+    "available": false,
+    "credential_error": "GCP Application Default Credentials not found",
+    "blocker": "BIGQUERY_ACCESS_BLOCKED",
+    "requirement": "GCP project with bigquery-public-data dataset access, or service account key file",
+    "timestamp": "2026-09-17"
+  },
+  "live_query_executed": false,
+  "records_returned": 0,
+  "tier_a_count": 0,
+  "tier_b_count": 0,
+  "tier_c_count": 0,
+  "bytes_processed": 0,
+  "query_duration": 0,
+  "output_file": null,
+  "output_sha256": null
+}

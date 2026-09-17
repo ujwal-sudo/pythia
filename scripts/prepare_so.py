@@ -6,6 +6,8 @@ import requests
 from scripts.validators.ast_validator import validate_python
 import pycodestyle
 
+from config import FILTERED_DIR, STAGE2_DIR
+
 BASE_URL = "https://api.stackexchange.com/2.3"
 
 def main():
@@ -153,8 +155,8 @@ def main():
     print(f'  Exact duplicates: {exact_duplicates_count}')
     
     # Write output
-    output_path = '/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/data/filtered/stage2/stackoverflow_candidates.jsonl'
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    output_path = STAGE2_DIR / "stackoverflow_candidates.jsonl"
+    os.makedirs(output_path.parent, exist_ok=True)
     with open(output_path, 'w') as f:
         for rec in all_records:
             f.write(json.dumps(rec) + '\n')

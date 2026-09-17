@@ -6,3 +6,6 @@ __pycache__/
 .venv/
 venv/
 logs/*.log
+data/raw/
+scripts/data/raw/
+tmp_test.jsonl
