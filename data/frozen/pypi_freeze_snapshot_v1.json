@@ -1,0 +1,56 @@
+{
+  "freeze_timestamp": "2026-09-23T03:00:01+00:00",
+  "freeze_status": "FROZEN",
+  "writer_status": {
+    "process": "python -m scripts.scrapers.pypi scaleup",
+    "pids_stopped": [
+      3429349,
+      3429347,
+      3429346,
+      3488024,
+      3488022,
+      3488021
+    ],
+    "stopped": true,
+    "relaunch_observed_after_stop": false
+  },
+  "checkpoint_count": 3041,
+  "acquired_count": 2945,
+  "failed_count": 96,
+  "manifest_count": 2945,
+  "manifest_sha256": "81f78a0dcff3a0d13a767948423b23ca49c813bb1091c4ab4e9359c67bb049e4",
+  "manifest_generated_at": "2026-09-22T21:06:48+00:00",
+  "candidate_manifest_count": 5000,
+  "candidate_manifest_sha256": "e26e2035f67b646796a7cfa1474ae2e39fcccd14b13daa333090b2f9652532dc",
+  "package_dir_count": 2953,
+  "archive_count_estimate": "N/A (rclone too slow for deep walk; package_dir_count=2953, manifest analysis package_size_bytes sum=4.34GB)",
+  "archive_storage_bytes": null,
+  "identity_reconciliation": {
+    "sample_size": 80,
+    "exact_matches": 0,
+    "version_label_mismatch": 72,
+    "archive_missing": 8,
+    "pkginfo_matches_filename": "VERIFIED for readable archives (events, jaxtyping, nvidia-cuda-nvcc, pycares, s3transfer, tzdata)",
+    "systemic": true
+  },
+  "authoritative_set": {
+    "historical_session1_baseline": 2717,
+    "observed_states": [
+      2833,
+      2839,
+      2939,
+      2945,
+      3035,
+      3041
+    ],
+    "frozen_checkpoints": 3041,
+    "frozen_acquired": 2945,
+    "frozen_failed": 96,
+    "frozen_manifest": 2945,
+    "in_candidate_manifest": 2945,
+    "outside_candidate_manifest": 0,
+    "orphaned_checkpoints": 96,
+    "orphaned_all_failed": true,
+    "manifest_missing_checkpoints": 0
+  }
+}

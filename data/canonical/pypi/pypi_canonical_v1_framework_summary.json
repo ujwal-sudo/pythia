@@ -1,0 +1,11 @@
+{
+  "source": "pypi",
+  "sample_size": 50,
+  "record_id_format": "pypi:{normalized_name}-{version}",
+  "content_hash_algo": "SHA-256 of normalized extracted Python code (main .py file from tar.gz)",
+  "normalization": "\\r\\n / \\r -> \\n, strip trailing whitespace per line, remove docstrings",
+  "content_hash_depends_on": "normalized code only (not entire archive)",
+  "record_ids_unique": 50,
+  "sample_source_files_processed": 50,
+  "sample_no_code": 0
+}

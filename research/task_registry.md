@@ -8,6 +8,13 @@ This registry is the persistent coordination index for the Pythia roadmap. Statu
 - **CD current task:** PYTHIA-003 Python documentation processor — reconcile the missing documentation output path and inconsistent manifests/reports. **Reconciliation infrastructure now in place:** `research/decision_registry.md`, `research/experiment_registry.md`, `research/run_registry.md`, `research/tokenizer/`, `research/data_quality/`, `research/evaluation/`, `data/raw/peps/`, `data/sft/` subdirectories, and `data/filtered/stage4/` created.
 - **Lead current task:** maintain this coordination state and require filesystem/report/test verification before any completion claim.
 
+**Session state summary** (for coordination; no acquisition activity performed by Session 1):
+
+- **Session 2 — Stack Overflow**: 100,000 records scanned; 0 stackoverflow.com records found; all communities are niche StackExchange sites. BigQuery public dataset access blocked (GCP credentials not found). Source profiling classified as SOURCE_PROFILING_ONLY. SPy project continues separately toward 10,000 record scale-up.
+- **Session 3 — PyPI**: 5,000 package candidate manifest; 10 packages acquired per checkpoints; known failed package: `cffi`. Acquisition/checkpoint consistency being repaired before full-scale acquisition.
+- **Session 4 — GitHub**: 150-candidate pilot; 8 repositories ACQUIRED and filesystem-verified; remaining candidates constrained by ~300-second wall-clock limit. Acquisition paused for Drive/Git storage recovery; scaling to ~150 repos planned.
+- **CodeSearchNet**: Session 2 is beginning acquisition work; no raw directory or snapshot presently present.
+
 ## Coordination rules
 
 1. OP owns dataset acquisition/preparation.

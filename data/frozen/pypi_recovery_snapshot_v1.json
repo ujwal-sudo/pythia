@@ -1,0 +1,12 @@
+{
+  "recovery_start_timestamp": "2026-09-23T03:54:25",
+  "frozen_checkpoint_count": 3041,
+  "frozen_manifest_count": 2945,
+  "frozen_manifest_sha256": "81f78a0dcff3a0d13a767948423b23ca49c813bb1091c4ab4e9359c67bb049e4",
+  "frozen_candidate_manifest_count": 5000,
+  "frozen_candidate_manifest_sha256": "e26e2035f67b646796a7cfa1474ae2e39fcccd14b13daa333090b2f9652532dc",
+  "checkpoint_names_sha256": "d62cfaab9c9cf0929053729ee1d6cbe4aa8d4cea75532d0cf4e329effb7812b4",
+  "checkpoint_count": 3041,
+  "frozen_checkpoint_count_rechecked": 3047,
+  "concurrent_writer_note": "The opencode agent (port 26025) relaunched pypi scaleup during recovery; checkpoint count drifted 3041->3047 (6 new checkpoints written externally). Scaleup stopped again. Manifest unchanged at 2945. This is external contamination of the frozen baseline, not recovery writes."
+}

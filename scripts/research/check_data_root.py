@@ -56,7 +56,7 @@ def validate() -> dict[str, any]:
     """Run all checks and return a verdict dict."""
     reasons: list[str] = []
 
-    # --- 1. configured DATA_ROOT exists ---
+    # 1. configured DATA_ROOT exists
     path_type: str | None = None
     if _is_readable(DATA_ROOT):
         reasons.append("✓ DATA_ROOT exists and is a directory")
@@ -64,29 +64,20 @@ def validate() -> dict[str, any]:
         reasons.append(f"✓ Path type: {path_type}")
     else:
         reasons.append("✗ DATA_ROOT does not exist or is not a directory")
-        # Fall back to local data dir for backward compatibility
-        fallback = Path(__file__).resolve().parent.parent / "data"
-        if _is_readable(fallback):
-            reasons.append(f"✓ Fallback local data dir is available: {fallback}")
-            effective_path = str(fallback)
-            effective_type = "local (fallback)"
-        else:
-            effective_path = str(DATA_ROOT)
-            effective_type = "unknown (path does not exist)"
 
-    # --- 2. it is readable ---
+    # 2. it is readable
     if _is_readable(DATA_ROOT):
         reasons.append("✓ DATA_ROOT is readable")
     else:
         reasons.append("✗ DATA_ROOT is not readable")
 
-    # --- 3. it is writable ---
+    # 3. it is writable
     if _is_writable(DATA_ROOT):
         reasons.append("✓ DATA_ROOT is writable")
     else:
         reasons.append("✗ DATA_ROOT is not writable")
 
-    # --- 4. expected directories exist or can be created ---
+    # 4. expected directories exist or can be created
     expected_dirs = ["raw", "filtered", "final", "manifests", "snapshots"]
     dirs = _dirs_at(DATA_ROOT, expected_dirs)
     missing: list[str] = [n for n, e in dirs.items() if not e]
@@ -95,16 +86,8 @@ def validate() -> dict[str, any]:
     else:
         for name in missing:
             reasons.append(f"  note: {name} directory missing (can be created)")
-        # Attempt to create missing dirs — do not fail if permissions denied
-        for name in missing:
-            d = DATA_ROOT / name
-            try:
-                d.mkdir(parents=True, exist_ok=True)
-                reasons.append(f"  note: created {name} directory")
-            except OSError:
-                reasons.append(f"  warning: could not create {name} directory")
 
-    # --- 5. report local/cloud path clearly ---
+    # 5. report local/cloud path clearly
     path_str = str(DATA_ROOT)
     if path_str.startswith("/mnt/"):
         path_type_final = "cloud (Google Drive)"

@@ -1,0 +1,318 @@
+{
+  "sample_size": 40,
+  "rows": [
+    {
+      "package": "a2a-sdk",
+      "manifest_v": "1.1.4",
+      "archive_filename": "a2a_sdk-0.2.0a1.tar.gz",
+      "filename_v": "0.2.0a1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "alibabacloud-tea-util",
+      "manifest_v": "0.3.15",
+      "archive_filename": "alibabacloud_tea_util-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "appium-python-client",
+      "manifest_v": "6.0.7",
+      "archive_filename": "Appium-Python-Client-0.1.tar.gz",
+      "filename_v": "0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "avro-python3",
+      "manifest_v": "1.10.2",
+      "archive_filename": "avro-python3-1.10.0.tar.gz",
+      "filename_v": "1.10.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "azure-mgmt-batch",
+      "manifest_v": "19.0.0",
+      "archive_filename": "MISSING",
+      "class": "ARCHIVE_MISSING",
+      "sha_match": "N/A"
+    },
+    {
+      "package": "azure-mgmt-sql",
+      "manifest_v": "4.0.0",
+      "archive_filename": "MISSING",
+      "class": "ARCHIVE_MISSING",
+      "sha_match": "N/A"
+    },
+    {
+      "package": "blessed",
+      "manifest_v": "1.50.0",
+      "archive_filename": "blessed-1.10.0.tar.gz",
+      "filename_v": "1.10.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "cdk-nag",
+      "manifest_v": "3.0.2",
+      "archive_filename": "cdk-nag-0.0.0.tar.gz",
+      "filename_v": "0.0.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "cobble",
+      "manifest_v": "0.1.4",
+      "archive_filename": "cobble-0.1.0.tar.gz",
+      "filename_v": "0.1.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "cssselect2",
+      "manifest_v": "0.10.1",
+      "archive_filename": "cssselect2-0.1.tar.gz",
+      "filename_v": "0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "dataclasses",
+      "manifest_v": "0.8",
+      "archive_filename": "dataclasses-0.1.tar.gz",
+      "filename_v": "0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "detect-secrets",
+      "manifest_v": "1.5.0",
+      "archive_filename": "detect_secrets-0.10.0.tar.gz",
+      "filename_v": "0.10.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "djangorestframework-csv",
+      "manifest_v": "3.0.2",
+      "archive_filename": "djangorestframework-csv-1.0.0.tar.gz",
+      "filename_v": "1.0.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "encutils",
+      "manifest_v": "1.0.0",
+      "archive_filename": "encutils-1.0.0.tar.gz",
+      "filename_v": "1.0.0",
+      "sha_match": true,
+      "class": "MATCH"
+    },
+    {
+      "package": "fastparquet",
+      "manifest_v": "2026.5.0",
+      "archive_filename": "fastparquet-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "formulaic",
+      "manifest_v": "1.2.2",
+      "archive_filename": "formulaic-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "google-auth-httplib2",
+      "manifest_v": "0.4.2",
+      "archive_filename": "google-auth-httplib2-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "google-genai",
+      "manifest_v": "2.24.0",
+      "archive_filename": "google_genai-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "hatchling",
+      "manifest_v": "1.32.3",
+      "archive_filename": "hatchling-0.10.0.tar.gz",
+      "filename_v": "0.10.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "ifaddr",
+      "manifest_v": "0.2.0",
+      "archive_filename": "MISSING",
+      "class": "ARCHIVE_MISSING",
+      "sha_match": "N/A"
+    },
+    {
+      "package": "jaxtyping",
+      "manifest_v": "0.3.11",
+      "archive_filename": "jaxtyping-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "jupyterlab",
+      "manifest_v": "4.6.3",
+      "archive_filename": "jupyterlab-0.0.10.tar.gz",
+      "filename_v": "0.0.10",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "lark-oapi",
+      "manifest_v": "1.7.3",
+      "archive_filename": "lark-oapi-1.0.0.tar.gz",
+      "filename_v": "1.0.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "llvmlite",
+      "manifest_v": "0.49.0",
+      "archive_filename": "llvmlite-0.10.0.tar.gz",
+      "filename_v": "0.10.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "mcp",
+      "manifest_v": "2.2.0",
+      "archive_filename": "mcp-0.9.1.tar.gz",
+      "filename_v": "0.9.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "msal-extensions",
+      "manifest_v": "1.3.1",
+      "archive_filename": "msal-extensions-0.1.0.tar.gz",
+      "filename_v": "0.1.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "nbclassic",
+      "manifest_v": "1.3.3",
+      "archive_filename": "nbclassic-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "nvidia-cutlass-dsl-libs-base",
+      "manifest_v": "4.7.1",
+      "archive_filename": "MISSING",
+      "class": "ARCHIVE_MISSING",
+      "sha_match": "N/A"
+    },
+    {
+      "package": "opensearch-protobufs",
+      "manifest_v": "1.7.0",
+      "archive_filename": "opensearch_protobufs-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "opentelemetry-instrumentation-pymemcache",
+      "manifest_v": "0.65b0",
+      "archive_filename": "opentelemetry-instrumentation-pymemcache-0.12b0.tar.gz",
+      "filename_v": "0.12b0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "oyaml",
+      "manifest_v": "1.0",
+      "archive_filename": "oyaml-0.1.tar.gz",
+      "filename_v": "0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "pendulum",
+      "manifest_v": "3.2.0",
+      "archive_filename": "pendulum-0.1.tar.gz",
+      "filename_v": "0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "ppft",
+      "manifest_v": "1.7.8",
+      "archive_filename": "MISSING",
+      "class": "ARCHIVE_MISSING",
+      "sha_match": "N/A"
+    },
+    {
+      "package": "py4j",
+      "manifest_v": "0.10.9.9",
+      "archive_filename": "MISSING",
+      "class": "ARCHIVE_MISSING",
+      "sha_match": "N/A"
+    },
+    {
+      "package": "pydyf",
+      "manifest_v": "0.12.1",
+      "archive_filename": "pydyf-0.0.1.tar.gz",
+      "filename_v": "0.0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "pyobjc-core",
+      "manifest_v": "12.2.2",
+      "archive_filename": "pyobjc-core-10.0.tar.gz",
+      "filename_v": "10.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "pystac-ext-mlm",
+      "manifest_v": "1.4.1",
+      "archive_filename": "pystac_ext_mlm-1.4.0.tar.gz",
+      "filename_v": "1.4.0",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "pytest-testmon",
+      "manifest_v": "2.2.0",
+      "archive_filename": "pytest-testmon-0.4.9.tar.gz",
+      "filename_v": "0.4.9",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    },
+    {
+      "package": "pytweening",
+      "manifest_v": "1.2.0",
+      "archive_filename": "MISSING",
+      "class": "ARCHIVE_MISSING",
+      "sha_match": "N/A"
+    },
+    {
+      "package": "repoze-lru",
+      "manifest_v": "0.8",
+      "archive_filename": "repoze.lru-0.1.tar.gz",
+      "filename_v": "0.1",
+      "sha_match": true,
+      "class": "VERSION_LABEL_MISMATCH"
+    }
+  ]
+}

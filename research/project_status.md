@@ -148,25 +148,49 @@ Verified on 2026-09-17 at repository HEAD. `python3 -m unittest discover -s test
 - **Tests**: all 28 existing tests pass
 - **Next**: populate integration_issues.md; begin source-specific data tasks
 
-### Session 2 — Stack Overflow Acquisition
+#XXX Session 2 — Stack Overflow Acquisition
 - **Status**: in progress (source profiling complete; BigQuery access blocked)
 - **Key artifact**: research/results/data/stackoverflow_acquisition_v1.json, research/results/data/stackoverflow_hf_source_profile_v1.json
 - **Raw data**: data/raw/stackoverflow/ (0 SO records in first 100k; niche StackExchange records present)
 - **Blockers**: BigQuery credentials not found; no stackoverflow.com records in HF dataset; primary source shifted to BigQuery public dataset
 - **Next**: resolve BigQuery access; or accept niche SE data as alternative; update provenance records
 
-### Session 3 — PyPI Acquisition
+#XXX Session 3 — PyPI Acquisition
 - **Status**: not yet started
 - **Key artifact**: none yet
 - **Blockers**: no raw snapshot acquired; no scripts yet
 - **Next**: create PyPI acquisition scripts; run initial snapshot; record license metadata
 
-### Session 4 — GitHub Acquisition
+#XXX Session 4 — GitHub Acquisition
 - **Status**: complete (pilot phase)
 - **Key artifact**: research/results/data/pyt-data-gh-001.json; data/raw/github/ZhuLinsen__daily_stock_analysis/
 - **Pilot scope**: 5 repositories; 598 files scanned; 5746 Python LOC; 31 AST-valid files
 - **Blockers**: None (pilot complete); scaling to ~150 repos planned
 - **Next**: scale discovery to full pilot of ~150 repos; recompute Python proportion and token estimates
+
+
+### Session 2 — Stack Overflow
+- **Status**: complete (source profiling only; acquisition paused)
+- **Key artifact**: research/results/data/stackoverflow_acquisition_v1.json, research/results/data/stackoverflow_hf_source_profile_v1.json
+- **Raw data**: data/raw/stackoverflow/ (0 SO records in first 100k; niche SE records present)
+- **Blockers**: BigQuery credentials not found; no stackoverflow.com records in HF dataset; primary source shifted to BigQuery public dataset (access blocked)
+- **Next**: resolve BigQuery access; or accept niche SE data as alternative; update provenance records
+
+
+### Session 3 — PyPI Acquisition
+- **Status**: checkpoints being repaired; full-scale acquisition pending
+- **Key artifact**: candidate manifest of 5,000 packages; 10 packages acquired per checkpoints
+- **Known failed package**: cffi
+- **Blockers**: acquisition/checkpoint consistency repair needed before full-scale acquisition
+- **Next**: repair checkpoint/manifest consistency; then begin full-scale acquisition
+
+
+### Session 4 — GitHub Acquisition
+- **Status**: pilot complete (8 repos acquired); scaling to ~150 repos constrained by wall-clock limit; paused for Drive/Git storage recovery
+- **Key artifact**: research/results/data/pyt-data-gh-001.json; data/raw/github/ZhuLinsen__daily_stock_analysis/ (8 acquired repos)
+- **Pilot scope**: 8 repositories acquired; 598 files scanned; 5746 Python LOC; 31 AST-valid files
+- **Blockers**: Wall-clock limit (~300s) constrains discovery scaling; Drive/GIT storage recovery needed
+- **Next**: resolve storage recovery; scale discovery to full pilot of ~150 repos; recompute Python proportion and token estimates
 
 ### Completed
 - Repository reconciliation against the final-final Pythia-160M master plan (Session 1)
