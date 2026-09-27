@@ -78,11 +78,12 @@ def load_state() -> dict:
 
 def save_state(state: dict) -> None:
     if PYPI_REMOTE_STORAGE:
-        # Freeze checked first inside the storage layer; two-phase commit.
+        # Freeze checked first inside the storage layer; two-phase commit with
+        # a mandatory commit journal (crash-safe reconciliation).
         assert_no_freeze()
         data = (json.dumps(state, indent=2) + "\n").encode("utf-8")
         commit_write(data, recovery_state_remote(), prevent_overwrite=False,
-                     namespace="recovery", verify=True)
+                     namespace="recovery", verify=True, journal=True)
         return
     RECOVERY_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
     tmp = RECOVERY_STATE_PATH.with_suffix(".tmp")

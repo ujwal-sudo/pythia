@@ -630,6 +630,7 @@ def save_checkpoint_remote(
         prevent_overwrite=not allow_overwrite,
         namespace="checkpoint",
         verify=True,
+        journal=True,  # mandatory commit journal for remote execution
     )
 
 
@@ -661,7 +662,7 @@ def save_manifest_remote(
         lines = [json.dumps(r, sort_keys=True) for r in records]
         data = (f"#record_count={len(records)}\n" + "\n".join(lines) + "\n").encode("utf-8")
     result = commit_write(data, final, prevent_overwrite=False,
-                          namespace="manifest", verify=True)
+                          namespace="manifest", verify=True, journal=True)
     # integrity: re-read and confirm record_count
     try:
         text = get_backend().read_bytes(final).decode("utf-8")
@@ -705,7 +706,7 @@ def save_archive_remote(
                 f"Archive SHA mismatch: got {local_sha}, expected {expected_sha256}")
     final = archive_remote_path(pkg_norm, version, filename)
     return commit_write(data, final, prevent_overwrite=True,
-                        namespace="archive", verify=True)
+                        namespace="archive", verify=True, journal=True)
 
 
 # --------------------------------------------------------------------------
@@ -720,7 +721,7 @@ def save_recovery_state_remote(state: Dict[str, Any]) -> Dict[str, Any]:
     assert_no_freeze()
     data = (json.dumps(state, indent=2, sort_keys=True) + "\n").encode("utf-8")
     return commit_write(data, recovery_state_remote(), prevent_overwrite=False,
-                        namespace="recovery", verify=True)
+                        namespace="recovery", verify=True, journal=True)
 
 
 # --------------------------------------------------------------------------
@@ -770,6 +771,24 @@ class WriterLock:
         expiry = float(lock.get("lease_expires_at", 0))
         return time.time() > expiry
 
+    def _confirm_ownership_after_write(self, now: float,
+                                       attempts: int = 6,
+                                       delay: float = 1.0) -> bool:
+        """Confirm this writer owns the lock after a create/takeover write.
+
+        Google Drive/rclone is eventually consistent: the object just written
+        may not be visible to a read-back for a short window. Poll the lock
+        object until it reports this writer's owner_id (or attempts exhausted).
+        """
+        for _ in range(attempts):
+            readback = self._read_lock()
+            if readback and readback.get("owner_id") == self.owner_id:
+                self._held = True
+                self._acquired_at = now
+                return True
+            time.sleep(delay)
+        return False
+
     def acquire(self, *, timeout: float = 30.0, poll_interval: float = 1.0) -> bool:
         """Acquire the lock. Returns True on success, False on timeout."""
         start = time.time()
@@ -783,11 +802,7 @@ class WriterLock:
                     "acquired_at": now,
                     "lease_expires_at": now + self.lease_seconds,
                 })
-                # read back; if we own it, success
-                readback = self._read_lock()
-                if readback and readback.get("owner_id") == self.owner_id:
-                    self._held = True
-                    self._acquired_at = now
+                if self._confirm_ownership_after_write(now):
                     return True
                 # else another writer won the race; fall through to wait
             elif self._is_expired(existing):
@@ -798,10 +813,7 @@ class WriterLock:
                     "acquired_at": now,
                     "lease_expires_at": now + self.lease_seconds,
                 })
-                readback = self._read_lock()
-                if readback and readback.get("owner_id") == self.owner_id:
-                    self._held = True
-                    self._acquired_at = now
+                if self._confirm_ownership_after_write(now):
                     return True
             elif existing.get("owner_id") == self.owner_id:
                 # already ours

@@ -49,14 +49,17 @@ from scripts.scrapers.pypi_storage import (
     WriterLock,
     assert_no_freeze,
     canonical_pypi_root,
+    commit_write,
     freeze_sentinel_exists,
     map_local_path_to_remote,
+    reconcile_startup,
     remote_archive_exists,
     remote_archive_sha256,
     remote_checkpoint_names,
     remote_exists,
     remote_headroom,
     remote_list,
+    remote_read_bytes,
     remote_read_text,
     remote_sha256,
     save_archive_remote,
@@ -115,45 +118,82 @@ def parse_version_from_filename(filename: str) -> Optional[str]:
     return base
 
 
-def _archive_metadata_identity(archive_path: Path) -> Dict[str, Optional[str]]:
-    """Read package name/version from an archive's PKG-INFO or METADATA.
+def _parse_archive_metadata_bytes(raw: bytes) -> Dict[str, Optional[str]]:
+    """Parse package name/version from archive bytes (sdist tar or wheel zip)."""
+    import io
+    import zipfile
 
-    Returns {'package': ..., 'version': ...} (may be None when unavailable).
-    """
     result: Dict[str, Optional[str]] = {"package": None, "version": None}
-    if not archive_path.exists():
-        return result
+
+    def _parse_text(content: str) -> None:
+        for line in content.splitlines():
+            if line.startswith("Name:") and result["package"] is None:
+                result["package"] = line.split(":", 1)[1].strip()
+            elif line.startswith("Version:") and result["version"] is None:
+                result["version"] = line.split(":", 1)[1].strip()
+            if result["package"] is not None and result["version"] is not None:
+                return
+
+    # sdist: tar
     try:
-        with tarfile.open(archive_path, "r:*") as tf:
-            candidates = []
+        with tarfile.open(fileobj=io.BytesIO(raw), mode="r:*") as tf:
             for member in tf.getmembers():
                 if not member.isfile():
                     continue
                 name = member.name.lower()
-                if name.endswith("pkg-info") or name.endswith("/metadata"):
-                    candidates.append(member)
-                elif name.endswith(".dist-info/metadata") and len(candidates) == 0:
-                    candidates.append(member)
-            for member in candidates[:4]:
-                try:
-                    raw = tf.extractfile(member)
-                    if raw is None:
-                        continue
-                    content = raw.read().decode("utf-8", errors="replace")
-                    for line in content.splitlines():
-                        if line.startswith("Name:") and result["package"] is None:
-                            result["package"] = line.split(":", 1)[1].strip()
-                        elif line.startswith("Version:") and result["version"] is None:
-                            result["version"] = line.split(":", 1)[1].strip()
-                        if result["package"] is not None and result["version"] is not None:
-                            break
+                if name.endswith("pkg-info") or name.endswith("/metadata") or name.endswith(".dist-info/metadata"):
+                    f = tf.extractfile(member)
+                    if f is not None:
+                        _parse_text(f.read().decode("utf-8", errors="replace"))
                     if result["package"] is not None and result["version"] is not None:
-                        break
-                except Exception:
-                    continue
+                        return result
+    except Exception:
+        pass
+    if result["package"] is not None and result["version"] is not None:
+        return result
+
+    # wheel: zip dist-info/METADATA
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+            for name in zf.namelist():
+                low = name.lower()
+                if low.endswith("dist-info/metadata") or low.endswith(".dist-info/metadata"):
+                    try:
+                        _parse_text(zf.read(name).decode("utf-8", errors="replace"))
+                    except Exception:
+                        continue
+                    if result["package"] is not None and result["version"] is not None:
+                        return result
+    except Exception:
+        pass
+    return result
+
+
+def _archive_metadata_identity(archive_path: Path) -> Dict[str, Optional[str]]:
+    """Read package name/version from an archive's PKG-INFO or METADATA.
+
+    Backend-aware: in remote mode the archive bytes are fetched through the
+    storage abstraction and parsed in-memory (never assumed present on the
+    local FUSE path). Returns {'package': ..., 'version': ...} (None when
+    unavailable).
+    """
+    if PYPI_REMOTE_STORAGE:
+        try:
+            remote = map_local_path_to_remote(archive_path)
+            if not remote_exists(remote):
+                return {"package": None, "version": None}
+            raw = remote_read_bytes(remote)
+            return _parse_archive_metadata_bytes(raw)
+        except Exception:
+            return {"package": None, "version": None}
+    result: Dict[str, Optional[str]] = {"package": None, "version": None}
+    if not archive_path.exists():
+        return result
+    try:
+        raw = archive_path.read_bytes()
     except Exception:
         return result
-    return result
+    return _parse_archive_metadata_bytes(raw)
 
 
 def verify_archive_identity(
@@ -543,13 +583,10 @@ def _atomic_write_jsonl(path: Path, records: List[Dict[str, object]]) -> None:
         raise
 
 
-def write_candidates_manifest(candidates: List[Dict[str, object]], path: Path = PYPI_CANDIDATES_MANIFEST_PATH) -> None:
-    _atomic_write_jsonl(path, candidates)
-
-
-def write_acquisition_manifest(packages: List[Dict[str, object]], path: Path = PYPI_ACQUISITION_MANIFEST_PATH) -> None:
-    _atomic_write_json(path, {"source": "pypi", "generated_at": utc_now_iso(),
-                               "record_count": len(packages), "packages": packages})
+# NOTE: The single consolidated `write_candidates_manifest` and
+# `write_acquisition_manifest` are defined below (remote-aware when
+# PYPI_REMOTE_STORAGE=1, POSIX fallback otherwise). Legacy POSIX-only
+# duplicates that previously shadowed them were removed.
 
 
 # ------------------------------------------------------------------ checkpoint / resumability
@@ -664,6 +701,33 @@ def _archive_exists(path: Path, *, pkg_norm: Optional[str] = None,
             return remote_archive_exists(pkg_norm, version, filename)
         return False
     return path.exists()
+
+
+def _mkdir_remote_aware(path: Path) -> None:
+    """Ensure a directory exists without depending on the FUSE mount.
+
+    In remote mode rclone creates parent objects implicitly on upload, so a
+    local mkdir against the (possibly unmounted) FUSE path must be skipped.
+    """
+    if PYPI_REMOTE_STORAGE:
+        return
+    path.mkdir(parents=True, exist_ok=True)
+
+
+def _write_report(path: Path, data: Dict[str, object]) -> None:
+    """Write a report artifact, backend-aware.
+
+    Reports are regenerated artifacts (overwrite intended). In remote mode the
+    write goes through the two-phase commit protocol with a journal marker so a
+    partial report can never be mistaken for the final report.
+    """
+    payload = (json.dumps(data, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    if PYPI_REMOTE_STORAGE:
+        remote = map_local_path_to_remote(path)
+        commit_write(payload, remote, prevent_overwrite=False,
+                     namespace="report", verify=True, journal=True)
+        return
+    _atomic_write_json(path, data)
 
 
 def _load_all_acquired_license_statuses() -> List[str]:
@@ -853,15 +917,23 @@ def run_pilot(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
         )
         return {"final_status": "BLOCKED_FROZEN", "error": "PyPI baseline is frozen"}
     # Single-writer lock (advisory/best-effort; no Google Drive atomic
-    # create-if-absent). Acquired before any PyPI mutation.
+    # create-if-absent). Acquired before any PyPI mutation. The protected
+    # lifecycle runs a heartbeat thread, checks the freeze, and fails closed
+    # on ownership loss.
     _lock = WriterLock(lease_seconds=600)
-    if not _lock.acquire(timeout=15):
-        return {"final_status": "LOCK_ACQUISITION_FAILED",
-                "error": "could not acquire PyPI single-writer lock"}
     try:
-        return _run_pilot_locked(limit=limit, timeout=timeout)
-    finally:
-        _lock.release()
+        with _lock.protected(heartbeat_interval=30.0):
+            if PYPI_REMOTE_STORAGE:
+                _rec = reconcile_startup()
+                if _rec.get("ambiguous") or _rec.get("promoted_unverified"):
+                    return {
+                        "final_status": "RECONCILE_BLOCKED",
+                        "error": f"ambiguous/promoted_unverified remote state at start: {_rec}",
+                    }
+            return _run_pilot_locked(limit=limit, timeout=timeout)
+    except LockNotHeldError:
+        return {"final_status": "LOCK_LOST",
+                "error": "writer lock lost during run (heartbeat failure)"}
 
 
 def _run_pilot_locked(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
@@ -869,7 +941,7 @@ def _run_pilot_locked(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
     pilot_cands = candidates[:limit]
 
     # Ensure manifests directory exists
-    PYPI_MANIFESTS_DIR.mkdir(parents=True, exist_ok=True)
+    _mkdir_remote_aware(PYPI_MANIFESTS_DIR)
     write_candidates_manifest(candidates)
 
     # Load already acquired from checkpoints
@@ -892,14 +964,11 @@ def _run_pilot_locked(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
                 continue
 
             dest_dir = PYPI_PACKAGES_DIR / norm
-            dest_dir.mkdir(parents=True, exist_ok=True)
+            _mkdir_remote_aware(dest_dir)
             archive_name = meta.get("archive_filename", "")
             version = meta.get("version")
             archive_path = (dest_dir / version / archive_name) if version else dest_dir / archive_name
-            if PYPI_REMOTE_STORAGE:
-                archive_path.parent.mkdir(parents=True, exist_ok=True)
-            else:
-                archive_path.parent.mkdir(parents=True, exist_ok=True)
+            _mkdir_remote_aware(archive_path.parent)
 
             downloaded = _archive_exists(
                 archive_path, pkg_norm=norm, version=version, filename=archive_name)
@@ -1007,8 +1076,8 @@ def _run_pilot_locked(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
     report["packages_skipped"] = report["packages_skipped"]
     # The rest of the stats are already correct from checkpoints
     
-    PYPI_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    _atomic_write_json(PYPI_PILOT_REPORT_PATH, {"experiment_id": "PYT-DATA-PYPI-002", **report})
+    _mkdir_remote_aware(PYPI_REPORTS_DIR)
+    _write_report(PYPI_PILOT_REPORT_PATH, {"experiment_id": "PYT-DATA-PYPI-002", **report})
 
     return {"acquired": acquired, "failures": failures, "skipped": skipped, "report": {"experiment_id": "PYT-DATA-PYPI-002", **report}}
 
@@ -1017,26 +1086,14 @@ def _regenerate_and_write_manifests() -> None:
     """Regenerate acquisition manifest and pilot report from checkpoints."""
     acquired, failures, skipped, report_bundle = _regenerate_manifests_from_checkpoints()
     write_acquisition_manifest(acquired)
-    PYPI_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    _atomic_write_json(PYPI_PILOT_REPORT_PATH, {"experiment_id": "PYT-DATA-PYPI-002", **_regenerate_manifests_from_checkpoints()[3]["report"]})
+    _mkdir_remote_aware(PYPI_REPORTS_DIR)
+    _write_report(PYPI_PILOT_REPORT_PATH, {"experiment_id": "PYT-DATA-PYPI-002", **_regenerate_manifests_from_checkpoints()[3]["report"]})
 
 
-def _download_file(url: str, dest: Path, timeout: int) -> None:
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    part = Path(str(dest) + ".part")
-    try:
-        with requests.get(url, stream=True, timeout=timeout) as r:
-            r.raise_for_status()
-            total = int(r.headers.get("content-length", 0))
-            with part.open("wb") as f, tqdm(total=total, unit="B", unit_scale=True, desc=dest.name) as bar:
-                for chunk in r.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-                        bar.update(len(chunk))
-        part.replace(dest)
-    except Exception:
-        part.unlink(missing_ok=True)
-        raise
+# NOTE: The single consolidated `_download_file` is defined above (remote-aware
+# when PYPI_REMOTE_STORAGE=1, POSIX fallback otherwise). A legacy POSIX-only
+# duplicate that previously shadowed it was removed so remote execution can
+# never silently fall back to POSIX semantics.
 
 
 # ------------------------------------------------------------------ scale-up orchestration
@@ -1065,31 +1122,18 @@ def load_candidates_manifest(path: Path = PYPI_CANDIDATES_MANIFEST_PATH) -> List
 
 
 def get_unprocessed_candidates(candidates: List[Dict[str, object]]) -> List[Dict[str, object]]:
-    """Return candidates that have not been processed (no checkpoint exists)."""
-    # Build set of already processed packages from acquisition manifest (fast)
-    processed = set()
-    if PYPI_REMOTE_STORAGE:
-        remote = map_local_path_to_remote(PYPI_ACQUISITION_MANIFEST_PATH)
-        if remote_exists(remote):
-            try:
-                data = json.loads(remote_read_text(remote))
-                for pkg_data in data.get("packages", []):
-                    processed.add(pkg_data.get("normalized", ""))
-            except Exception:
-                pass
-    elif PYPI_ACQUISITION_MANIFEST_PATH.exists():
-        try:
-            data = json.loads(PYPI_ACQUISITION_MANIFEST_PATH.read_text(encoding="utf-8"))
-            for pkg_data in data.get("packages", []):
-                processed.add(pkg_data.get("normalized", ""))
-        except Exception:
-            pass
-    
-    # Add known failed packages
-    failed_packages = {"dbt-semantic-interfaces", "metricflow"}
-    processed.update(failed_packages)
-    
-    unprocessed = [c for c in candidates if c["normalized"] not in processed]
+    """Return candidates that have not been processed (no checkpoint exists).
+
+    A candidate is processed iff it has a checkpoint (ACQUIRED or FAILED) in
+    the authoritative state. Backend-aware: in remote mode the checkpoint name
+    set comes from a single remote listing (remote_checkpoint_names), not from
+    per-checkpoint reads, so the resume boundary is derived correctly and fast
+    from actual state (never a hard-coded rank).
+    """
+    checkpoint_norms = set()
+    for cp in _iter_checkpoint_paths():
+        checkpoint_norms.add(cp.name.replace("_checkpoint.json", ""))
+    unprocessed = [c for c in candidates if c["normalized"] not in checkpoint_norms]
     return unprocessed
 
 
@@ -1117,8 +1161,14 @@ def verify_manifest_integrity(candidates: List[Dict[str, object]]) -> Dict[str, 
 
 
 def verify_checkpoint_consistency() -> Dict[str, object]:
-    """Verify checkpoint state consistency using acquisition manifest + failed checkpoints."""
-    # Read acquired count from acquisition manifest (fast, single file)
+    """Verify checkpoint state consistency from authoritative state.
+
+    Acquired count comes from the acquisition manifest. FAILED/SKIPPED counts:
+      * POSIX mode: full local scan of checkpoint states (fast locally).
+      * Remote mode: read states ONLY for checkpoints not present in the
+        acquired manifest set (a remote listing + a bounded number of reads,
+        e.g. ~102 in the current state, instead of reading every checkpoint).
+    """
     acquired = 0
     try:
         if PYPI_REMOTE_STORAGE:
@@ -1130,24 +1180,38 @@ def verify_checkpoint_consistency() -> Dict[str, object]:
     except Exception:
         pass
 
-    # Derive FAILED state from authoritative checkpoint data (scan all checkpoints).
-    # No hardcoded package lists: every FAILED checkpoint is counted automatically.
-    failed = 0
-    skipped = 0
-    for cp in _iter_checkpoint_paths():
+    if PYPI_REMOTE_STORAGE:
+        # Fast remote pre-flight: derive FAILED = checkpoints - acquired from
+        # the authoritative listing + manifest (the state has only ACQUIRED and
+        # FAILED terminal checkpoints; SKIPPED is reported as 0). Avoids reading
+        # every checkpoint individually.
+        acquired_names = set()
         try:
-            data = _read_checkpoint_content(cp)
-            for pkg, info in data.items():
-                state = info.get("state")
-                if state == "FAILED":
-                    failed += 1
-                elif state == "SKIPPED":
-                    skipped += 1
+            data = json.loads(remote_read_text(
+                map_local_path_to_remote(PYPI_ACQUISITION_MANIFEST_PATH)))
+            for pkg_data in data.get("packages", []):
+                acquired_names.add(pkg_data.get("normalized", ""))
         except Exception:
             pass
-
-    # Total checkpoints = acquired + failed + skipped
-    total_checkpoints = acquired + failed + skipped
+        checkpoint_names = {cp.name[:-len("_checkpoint.json")] for cp in _iter_checkpoint_paths()}
+        failed = max(0, len(checkpoint_names) - len(acquired_names))
+        skipped = 0
+        total_checkpoints = len(checkpoint_names)
+    else:
+        failed = 0
+        skipped = 0
+        for cp in _iter_checkpoint_paths():
+            try:
+                data = _read_checkpoint_content(cp)
+                for pkg, info in data.items():
+                    state = info.get("state")
+                    if state == "FAILED":
+                        failed += 1
+                    elif state == "SKIPPED":
+                        skipped += 1
+            except Exception:
+                pass
+        total_checkpoints = acquired + failed + skipped
 
     return {
         "total_checkpoints": total_checkpoints,
@@ -1252,15 +1316,13 @@ def generate_reconciliation_report(
     except Exception as e:
         logger.warning(f"Failed to read acquisition manifest: {e}")
     
-    # Load failed packages from known failed checkpoints
+    # Load failed packages from authoritative checkpoint state (backend-aware;
+    # every FAILED record is counted, not a hardcoded subset).
     failed_packages = []
-    failed_package_names = ["dbt-semantic-interfaces", "metricflow"]
-    for pkg in failed_package_names:
-        cp = checkpoint_path(normalize_package_name(pkg))
-        if cp.exists():
-            try:
-                data = json.loads(cp.read_text(encoding="utf-8"))
-                info = data.get(pkg, {})
+    for cp in _iter_checkpoint_paths():
+        try:
+            data = _read_checkpoint_content(cp)
+            for pkg, info in data.items():
                 if info.get("state") == "FAILED":
                     failed_packages.append({
                         "package": pkg,
@@ -1270,8 +1332,8 @@ def generate_reconciliation_report(
                         "failed_at": info.get("failed_at"),
                         "retry_attempts": info.get("retry_attempts", 0),
                     })
-            except Exception:
-                pass
+        except Exception:
+            pass
     
     timeout_packages = []
     skipped_packages = []
@@ -1419,17 +1481,25 @@ def run_scaleup(
         )
         return {"final_status": "BLOCKED_FROZEN", "error": "PyPI baseline is frozen"}
     # Single-writer lock (advisory/best-effort; no Google Drive atomic
-    # create-if-absent). Acquired before any PyPI mutation.
+    # create-if-absent). Acquired before any PyPI mutation. The protected
+    # lifecycle runs a heartbeat thread, checks the freeze, and fails closed
+    # on ownership loss.
     _lock = WriterLock(lease_seconds=600)
-    if not _lock.acquire(timeout=15):
-        return {"final_status": "LOCK_ACQUISITION_FAILED",
-                "error": "could not acquire PyPI single-writer lock"}
     try:
-        return _run_scaleup_locked(
-            batch_size=batch_size, timeout=timeout,
-            max_batches=max_batches, verify_every=verify_every)
-    finally:
-        _lock.release()
+        with _lock.protected(heartbeat_interval=30.0):
+            if PYPI_REMOTE_STORAGE:
+                _rec = reconcile_startup()
+                if _rec.get("ambiguous") or _rec.get("promoted_unverified"):
+                    return {
+                        "final_status": "RECONCILE_BLOCKED",
+                        "error": f"ambiguous/promoted_unverified remote state at start: {_rec}",
+                    }
+            return _run_scaleup_locked(
+                batch_size=batch_size, timeout=timeout,
+                max_batches=max_batches, verify_every=verify_every)
+    except LockNotHeldError:
+        return {"final_status": "LOCK_LOST",
+                "error": "writer lock lost during run (heartbeat failure)"}
 
 
 def _run_scaleup_locked(
@@ -1463,8 +1533,8 @@ def _run_scaleup_locked(
     if not unprocessed:
         logger.info("No unprocessed candidates - scale-up complete")
         report = generate_reconciliation_report(candidates, start_time, [])
-        PYPI_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-        _atomic_write_json(PYPI_PILOT_REPORT_PATH, report)
+        _mkdir_remote_aware(PYPI_REPORTS_DIR)
+        _write_report(PYPI_PILOT_REPORT_PATH, report)
         return report
     
     # Process in batches
@@ -1508,11 +1578,11 @@ def _run_scaleup_locked(
                     continue
                 
                 dest_dir = PYPI_PACKAGES_DIR / norm
-                dest_dir.mkdir(parents=True, exist_ok=True)
+                _mkdir_remote_aware(dest_dir)
                 archive_name = meta.get("archive_filename", "")
                 version = meta.get("version")
                 archive_path = (dest_dir / version / archive_name) if version else dest_dir / archive_name
-                archive_path.parent.mkdir(parents=True, exist_ok=True)
+                _mkdir_remote_aware(archive_path.parent)
                 
                 downloaded = _archive_exists(
                     archive_path, pkg_norm=norm, version=version, filename=archive_name)
@@ -1632,8 +1702,8 @@ def _run_scaleup_locked(
     # Final reconciliation report
     report = generate_reconciliation_report(candidates, start_time, batch_results)
     
-    PYPI_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    _atomic_write_json(PYPI_PILOT_REPORT_PATH, report)
+    _mkdir_remote_aware(PYPI_REPORTS_DIR)
+    _write_report(PYPI_PILOT_REPORT_PATH, report)
     
     logger.info(f"Scale-up complete. Final status: {report['final_status']}")
     logger.info(f"Acquired: {report['B_acquisition_accounting']['acquired']}, Failed: {report['B_acquisition_accounting']['failed']}")

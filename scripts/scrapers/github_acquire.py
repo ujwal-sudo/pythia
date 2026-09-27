@@ -895,7 +895,7 @@ def verify_remote_snapshot(cloud_snapshot_dir: Path, local_snapshot_dir: Path) -
     
     if remote_count != expected_count or remote_bytes != expected_bytes:
         time.sleep(3)  # settle for Drive eventual consistency
-        size_res = subprocess.run(["rclone", "size", "--json", remote], capture_output=True, text=True, timeout=120)
+        size_res = subprocess.run(["rclone", "size", "--json", remote], capture_output=True, text=True, timeout=300)
         try:
             size_data = json.loads(size_res.stdout)
             remote_count = size_data.get('count', 0)
@@ -909,7 +909,7 @@ def verify_remote_snapshot(cloud_snapshot_dir: Path, local_snapshot_dir: Path) -
         # (fast targeted deletes) and re-verify once.
         print(f"  Count mismatch ({remote_count} != {expected_count}), reconciling (delete stale extras)...")
         reconcile_remote_extras(remote, local_snapshot_dir)
-        size_res = subprocess.run(["rclone", "size", "--json", remote], capture_output=True, text=True, timeout=120)
+        size_res = subprocess.run(["rclone", "size", "--json", remote], capture_output=True, text=True, timeout=300)
         try:
             size_data = json.loads(size_res.stdout)
         except Exception:
@@ -920,10 +920,11 @@ def verify_remote_snapshot(cloud_snapshot_dir: Path, local_snapshot_dir: Path) -
     if remote_count != expected_count:
         return False, f"Remote file count {remote_count} != expected {expected_count}"
     if remote_bytes != expected_bytes:
-        # Stale content file: delete stale extras and re-sync differing bytes
-        # with a plain --checksum copy (faster than full sync).
-        print(f"  Byte mismatch ({remote_bytes} != {expected_bytes}), reconciling (delete extras + checksum copy)...")
-        reconcile_remote_extras(remote, local_snapshot_dir)
+        # Stale/missing content: re-sync differing bytes with a plain --checksum
+        # copy. Do NOT re-delete extras here (that was already handled by the
+        # count reconciliation above), otherwise a file that is genuinely in the
+        # local snapshot gets deleted and then re-uploaded, flipping count again.
+        print(f"  Byte mismatch ({remote_bytes} != {expected_bytes}), reconciling (checksum copy)...")
         reconcile = subprocess.run(
             ["rclone", "copy", str(local_snapshot_dir), remote,
              "--checksum", "--retries", "3", "--low-level-retries", "10",
@@ -932,7 +933,7 @@ def verify_remote_snapshot(cloud_snapshot_dir: Path, local_snapshot_dir: Path) -
         )
         if reconcile.returncode != 0:
             return False, f"Reconciliation failed: {reconcile.stderr[:200]}"
-        size_res = subprocess.run(["rclone", "size", "--json", remote], capture_output=True, text=True, timeout=120)
+        size_res = subprocess.run(["rclone", "size", "--json", remote], capture_output=True, text=True, timeout=300)
         try:
             size_data = json.loads(size_res.stdout)
         except Exception:
