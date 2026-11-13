@@ -1,0 +1,305 @@
+"""Tokenizer training, evaluation and (later) corpus tokenisation.
+
+The corpus has 13.17 B characters, and every "token" number so far has been an
+estimate. This module replaces the estimate with a measurement.
+
+Three steps:
+
+    python -m scripts.corpus.tokenizer sample --target-mb 600
+    python -m scripts.corpus.tokenizer train --vocab 32000
+    python -m scripts.corpus.tokenizer evaluate
+
+The sample is stratified by source (file-level code, function-level code,
+prose) so the merges are not dominated by one slice. Training on the full
+13 GB is not worth it: BPE merge statistics stabilise well before that, and
+this machine has 6.5 GB free.
+"""
+
+from __future__ import annotations
+
+import argparse
+import collections
+import json
+import math
+import sys
+import time
+from pathlib import Path
+
+WORK = Path(__file__).resolve().parents[2] / ".tokenizer"
+
+# Byte-level BPE never needs <unk>; ids are fixed so they survive re-training.
+SPECIAL_TOKENS = [
+    "<|pad|>",
+    "<|endoftext|>",
+    "<|fim_prefix|>",
+    "<|fim_middle|>",
+    "<|fim_suffix|>",
+]
+
+# Share of the sample by source family. Prose gets more than its corpus share
+# on purpose: it is under-represented, and the tokenizer must handle it well.
+SAMPLE_QUOTAS = {
+    "the_stack_dedup": 0.65,
+    "codesearchnet": 0.22,
+    "prose": 0.13,
+}
+
+PROSE_SOURCES = {"peps", "devguide", "python_docs", "scientific_docs"}
+
+
+def _family(source: str) -> str:
+    if source in PROSE_SOURCES:
+        return "prose"
+    if source == "the_stack_dedup":
+        return "the_stack_dedup"
+    if source == "codesearchnet":
+        return "codesearchnet"
+    return "other"
+
+
+def sample(
+    store,
+    *,
+    total_mb: int = 600,
+    stack_mb: int = 500,
+    mixed_mb: int = 100,
+    out: Path | None = None,
+) -> dict:
+    """Take contiguous chunks from several shards, not a stride over 13 GB.
+
+    Reading the whole corpus to stride-sample would cost 13 GB of transfer for
+    600 MB of text. Four Stack shards from different batches plus the head of
+    batch-001 covers file-level code, function-level code and prose for ~400 MB
+    of download.
+    """
+    from scripts.corpus.batch import load_registry
+
+    out = out or WORK / "sample.txt"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    registry = load_registry(store)
+    hf_batches = [b for b in registry["batches"] if b["kind"] == "hf_cleaned"]
+    mixed = [b for b in registry["batches"] if b["kind"] == "adopted"]
+
+    written = collections.Counter()
+    started = time.time()
+    per_stack_shard = stack_mb * 1024 * 1024 // max(1, len(hf_batches[:4]))
+
+    def collect(shard_rel: str, budget: int, keep=None):
+        got = 0
+        with store.open(shard_rel) as stream:
+            for raw in stream:
+                if got >= budget:
+                    break
+                if not raw.strip():
+                    continue
+                try:
+                    record = json.loads(raw)
+                except json.JSONDecodeError:
+                    continue
+                text = record.get("text") or ""
+                if not text:
+                    continue
+                family = _family((record.get("meta") or {}).get("source", ""))
+                if keep and family not in keep:
+                    continue
+                handle.write(text)
+                handle.write("\n\n")
+                got += len(text)
+                written[family] += len(text)
+        return got
+
+    with out.open("w", encoding="utf-8") as handle:
+        for batch in hf_batches[:4]:
+            collect(batch["shards"][0]["rel"], per_stack_shard)
+            print(f"{sum(written.values()) / 1e6:.0f} MB ({time.time() - started:.0f}s)", flush=True)
+        for batch in mixed:
+            collect(batch["shards"][0]["rel"], mixed_mb * 1024 * 1024, keep={"prose", "codesearchnet", "other"})
+            break
+
+    stats = {
+        "file": str(out),
+        "bytes": out.stat().st_size,
+        "chars_by_family": dict(written),
+        "seconds": round(time.time() - started, 1),
+    }
+    (WORK / "sample_stats.json").write_text(json.dumps(stats, indent=2) + "\n")
+    return stats
+
+
+def train(
+    *,
+    vocab_size: int = 32000,
+    sample_path: Path | None = None,
+    extra_files: tuple[Path, ...] = (),
+    extra_repeat: int = 1,
+    out_dir: Path | None = None,
+) -> dict:
+    from tokenizers import Tokenizer
+    from tokenizers.models import BPE
+    from tokenizers.pre_tokenizers import ByteLevel
+    from tokenizers.decoders import ByteLevel as ByteLevelDecoder
+    from tokenizers.trainers import BpeTrainer
+
+    sample_path = sample_path or WORK / "sample.txt"
+    if not sample_path.is_file():
+        raise FileNotFoundError(f"no sample at {sample_path}; run `sample` first")
+    out_dir = out_dir or WORK / f"pythia-bpe-{vocab_size // 1000}k"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    tokenizer = Tokenizer(BPE(unk_token=None))
+    tokenizer.pre_tokenizer = ByteLevel(add_prefix_space=False)
+    tokenizer.decoder = ByteLevelDecoder()
+    trainer = BpeTrainer(
+        vocab_size=vocab_size,
+        special_tokens=SPECIAL_TOKENS,
+        min_frequency=2,
+        show_progress=True,
+    )
+
+    files = [str(sample_path)]
+    for extra in extra_files:
+        if extra.is_file():
+            files.extend([str(extra)] * max(1, extra_repeat))
+
+    started = time.time()
+    tokenizer.train(files, trainer)
+    elapsed = time.time() - started
+    tokenizer.save(str(out_dir / "tokenizer.json"))
+
+    info = {
+        "vocab_size": tokenizer.get_vocab_size(),
+        "sample_bytes": sample_path.stat().st_size,
+        "seconds": round(elapsed, 1),
+        "specials": SPECIAL_TOKENS,
+        "algorithm": "byte-level BPE, no normaliser, add_prefix_space=False",
+        "files": files,
+        "path": str(out_dir / "tokenizer.json"),
+    }
+    (out_dir / "train_report.json").write_text(json.dumps(info, indent=2) + "\n")
+    return info
+
+
+def evaluate(
+    *,
+    tokenizer_path: Path | None = None,
+    store=None,
+    shards: int = 2,
+    file: Path | None = None,
+) -> dict:
+    """Measure chars/token on held-out records and extrapolate corpus tokens."""
+    from tokenizers import Tokenizer
+
+    tokenizer_path = tokenizer_path or WORK / "pythia-bpe-32k" / "tokenizer.json"
+    tokenizer = Tokenizer.from_file(str(tokenizer_path))
+
+    chars = tokens = records = 0
+    per_source = collections.defaultdict(lambda: [0, 0])  # chars, tokens
+    stream = (
+        ({"text": part, "meta": {"source": "holdout"}} for part in _split_docs(file))
+        if file is not None
+        else _iter_held_out(store, shards)
+    )
+    for record in stream:
+        text = record.get("text") or ""
+        if not text:
+            continue
+        encoded = tokenizer.encode(text)
+        chars += len(text)
+        tokens += len(encoded.ids)
+        records += 1
+        source = (record.get("meta") or {}).get("source", "unknown")
+        per_source[source][0] += len(text)
+        per_source[source][1] += len(encoded.ids)
+
+    ratio = chars / tokens if tokens else 0.0
+    report = {
+        "records": records,
+        "chars": chars,
+        "tokens": tokens,
+        "chars_per_token": round(ratio, 3),
+        "tokens_per_char": round(tokens / chars, 4) if chars else None,
+        "by_source": {
+            source: {"chars": c, "tokens": t, "chars_per_token": round(c / t, 3) if t else None}
+            for source, (c, t) in per_source.items()
+        },
+    }
+    return report
+
+
+def _split_docs(path: Path, chunk_chars: int = 4000):
+    """Chunk a plain-text holdout file into pseudo-documents."""
+    buffer: list[str] = []
+    size = 0
+    with path.open(encoding="utf-8", errors="ignore") as handle:
+        for line in handle:
+            buffer.append(line)
+            size += len(line)
+            if size >= chunk_chars:
+                yield "".join(buffer)
+                buffer, size = [], 0
+    if buffer:
+        yield "".join(buffer)
+
+
+def _iter_held_out(store, shards: int):
+    """Stream the last shards of the newest batches (not in any sample)."""
+    from scripts.corpus.batch import load_registry
+
+    registry = load_registry(store)
+    candidates = [s for b in registry["batches"][-2:] for s in b["shards"]]
+    for shard in candidates[-shards:]:
+        with store.open(shard["rel"]) as stream:
+            for raw in stream:
+                if raw.strip():
+                    try:
+                        yield json.loads(raw)
+                    except json.JSONDecodeError:
+                        continue
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Train and evaluate the Pythia tokenizer.")
+    parser.add_argument("--store", default=None)
+    parser.add_argument("--root", default=None)
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    sample_cmd = sub.add_parser("sample")
+    sample_cmd.add_argument("--total-mb", type=int, default=600)
+    sample_cmd.add_argument("--stack-mb", type=int, default=500)
+    sample_cmd.add_argument("--mixed-mb", type=int, default=100)
+
+    train_cmd = sub.add_parser("train")
+    train_cmd.add_argument("--vocab", type=int, default=32000)
+    train_cmd.add_argument("--sample", default=None)
+    train_cmd.add_argument("--prose", default=None)
+    train_cmd.add_argument("--prose-repeat", type=int, default=1)
+
+    eval_cmd = sub.add_parser("evaluate")
+    eval_cmd.add_argument("--tokenizer", default=None)
+    eval_cmd.add_argument("--shards", type=int, default=2)
+    eval_cmd.add_argument("--file", default=None)
+
+    args = parser.parse_args(argv)
+    from scripts.storage import open_store
+
+    store = open_store(args.store, args.root)
+    if args.command == "sample":
+        print(json.dumps(sample(store, total_mb=args.total_mb, stack_mb=args.stack_mb, mixed_mb=args.mixed_mb), indent=2))
+    elif args.command == "train":
+        print(json.dumps(train(
+            vocab_size=args.vocab,
+            sample_path=Path(args.sample) if args.sample else None,
+            extra_files=(Path(args.prose),) if args.prose else (),
+            extra_repeat=args.prose_repeat,
+        ), indent=2))
+    else:
+        path = Path(args.tokenizer) if args.tokenizer else None
+        print(json.dumps(evaluate(
+            tokenizer_path=path, store=store, shards=args.shards,
+            file=Path(args.file) if args.file else None,
+        ), indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

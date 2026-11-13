@@ -1,0 +1,411 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-11-13",
+  "budget": {
+    "target_tokens": 4000000000,
+    "current_records": 2947277,
+    "current_chars": 13172179900,
+    "current_tokens_est": 3570000000,
+    "tokenizer": {
+      "vocab": 32000,
+      "chars_per_token": 3.687,
+      "measured_at": "2026-11-13",
+      "artifact": "tokenizer/pythia-bpe-32k/tokenizer.json"
+    }
+  },
+  "sources": [
+    {
+      "id": "stack_dedup_python",
+      "title": "The Stack (dedup) \u2014 Python",
+      "kind": "code_corpus",
+      "priority": 1,
+      "status": "available",
+      "access": {
+        "type": "huggingface",
+        "dataset": "bigcode/the-stack-dedup",
+        "path": "data/python",
+        "gated": "accepted",
+        "files": 144,
+        "url": "https://huggingface.co/datasets/bigcode/the-stack-dedup"
+      },
+      "license": {
+        "spdx": "permissive-only",
+        "policy": "allow",
+        "note": "Curated to permissive licences; per-file metadata in licenses.json. Attribution still required."
+      },
+      "size": {
+        "bytes": 28600000000,
+        "files": 144,
+        "tokens_est_low": 8000000000,
+        "tokens_est_high": 15000000000
+      },
+      "why": "Whole files, not snippets. Largest permissive Python corpus with licence metadata.",
+      "risk": "Gated terms must be accepted by the account owner. 403 until then.",
+      "notes": "Terms accepted 2026-11-13; first 30 shards ingested into batch-002..006."
+    },
+    {
+      "id": "starcoderdata_python",
+      "title": "StarCoderData \u2014 Python",
+      "kind": "code_corpus",
+      "priority": 1,
+      "status": "needs_terms",
+      "access": {
+        "type": "huggingface",
+        "dataset": "bigcode/starcoderdata",
+        "path": "python",
+        "gated": "auto",
+        "files": 59,
+        "url": "https://huggingface.co/datasets/bigcode/starcoderdata"
+      },
+      "license": {
+        "spdx": "permissive-only",
+        "policy": "allow",
+        "note": "Same opt-out filtered pipeline as The Stack, plus StarCoder quality filters."
+      },
+      "size": {
+        "bytes": 23200000000,
+        "files": 59,
+        "tokens_est_low": 7000000000,
+        "tokens_est_high": 12000000000
+      },
+      "why": "Second independent permissive corpus; useful for slicing ablations and diversity.",
+      "risk": "Gated terms; overlaps heavily with The Stack, so dedup must run across both."
+    },
+    {
+      "id": "codeparrot_clean",
+      "title": "CodeParrot Clean (Python files)",
+      "kind": "code_corpus",
+      "priority": 2,
+      "status": "available",
+      "access": {
+        "type": "huggingface",
+        "dataset": "codeparrot/codeparrot-clean",
+        "path": "",
+        "gated": "false",
+        "files": 5361373,
+        "url": "https://huggingface.co/datasets/codeparrot/codeparrot-clean"
+      },
+      "license": {
+        "spdx": "mixed-with-field",
+        "policy": "filter",
+        "note": "Every record carries a license field; run it through the existing policy."
+      },
+      "size": {
+        "bytes": 34300000000,
+        "files": 5361373,
+        "tokens_est_low": 6000000000,
+        "tokens_est_high": 12000000000
+      },
+      "why": "No gate, downloadable now (first shard verified 246 MB). Fills the diversity gap fast.",
+      "risk": "Dedup is exact-match only; near-duplicate boilerplate will survive."
+    },
+    {
+      "id": "pypi_sdists",
+      "title": "PyPI source distributions (top 20k)",
+      "kind": "pypi",
+      "priority": 2,
+      "status": "available",
+      "access": {
+        "type": "pypi",
+        "dataset": "https://pypi.org/simple/",
+        "path": "",
+        "gated": "false",
+        "files": 20000,
+        "url": "https://pypi.org/simple/"
+      },
+      "license": {
+        "spdx": "per-package",
+        "policy": "filter",
+        "note": "Classifier + LICENSE file; reject copyleft and missing licences."
+      },
+      "size": {
+        "bytes": 25000000000,
+        "files": 20000,
+        "tokens_est_low": 3000000000,
+        "tokens_est_high": 6000000000
+      },
+      "why": "setup.py/pyproject, CLI entry points, packaging patterns \u2014 absent from CodeSearchNet.",
+      "risk": "Wheels are binary; must pin to sdists. Rate limits on the index."
+    },
+    {
+      "id": "cpython_stdlib_tests",
+      "title": "CPython stdlib, test suite and typeshed",
+      "kind": "tests",
+      "priority": 2,
+      "status": "available",
+      "access": {
+        "type": "git",
+        "dataset": "https://github.com/python/cpython",
+        "path": "Lib/",
+        "gated": "false",
+        "files": 1900,
+        "url": "https://github.com/python/cpython"
+      },
+      "license": {
+        "spdx": "PSF-2.0",
+        "policy": "allow",
+        "note": "PSF licence; typeshed is Apache-2.0."
+      },
+      "size": {
+        "bytes": 300000000,
+        "files": 1900,
+        "tokens_est_low": 60000000,
+        "tokens_est_high": 100000000
+      },
+      "why": "Gold-standard style, import/typing conventions, and a large test corpus.",
+      "risk": "Small. Test files contain fixtures that may teach anti-patterns."
+    },
+    {
+      "id": "rtd_sphinx_docs",
+      "title": "Sphinx documentation sources (Read the Docs projects)",
+      "kind": "docs",
+      "priority": 2,
+      "status": "available",
+      "access": {
+        "type": "git",
+        "dataset": "https://readthedocs.org/api/v3/projects/",
+        "path": "docs/",
+        "gated": "false",
+        "files": 0,
+        "url": "https://readthedocs.org/api/v3/projects/"
+      },
+      "license": {
+        "spdx": "per-project",
+        "policy": "filter",
+        "note": "Mostly MIT/BSD/PSF; must read each repo's licence before promotion."
+      },
+      "size": {
+        "bytes": 3500000000,
+        "files": 0,
+        "tokens_est_low": 400000000,
+        "tokens_est_high": 900000000
+      },
+      "why": "Explanatory prose with embedded code \u2014 the signal that makes a code model usable.",
+      "risk": "Volume depends on how many projects we crawl; licence checking is per repo."
+    },
+    {
+      "id": "exercism_python",
+      "title": "Exercism Python track",
+      "kind": "educational",
+      "priority": 3,
+      "status": "available",
+      "access": {
+        "type": "git",
+        "dataset": "https://github.com/exercism/python",
+        "path": "exercises/",
+        "gated": "false",
+        "files": 140,
+        "url": "https://github.com/exercism/python"
+      },
+      "license": {
+        "spdx": "MIT",
+        "policy": "allow",
+        "note": "MIT."
+      },
+      "size": {
+        "bytes": 50000000,
+        "files": 140,
+        "tokens_est_low": 10000000,
+        "tokens_est_high": 20000000
+      },
+      "why": "Problem + exemplar pairs; high pedagogical density per token.",
+      "risk": "Tiny. Use as a quality seed, not as volume."
+    },
+    {
+      "id": "thealgorithms_python",
+      "title": "TheAlgorithms/Python",
+      "kind": "educational",
+      "priority": 3,
+      "status": "available",
+      "access": {
+        "type": "git",
+        "dataset": "https://github.com/TheAlgorithms/Python",
+        "path": "",
+        "gated": "false",
+        "files": 1800,
+        "url": "https://github.com/TheAlgorithms/Python"
+      },
+      "license": {
+        "spdx": "MIT",
+        "policy": "allow",
+        "note": "MIT."
+      },
+      "size": {
+        "bytes": 10000000,
+        "files": 1800,
+        "tokens_est_low": 2000000,
+        "tokens_est_high": 4000000
+      },
+      "why": "Heavily commented, textbook-style algorithms.",
+      "risk": "Small and stylistically uniform; over-representing it skews style."
+    },
+    {
+      "id": "commitpackft",
+      "title": "CommitPackFT (commit \u2192 patch)",
+      "kind": "instruction",
+      "priority": 3,
+      "status": "available",
+      "access": {
+        "type": "huggingface",
+        "dataset": "bigcode/commitpackft",
+        "path": "data",
+        "gated": "false",
+        "files": 277,
+        "url": "https://huggingface.co/datasets/bigcode/commitpackft"
+      },
+      "license": {
+        "spdx": "permissive-repos",
+        "policy": "allow",
+        "note": "Derived from permissively licensed repositories."
+      },
+      "size": {
+        "bytes": 1600000000,
+        "files": 277,
+        "tokens_est_low": 200000000,
+        "tokens_est_high": 400000000
+      },
+      "why": "Repair pairs and instruction-style edits for the SFT stage.",
+      "risk": "Not pretraining data; keep out of the base corpus."
+    },
+    {
+      "id": "opencoderreasoning",
+      "title": "NVIDIA OpenCodeReasoning",
+      "kind": "instruction",
+      "priority": 3,
+      "status": "available",
+      "access": {
+        "type": "huggingface",
+        "dataset": "nvidia/OpenCodeReasoning",
+        "path": "",
+        "gated": "false",
+        "files": 0,
+        "url": "https://huggingface.co/datasets/nvidia/OpenCodeReasoning"
+      },
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "policy": "allow",
+        "note": "Attribution required; generated solutions, not human code."
+      },
+      "size": {
+        "bytes": 13300000000,
+        "files": 0,
+        "tokens_est_low": 1000000000,
+        "tokens_est_high": 2000000000
+      },
+      "why": "Reasoning traces for the SFT/reasoning slice.",
+      "risk": "Synthetic; will teach model-specific style. Never mix into pretraining."
+    },
+    {
+      "id": "code_contests",
+      "title": "DeepMind CodeContests",
+      "kind": "educational",
+      "priority": 4,
+      "status": "available",
+      "access": {
+        "type": "huggingface",
+        "dataset": "google-deepmind/code_contests",
+        "path": "",
+        "gated": "false",
+        "files": 0,
+        "url": "https://huggingface.co/datasets/google-deepmind/code_contests"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "policy": "allow",
+        "note": "Problem statements are third-party; solutions Apache-2.0."
+      },
+      "size": {
+        "bytes": 200000000,
+        "files": 0,
+        "tokens_est_low": 30000000,
+        "tokens_est_high": 60000000
+      },
+      "why": "Competitive-programming problems with tests; eval-safe if held out.",
+      "risk": "Multi-language; Python subset only. Hold out a slice for evaluation."
+    },
+    {
+      "id": "the_stack_v2_python",
+      "title": "The Stack v2 \u2014 Python (metadata)",
+      "kind": "code_corpus",
+      "priority": 4,
+      "status": "deferred",
+      "access": {
+        "type": "huggingface",
+        "dataset": "bigcode/the-stack-v2",
+        "path": "data/Python",
+        "gated": "auto",
+        "files": 9,
+        "url": "https://huggingface.co/datasets/bigcode/the-stack-v2"
+      },
+      "license": {
+        "spdx": "permissive-only",
+        "policy": "allow",
+        "note": "Blob ids only; content requires S3 (softwareheritage) access."
+      },
+      "size": {
+        "bytes": 13900000000,
+        "files": 9,
+        "tokens_est_low": 0,
+        "tokens_est_high": 0
+      },
+      "why": "25.2 M Python files with licence + quality metadata \u2014 the best index available.",
+      "risk": "No content in the dataset. Requires requester-pays S3; not worth it while v1 dedup exists."
+    },
+    {
+      "id": "stackexchange_dump",
+      "title": "Stack Exchange data dump (Python tags)",
+      "kind": "docs",
+      "priority": 5,
+      "status": "hold",
+      "access": {
+        "type": "http",
+        "dataset": "https://archive.org/details/stackexchange",
+        "path": "",
+        "gated": "false",
+        "files": 0,
+        "url": "https://archive.org/details/stackexchange"
+      },
+      "license": {
+        "spdx": "CC-BY-SA-4.0",
+        "policy": "hold",
+        "note": "Share-alike propagates to the corpus; needs an explicit decision."
+      },
+      "size": {
+        "bytes": 0,
+        "files": 0,
+        "tokens_est_low": 300000000,
+        "tokens_est_high": 800000000
+      },
+      "why": "Large, high-value Q&A; would help the explanation slice.",
+      "risk": "Share-alike licence. Also requires HTML\u2192prose cleaning and code extraction."
+    },
+    {
+      "id": "mbpp_humaneval",
+      "title": "MBPP / HumanEval / BigCodeBench",
+      "kind": "evaluation",
+      "priority": 99,
+      "status": "excluded",
+      "access": {
+        "type": "huggingface",
+        "dataset": "google-research-datasets/mbpp",
+        "path": "",
+        "gated": "false",
+        "files": 0,
+        "url": "https://huggingface.co/datasets/google-research-datasets/mbpp"
+      },
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "policy": "exclude",
+        "note": "Evaluation sets."
+      },
+      "size": {
+        "bytes": 0,
+        "files": 0,
+        "tokens_est_low": 0,
+        "tokens_est_high": 0
+      },
+      "why": "Never in training. Listed so nobody adds them by accident.",
+      "risk": "Contaminates every later benchmark number."
+    }
+  ]
+}
