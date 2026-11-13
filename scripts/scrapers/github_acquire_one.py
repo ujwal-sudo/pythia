@@ -166,6 +166,21 @@ def verify_repo(repo_dir: Path) -> bool:
                 pass
     return file_count > 0 and total_bytes > 1000
 
+
+def strip_git_metadata(root: Path) -> int:
+    """Recursively remove .git/, .github/ and every .git* entry (clean-snapshot invariant)."""
+    removed = 0
+    for entry in list(Path(root).rglob('.git*')):
+        try:
+            if entry.is_dir() and not entry.is_symlink():
+                shutil.rmtree(entry, ignore_errors=True)
+            else:
+                entry.unlink()
+            removed += 1
+        except OSError:
+            pass
+    return removed
+
 def acquire_one() -> int:
     """
     Acquire a single repository.
@@ -199,6 +214,10 @@ def acquire_one() -> int:
         print(f"Cloning {full_name} (timeout: 180s)...")
         commit_sha = clone_repo(full_name, Path(inprogress_dir), 180)
         print(f"Cloned, commit SHA: {commit_sha}")
+
+        stripped = strip_git_metadata(Path(inprogress_dir))
+        if stripped:
+            print(f"Stripped {stripped} git metadata entries (clean-snapshot invariant)")
 
         # Verify the cloned repo
         if not verify_repo(Path(inprogress_dir)):

@@ -90,6 +90,26 @@ def test_archive_metadata_identity_missing_file(tmp_path):
     assert ident["version"] is None
 
 
+def test_archive_metadata_prefers_distribution_root_over_nested_fixture(tmp_archive):
+    data = _make_targz(
+        [
+            (
+                "demo-2.5.1/PKG-INFO",
+                b"Metadata-Version: 2.1\nName: demo\nVersion: 2.5.1\n",
+            ),
+            (
+                "demo-2.5.1/tests/fixtures/legacy/PKG-INFO",
+                b"Metadata-Version: 1.0\nName: fixture\nVersion: 0.1.0\n",
+            ),
+        ],
+        name="demo",
+        version="2.5.1",
+    )
+    p = tmp_archive(data, "demo-2.5.1.tar.gz")
+    ident = _archive_metadata_identity(p)
+    assert ident == {"package": "demo", "version": "2.5.1"}
+
+
 # -------------------------------------------------------------------- CASE A
 # absl-py-style mismatch: requested 2.5.0, archive is 0.1.0 (filename + PKG-INFO).
 def test_case_a_absl_py_style_mismatch_is_rejected(tmp_archive):
@@ -111,6 +131,22 @@ def test_case_b_encutils_control_is_accepted(tmp_archive):
     r = verify_archive_identity("encutils", "1.0.0", meta, p)
     assert r["ok"] is True
     assert r["status"] == "ACCEPT"
+
+
+def test_pep440_equivalent_metadata_version_is_accepted(tmp_archive):
+    data = _make_targz(
+        [("airbyte-1.0.0rc34/PKG-INFO", b"Metadata-Version: 2.1\nName: airbyte\nVersion: 1.0.0-rc.34\n")],
+        name="airbyte",
+        version="1.0.0rc34",
+    )
+    p = tmp_archive(data, "airbyte-1.0.0rc34.tar.gz")
+    meta = {
+        "version": "1.0.0rc34",
+        "archive_filename": "airbyte-1.0.0rc34.tar.gz",
+        "archive_sha256": hashlib.sha256(data).hexdigest(),
+    }
+    result = verify_archive_identity("airbyte", "1.0.0rc34", meta, p)
+    assert result["ok"] is True
 
 
 # -------------------------------------------------------------------- CASE C
@@ -364,3 +400,8 @@ def test_external_checkpoint_detection(tmp_path, monkeypatch):
     detected = _detect_external_checkpoints(meta_dir, freeze_epoch)
     assert detected == ["post_checkpoint.json"]
     assert "pre_checkpoint.json" not in detected
+
+def test_parse_version_from_filename_wheel():
+    assert parse_version_from_filename("demo-1.2.3-py3-none-any.whl") == "1.2.3"
+    assert parse_version_from_filename("PyQt6_Qt6-6.0.2-py3-none-macosx_10_14_intel.whl") == "6.0.2"
+    assert parse_version_from_filename("demo-1.2.3-1-py3-none-any.whl") == "1.2.3"

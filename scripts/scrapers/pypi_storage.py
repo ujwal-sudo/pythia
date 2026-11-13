@@ -49,8 +49,10 @@ import json
 import os
 import subprocess
 import tempfile
+import threading
 import time
 import uuid
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -62,9 +64,12 @@ REMOTE_ROOT = "pythia:"
 PYTHIA_CONTAINER = "Pythia"
 AUTHORITATIVE_PYPI_REMOTE = f"{REMOTE_ROOT}{PYTHIA_CONTAINER}/raw/pypi"
 
-# Legacy config-driven root (no Pythia container) is NOT authoritative.
+# Current mounted layout is /mnt/pythia-cloud/PythiaDrive; the remote object
+# namespace remains pythia:Pythia/raw/pypi. Older mount layouts are accepted
+# read-only for migration and remain mapped to the same remote namespace.
+_CANONICAL_PYPI_ROOT = Path("/mnt/pythia-cloud/PythiaDrive/raw/pypi")
+_LEGACY_PYPI_ROOT_CONTAINER = Path("/mnt/pythia-cloud/Pythia/raw/pypi")
 _LEGACY_PYPI_ROOT_NO_PYTHIA = Path("/mnt/pythia-cloud/raw/pypi")
-_CANONICAL_PYPI_ROOT = Path("/mnt/pythia-cloud/Pythia/raw/pypi")
 
 FREEZE_SENTINEL_REL = "raw/pypi/.FREEZE_SENTINEL"
 
@@ -133,7 +138,8 @@ def map_local_path_to_remote(path: Path | str) -> str:
     """Map a local-style path to a remote ``pythia:...`` path.
 
     Accepts:
-      * ``/mnt/pythia-cloud/Pythia/raw/pypi/...``   -> ``pythia:Pythia/raw/pypi/...``
+      * ``/mnt/pythia-cloud/PythiaDrive/raw/pypi/...`` -> ``pythia:Pythia/raw/pypi/...``
+      * ``/mnt/pythia-cloud/Pythia/raw/pypi/...`` (legacy) -> ``pythia:Pythia/raw/pypi/...``
       * ``/mnt/pythia-cloud/raw/pypi/...`` (legacy)  -> ``pythia:Pythia/raw/pypi/...``
       * ``pythia:Pythia/...`` (already remote)       -> unchanged
 
@@ -148,24 +154,27 @@ def map_local_path_to_remote(path: Path | str) -> str:
         raise RemotePathMappingError(f"Refusing to map Session 4 path: {s}")
 
     p = Path(s)
-    try:
-        rel = p.relative_to(_CANONICAL_PYPI_ROOT)
-        return f"{REMOTE_ROOT}{PYTHIA_CONTAINER}/raw/pypi/{rel}"
-    except ValueError:
-        pass
-    try:
-        rel = p.relative_to(_LEGACY_PYPI_ROOT_NO_PYTHIA)
-        return f"{REMOTE_ROOT}{PYTHIA_CONTAINER}/raw/pypi/{rel}"
-    except ValueError:
-        pass
-    # Recovery paths live under /mnt/pythia-cloud/Pythia/recovery/... and are
-    # part of the authoritative project storage; map them to the remote.
-    _recovery_root = Path("/mnt/pythia-cloud/Pythia/recovery")
-    try:
-        rel = p.relative_to(_recovery_root)
-        return f"{REMOTE_ROOT}{PYTHIA_CONTAINER}/recovery/{rel}"
-    except ValueError:
-        pass
+    for local_root in (
+        _CANONICAL_PYPI_ROOT,
+        _LEGACY_PYPI_ROOT_CONTAINER,
+        _LEGACY_PYPI_ROOT_NO_PYTHIA,
+    ):
+        try:
+            rel = p.relative_to(local_root)
+            return f"{REMOTE_ROOT}{PYTHIA_CONTAINER}/raw/pypi/{rel}"
+        except ValueError:
+            continue
+    # Recovery paths are part of authoritative project storage; accept the
+    # current mount and the older container layout.
+    for recovery_root in (
+        Path("/mnt/pythia-cloud/PythiaDrive/recovery"),
+        Path("/mnt/pythia-cloud/Pythia/recovery"),
+    ):
+        try:
+            rel = p.relative_to(recovery_root)
+            return f"{REMOTE_ROOT}{PYTHIA_CONTAINER}/recovery/{rel}"
+        except ValueError:
+            continue
 
     raise RemotePathMappingError(f"Path is not under the canonical PyPI root: {s}")
 
@@ -393,6 +402,31 @@ def remote_read_text(remote: str) -> str:
 
 def remote_list(remote_dir: str) -> List[str]:
     return get_backend().list_names(remote_dir)
+
+
+def remote_list_recursive(remote_dir: str) -> List[str]:
+    """List files recursively without walking a slow FUSE mount."""
+    backend = get_backend()
+    if isinstance(backend, RcloneBackend):
+        proc = backend._run(
+            ["lsf", remote_dir, "--recursive", "--files-only"],
+            timeout=max(backend._timeout, 180),
+        )
+        if proc.returncode != 0:
+            raise StorageBackendError(
+                f"rclone recursive listing failed for {remote_dir}: {proc.stderr}"
+            )
+        return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+    if isinstance(backend, LocalDirBackend):
+        root = backend._to_path(remote_dir)
+        if not root.is_dir():
+            return []
+        return sorted(
+            str(path.relative_to(root))
+            for path in root.rglob("*")
+            if path.is_file()
+        )
+    return backend.list_names(remote_dir)
 
 
 def remote_sha256(remote: str) -> Optional[str]:
@@ -727,6 +761,140 @@ def save_recovery_state_remote(state: Dict[str, Any]) -> Dict[str, Any]:
 # --------------------------------------------------------------------------
 # distributed single-writer lock (lease based)
 # --------------------------------------------------------------------------
+class LocalWriterLock:
+    """Lease-based single-writer lock for POSIX/FUSE mode.
+
+    Uses O_CREAT|O_EXCL on a local lock file and an expiry lease so crashed
+    writers can be recovered. The lock file lives under the active PyPI
+    metadata directory (``metadata/.locks/writer.lock``).
+    """
+
+    def __init__(self, path: Path, owner_id: Optional[str] = None,
+                 lease_seconds: int = DEFAULT_LEASE_SECONDS) -> None:
+        self.path = Path(path)
+        self.owner_id = owner_id or f"{os.getpid()}-{uuid.uuid4().hex[:8]}"
+        self.lease_seconds = lease_seconds
+        self._held = False
+        self._acquired_at = 0.0
+        self._stop = threading.Event()
+
+    def _read(self) -> Optional[Dict[str, Any]]:
+        try:
+            return json.loads(self.path.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+
+    def _write(self, data: Dict[str, Any]) -> None:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = self.path.with_name(f".{self.path.name}.tmp-{uuid.uuid4().hex}")
+        tmp.write_text(json.dumps(data, sort_keys=True) + "\n", encoding="utf-8")
+        tmp.replace(self.path)
+
+    def _is_expired(self, lock: Dict[str, Any]) -> bool:
+        try:
+            return time.time() > float(lock.get("lease_expires_at", 0))
+        except (TypeError, ValueError):
+            return True
+
+    def acquire(self, *, timeout: float = 30.0, poll_interval: float = 1.0) -> bool:
+        start = time.time()
+        while True:
+            if not self.path.exists():
+                now = time.time()
+                self.path.parent.mkdir(parents=True, exist_ok=True)
+                try:
+                    fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+                except FileExistsError:
+                    pass
+                else:
+                    payload = {
+                        "owner_id": self.owner_id,
+                        "acquired_at": now,
+                        "lease_expires_at": now + self.lease_seconds,
+                    }
+                    with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                        handle.write(json.dumps(payload, sort_keys=True) + "\n")
+                    self._held = True
+                    self._acquired_at = now
+                    return True
+            existing = self._read()
+            if existing and existing.get("owner_id") == self.owner_id:
+                self._held = True
+                return True
+            if existing and self._is_expired(existing):
+                try:
+                    self.path.unlink()
+                except FileNotFoundError:
+                    pass
+                continue
+            if time.time() - start > timeout:
+                return False
+            time.sleep(poll_interval)
+
+    def renew(self) -> bool:
+        if not self._held:
+            return False
+        existing = self._read()
+        if existing is None:
+            return self.acquire(timeout=5)
+        if existing.get("owner_id") != self.owner_id:
+            self._held = False
+            return False
+        now = time.time()
+        self._write({
+            "owner_id": self.owner_id,
+            "acquired_at": float(existing.get("acquired_at", now)),
+            "lease_expires_at": now + self.lease_seconds,
+        })
+        return True
+
+    def release(self) -> None:
+        if not self._held:
+            return
+        self._stop.set()
+        existing = self._read()
+        if existing and existing.get("owner_id") == self.owner_id:
+            try:
+                self.path.unlink()
+            except FileNotFoundError:
+                pass
+        self._held = False
+
+    def is_held(self) -> bool:
+        return self._held
+
+    def __enter__(self) -> "LocalWriterLock":
+        if not self.acquire():
+            raise LockAcquisitionError("Could not acquire local PyPI writer lock")
+        return self
+
+    def __exit__(self, *exc: Any) -> None:
+        self.release()
+
+    @contextmanager
+    def protected(self, *, heartbeat_interval: float = 30.0):
+        if not self.acquire():
+            raise LockNotHeldError("Could not acquire local PyPI writer lock")
+        self._stop.clear()
+
+        def _heartbeat() -> None:
+            while not self._stop.wait(heartbeat_interval):
+                try:
+                    if not self.renew():
+                        return
+                except Exception:
+                    return
+
+        thread = threading.Thread(target=_heartbeat, daemon=True)
+        thread.start()
+        try:
+            yield self
+        finally:
+            self._stop.set()
+            thread.join(timeout=5)
+            self.release()
+
+
 class WriterLock:
     """Lease-based distributed single-writer lock on the authoritative remote.
 

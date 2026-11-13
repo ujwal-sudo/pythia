@@ -42,6 +42,11 @@ from config import DATA_ROOT
 
 logger = get_logger(__name__)
 
+
+def _ignore_git_metadata(directory, names):
+    """shutil.copytree ignore callback: skip .git/, .github/ and all .git* entries."""
+    return [name for name in names if name.startswith('.git')]
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -172,12 +177,14 @@ def clone_and_pin(full_name: str, target_root: Path) -> Path | None:
         _sh.rmtree(sha_dir)
     sha_dir.mkdir(parents=True, exist_ok=True)
 
-    # Move everything from the clone into the sha directory
+    # Move everything from the clone into the sha directory, excluding git metadata
     for item in tmp_dir.iterdir():
+        if item.name.startswith('.git'):
+            continue
         dest = sha_dir / item.name
         if item.is_dir():
             try:
-                _sh.copytree(str(item), str(dest))
+                _sh.copytree(str(item), str(dest), ignore=_ignore_git_metadata)
             except _sh.Error as e:
                 logger.error("Copy failed for %s (disk full or error): %s", full_name, e)
                 _sh.rmtree(tmp_dir, ignore_errors=True)

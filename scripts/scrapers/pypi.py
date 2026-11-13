@@ -3,16 +3,20 @@
 from __future__ import annotations
 
 import argparse
+import atexit
 import hashlib
 import json
 import logging
+import multiprocessing
 import os
 import re
 import shutil
 import sys
 import tarfile
 import tempfile
+import threading
 import time
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
@@ -20,6 +24,14 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import requests
 from tqdm import tqdm
+
+try:
+    from packaging.version import InvalidVersion, Version
+except ImportError:  # pragma: no cover - packaging is normally present
+    class InvalidVersion(Exception):
+        pass
+
+    Version = None  # type: ignore[assignment]
 
 from config import (
     PYPI_DIR,
@@ -45,6 +57,7 @@ from config import (
 from scripts.logger import get_logger
 from scripts.validators.ast_validator import validate_python
 from scripts.scrapers.pypi_storage import (
+    LocalWriterLock,
     LockNotHeldError,
     WriterLock,
     assert_no_freeze,
@@ -59,6 +72,7 @@ from scripts.scrapers.pypi_storage import (
     remote_exists,
     remote_headroom,
     remote_list,
+    remote_list_recursive,
     remote_read_bytes,
     remote_read_text,
     remote_sha256,
@@ -83,6 +97,41 @@ PYPI_FREEZE_SENTINEL = Path(os.environ.get(
 # execution remains unauthorized; this flag only enables the storage layer.
 PYPI_REMOTE_STORAGE = os.environ.get("PYPI_REMOTE_STORAGE", "0") == "1"
 
+# Versioned remediation state. The repair plan is a static list of packages
+# whose legacy checkpoints/archives failed identity verification. Completed
+# and exhausted markers are written per package so a resumed acquisition does
+# not redo finished work or loop forever on permanent failures.
+REMEDIATION_V2_DIR = PYPI_DIR / "remediation_v2"
+REPAIR_PLAN_PATH = REMEDIATION_V2_DIR / "repair_plan_v1.json"
+REPAIR_PLAN_ADDENDUM_PATH = REMEDIATION_V2_DIR / "repair_plan_v2.json"
+REPAIR_COMPLETED_DIR = REMEDIATION_V2_DIR / "completed"
+REPAIR_EXHAUSTED_DIR = REMEDIATION_V2_DIR / "exhausted"
+
+_ANALYSIS_POOL: Optional[ProcessPoolExecutor] = None
+_ANALYSIS_POOL_LOCK = threading.Lock()
+
+
+def _analysis_pool_ping() -> bool:
+    return True
+
+
+def _get_analysis_pool(workers: int) -> Optional[ProcessPoolExecutor]:
+    """Create a persistent CPU pool before package threads begin work."""
+    global _ANALYSIS_POOL
+    if workers <= 1:
+        return None
+    with _ANALYSIS_POOL_LOCK:
+        if _ANALYSIS_POOL is None:
+            # Fork before ThreadPoolExecutor starts, so no application worker
+            # threads are inherited into the analysis processes.
+            _ANALYSIS_POOL = ProcessPoolExecutor(
+                max_workers=workers,
+                mp_context=multiprocessing.get_context("fork"),
+            )
+            _ANALYSIS_POOL.submit(_analysis_pool_ping).result(timeout=60)
+            atexit.register(_ANALYSIS_POOL.shutdown, wait=True, cancel_futures=False)
+        return _ANALYSIS_POOL
+
 # ------------------------------------------------------------------ tiny helpers
 def utc_now_iso() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat()
@@ -100,16 +149,51 @@ def normalize_package_name(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name).lower()
 
 
+def _fallback_version_key(version: str) -> Tuple[Tuple[int, Any], ...]:
+    return tuple(
+        (0, int(part)) if part.isdigit() else (1, part)
+        for part in re.split(r"(\d+)", version)
+        if part
+    )
+
+
+def _version_sort_key(version: str) -> Tuple[int, Any]:
+    if Version is None:
+        return (0, _fallback_version_key(version))
+    try:
+        return (1, Version(version))
+    except InvalidVersion:
+        return (0, _fallback_version_key(version))
+
+
+def _versions_equal(left: object, right: object) -> bool:
+    """Compare PEP 440 versions semantically, preserving unknown strings."""
+    if str(left) == str(right):
+        return True
+    if Version is not None:
+        try:
+            return Version(str(left)) == Version(str(right))
+        except InvalidVersion:
+            return False
+    return False
+
+
 # ------------------------------------------------------------------ archive identity verification
 def parse_version_from_filename(filename: str) -> Optional[str]:
     """Extract the version embedded in an archive filename.
 
-    Accepts names like 'absl-py-0.1.0.tar.gz', 'Events-0.1.0.tar.gz',
-    'a2a_sdk-0.2.0a1.tar.gz'. Returns None when no version can be parsed.
+    Handles sdist names like 'absl-py-0.1.0.tar.gz' and wheel names like
+    'pkg-1.0.0-py3-none-any.whl'. Returns None when no version can be parsed.
     """
     if not filename:
         return None
-    base = filename.replace(".tar.gz", "").replace(".tgz", "").replace(".whl", "")
+    if filename.endswith(".whl"):
+        # {distribution}-{version}(-{build})?-{python}-{abi}-{platform}.whl
+        parts = filename[:-4].split("-")
+        if len(parts) >= 5 and re.match(r"^[0-9]", parts[1]):
+            return parts[1]
+        return None
+    base = re.sub(r"\.(tar\.gz|tgz|tar\.bz2|zip)$", "", filename)
     base = base.rsplit("-", 1)[-1].rsplit("_", 1)[-1]
     if not base:
         return None
@@ -134,19 +218,35 @@ def _parse_archive_metadata_bytes(raw: bytes) -> Dict[str, Optional[str]]:
             if result["package"] is not None and result["version"] is not None:
                 return
 
+    # Prefer distribution-root metadata. Source archives can contain nested
+    # test fixtures with their own PKG-INFO; taking the first matching file
+    # can incorrectly reject a valid archive based on fixture metadata.
     # sdist: tar
     try:
         with tarfile.open(fileobj=io.BytesIO(raw), mode="r:*") as tf:
+            candidates = []
             for member in tf.getmembers():
                 if not member.isfile():
                     continue
-                name = member.name.lower()
-                if name.endswith("pkg-info") or name.endswith("/metadata") or name.endswith(".dist-info/metadata"):
-                    f = tf.extractfile(member)
-                    if f is not None:
-                        _parse_text(f.read().decode("utf-8", errors="replace"))
-                    if result["package"] is not None and result["version"] is not None:
-                        return result
+                parts = [
+                    part for part in member.name.replace("\\", "/").split("/")
+                    if part not in ("", ".")
+                ]
+                basename = parts[-1].lower() if parts else ""
+                parent = parts[-2].lower() if len(parts) > 1 else ""
+                if basename == "pkg-info":
+                    preferred = len(parts) <= 2
+                elif basename == "metadata" and parent.endswith(".dist-info"):
+                    preferred = len(parts) <= 2
+                else:
+                    continue
+                candidates.append((0 if preferred else 1, len(parts), member.name, member))
+            for _priority, _depth, _name, member in sorted(candidates):
+                f = tf.extractfile(member)
+                if f is not None:
+                    _parse_text(f.read().decode("utf-8", errors="replace"))
+                if result["package"] is not None and result["version"] is not None:
+                    return result
     except Exception:
         pass
     if result["package"] is not None and result["version"] is not None:
@@ -155,15 +255,26 @@ def _parse_archive_metadata_bytes(raw: bytes) -> Dict[str, Optional[str]]:
     # wheel: zip dist-info/METADATA
     try:
         with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+            candidates = []
             for name in zf.namelist():
-                low = name.lower()
-                if low.endswith("dist-info/metadata") or low.endswith(".dist-info/metadata"):
-                    try:
-                        _parse_text(zf.read(name).decode("utf-8", errors="replace"))
-                    except Exception:
-                        continue
-                    if result["package"] is not None and result["version"] is not None:
-                        return result
+                parts = [
+                    part for part in name.replace("\\", "/").split("/")
+                    if part not in ("", ".")
+                ]
+                if (
+                    parts
+                    and parts[-1].lower() == "metadata"
+                    and len(parts) == 2
+                    and parts[0].lower().endswith(".dist-info")
+                ):
+                    candidates.append(name)
+            for name in sorted(candidates):
+                try:
+                    _parse_text(zf.read(name).decode("utf-8", errors="replace"))
+                except Exception:
+                    continue
+                if result["package"] is not None and result["version"] is not None:
+                    return result
     except Exception:
         pass
     return result
@@ -250,7 +361,10 @@ def verify_archive_identity(
     facts["observed_metadata_version"] = inner.get("version")
 
     # Requested version must agree with the resolved distribution version.
-    if requested_version is not None and meta.get("version") != requested_version:
+    if (
+        requested_version is not None
+        and not _versions_equal(meta.get("version"), requested_version)
+    ):
         facts["ok"] = False
         facts["status"] = "REJECT"
         facts["reason"] = "resolved_version_mismatch"
@@ -258,13 +372,15 @@ def verify_archive_identity(
 
     # The observed identity must not contradict the requested identity.
     if requested_version is not None:
-        if filename_version is not None and filename_version != requested_version:
+        if filename_version is not None and not _versions_equal(
+            filename_version, requested_version
+        ):
             facts["ok"] = False
             facts["status"] = "REJECT"
             facts["reason"] = "filename_version_mismatch"
             return facts
         inner_ver = inner.get("version")
-        if inner_ver is not None and inner_ver != requested_version:
+        if inner_ver is not None and not _versions_equal(inner_ver, requested_version):
             facts["ok"] = False
             facts["status"] = "REJECT"
             facts["reason"] = "metadata_version_mismatch"
@@ -335,33 +451,94 @@ def fetch_package_metadata(package: str, timeout: int = 30, requested_version: O
     info = d.get("info", {})
     rels = d.get("releases", {})
 
-    # pick latest non-yanked sdist
-    sel = None
-    rule = "no_sdist_available"
-    for ver, files in rels.items():
-        if any(f.get("yanked", False) for f in files):
-            continue
-        sd = [f for f in files if f.get("packagetype") == "sdist"]
-        if sd:
-            sd.sort(key=lambda f: f.get("upload_time_iso_8601", ""), reverse=True)
-            sel = sd[0]
-            rule = "latest_stable_non_yanked_sdist_by_upload_time"
-            break
-
-    # fallback to latest non-yanked wheel
-    if sel is None:
-        for ver, files in rels.items():
-            if any(f.get("yanked", False) for f in files):
+    # Prefer PyPI's explicit info.version when present. Otherwise choose the
+    # highest stable release by PEP 440 ordering, falling back to prereleases
+    # only when no stable distribution is available. A specific requested
+    # version is always selected exactly.
+    def _collect_release_candidates(
+        release_versions: Sequence[str],
+        *,
+        exclude_prereleases: bool,
+    ) -> List[Tuple[Tuple[int, Any], str, str, Dict[str, object], str]]:
+        found: List[Tuple[Tuple[int, Any], str, str, Dict[str, object], str]] = []
+        for ver in release_versions:
+            if exclude_prereleases and Version is not None:
+                try:
+                    parsed_version = Version(ver)
+                except InvalidVersion:
+                    continue
+                if parsed_version.is_prerelease or parsed_version.is_devrelease:
+                    continue
+            files = [f for f in rels.get(ver, []) if not f.get("yanked", False)]
+            if not files:
                 continue
-            wh = [f for f in files if f.get("packagetype") == "bdist_wheel"]
-            if wh:
-                sel = wh[0]
-                rule = "latest_non_yanked_wheel_fallback"
-                break
+            sd = [f for f in files if f.get("packagetype") == "sdist"]
+            if sd:
+                picked = sorted(
+                    sd,
+                    key=lambda f: (
+                        f.get("upload_time_iso_8601", ""),
+                        f.get("filename", ""),
+                    ),
+                    reverse=True,
+                )[0]
+                if requested_version is not None:
+                    rule = "explicit_requested_version_non_yanked_sdist"
+                elif str(info.get("version") or "") == ver:
+                    rule = "pypi_info_version_non_yanked_sdist"
+                elif exclude_prereleases:
+                    rule = "latest_stable_non_yanked_sdist_by_version"
+                else:
+                    rule = "latest_non_yanked_sdist_by_version_fallback"
+            else:
+                wh = [f for f in files if f.get("packagetype") == "bdist_wheel"]
+                if not wh:
+                    continue
+                picked = sorted(
+                    wh,
+                    key=lambda f: (
+                        f.get("upload_time_iso_8601", ""),
+                        f.get("filename", ""),
+                    ),
+                    reverse=True,
+                )[0]
+                if requested_version is not None:
+                    rule = "explicit_requested_version_non_yanked_wheel_fallback"
+                elif str(info.get("version") or "") == ver:
+                    rule = "pypi_info_version_non_yanked_wheel_fallback"
+                elif exclude_prereleases:
+                    rule = "latest_stable_non_yanked_wheel_fallback"
+                else:
+                    rule = "latest_non_yanked_wheel_fallback_by_version"
+            upload_time = str(picked.get("upload_time_iso_8601") or picked.get("upload_time") or "")
+            found.append((_version_sort_key(ver), upload_time, ver, picked, rule))
+        return found
 
-    if sel is None:
+    candidates: List[Tuple[Tuple[int, Any], str, str, Dict[str, object], str]]
+    if requested_version is not None:
+        if requested_version not in rels:
+            logger.warning(
+                "Requested version %s not present for %s", requested_version, package)
+            return None
+        candidates = _collect_release_candidates([requested_version], exclude_prereleases=False)
+    else:
+        info_version = str(info.get("version") or "")
+        candidates = (
+            _collect_release_candidates([info_version], exclude_prereleases=False)
+            if info_version in rels
+            else []
+        )
+        if not candidates:
+            candidates = _collect_release_candidates(list(rels), exclude_prereleases=True)
+        if not candidates:
+            candidates = _collect_release_candidates(list(rels), exclude_prereleases=False)
+
+    if not candidates:
         logger.warning("No distribution for %s", package)
         return None
+
+    candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    _, _, selected_version, sel, rule = candidates[0]
 
     archive_url = sel.get("url", "")
     archive_sha = sel.get("digests", {}).get("sha256")
@@ -386,23 +563,33 @@ def fetch_package_metadata(package: str, timeout: int = 30, requested_version: O
     requires_python = info.get("requires_python")
     requires_dist = info.get("requires_dist", ())
 
-    resolved_version = sel.get("version") or info.get("version")
-    used_info_version_fallback = bool(not sel.get("version") and info.get("version"))
+    resolved_version = selected_version
+    used_info_version_fallback = False
+
+    # Parse actual version from archive filename as primary observation
+    filename_version = parse_version_from_filename(archive_fname)
+    if filename_version is not None and filename_version != resolved_version:
+        logger.warning(
+            "Selected release %s for %s but archive filename reports %s: %s",
+            resolved_version, package, filename_version, archive_fname,
+        )
 
     return {
         "package": package,
         "requested_version": requested_version,
         "version": resolved_version,
         "resolved_version": resolved_version,
+        "latest_version": info.get("version"),
         "used_info_version_fallback": used_info_version_fallback,
         "resolved_filename": archive_fname,
-        "pypi_url": f"https://pypi.org/pypi/{info.get('version')}",
+        "observed_filename_version": filename_version,
+        "pypi_url": f"https://pypi.org/pypi/{package}/{resolved_version}/",
         "project_url": info.get("home_page"),
         "repository_url": repo_url,
         "documentation_url": doc_url,
         "summary": info.get("summary", ""),
         "description": info.get("description", ""),
-        "release_date": sel.get("upload_time_iso_8601") or sel.get("upload_time"),
+        "release_date": rel_date,
         "download_count": d.get("rows", [{}])[0].get("download_count") if d.get("rows") else None,
         "archive_url": archive_url,
         "archive_filename": archive_fname,
@@ -475,8 +662,12 @@ def analyze_package(archive_path: Path, pkg_name: str) -> Dict[str, object]:
         tmp_path = Path(tmp)
         safe_extract_archive(archive_path, tmp_path)
 
-        py_files = sorted(tmp_path.rglob("*.py")) + sorted(tmp_path.rglob("*.pyw"))
-        py_files += sorted(tmp_path.rglob("*.pyi"))
+        py_files = sorted(
+            path
+            for pattern in ("*.py", "*.pyw", "*.pyi")
+            for path in tmp_path.rglob(pattern)
+            if path.is_file()
+        )
 
         ast_valid = 0
         ast_invalid = 0
@@ -520,7 +711,14 @@ def analyze_package(archive_path: Path, pkg_name: str) -> Dict[str, object]:
 
         pkg_sz = archive_path.stat().st_size if archive_path.exists() else 0
         largest = max(
-            [(len(fp.read_text(encoding="utf-8", errors="replace").splitlines()), str(fp.relative_to(tmp_path))) for fp in py_files if fp.exists()],
+            [
+                (
+                    len(fp.read_text(encoding="utf-8", errors="replace").splitlines()),
+                    str(fp.relative_to(tmp_path)),
+                )
+                for fp in py_files
+                if fp.is_file()
+            ],
             default=(0, ""),
         )
 
@@ -602,7 +800,12 @@ def _load_checkpoint(path: Path) -> Dict[str, Dict[str, object]]:
         return {}
 
 
-def _save_checkpoint(path: Path, state: Dict[str, Dict[str, object]]) -> None:
+def _save_checkpoint(
+    path: Path,
+    state: Dict[str, Dict[str, object]],
+    *,
+    allow_overwrite: bool = False,
+) -> None:
     # Frozen-baseline guard: when the freeze sentinel is present, checkpoint
     # writes are refused and logged rather than mutating historical data.
     # This prevents concurrent PyPI writers (e.g. an agent relaunching scaleup)
@@ -620,7 +823,7 @@ def _save_checkpoint(path: Path, state: Dict[str, Dict[str, object]]) -> None:
         # Route through the two-phase remote commit protocol. Freeze is
         # re-checked FIRST inside the storage layer (fail-closed).
         pkg_norm = path.name.replace("_checkpoint.json", "")
-        save_checkpoint_remote(pkg_norm, state, allow_overwrite=False)
+        save_checkpoint_remote(pkg_norm, state, allow_overwrite=allow_overwrite)
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     _atomic_write_json(path, state)
@@ -635,14 +838,35 @@ def is_acquired(pkg_norm: str) -> bool:
     return st.get("state") == "ACQUIRED"
 
 
-def mark_acquired(pkg_norm: str, **kw) -> None:
+def mark_acquired(pkg_norm: str, *, allow_overwrite: bool = False, **kw) -> None:
     cp = checkpoint_path(pkg_norm)
-    _save_checkpoint(cp, {pkg_norm: {"state": "ACQUIRED", "acquired_at": utc_now_iso(), **kw}})
+    _save_checkpoint(
+        cp,
+        {pkg_norm: {"state": "ACQUIRED", "acquired_at": utc_now_iso(), **kw}},
+        allow_overwrite=allow_overwrite,
+    )
 
 
-def mark_failed(pkg_norm: str, reason: str, **kw) -> None:
+def mark_failed(
+    pkg_norm: str,
+    reason: str,
+    *,
+    allow_overwrite: bool = False,
+    **kw,
+) -> None:
     cp = checkpoint_path(pkg_norm)
-    _save_checkpoint(cp, {pkg_norm: {"state": "FAILED", "failure_reason": reason, "failed_at": utc_now_iso(), **kw}})
+    _save_checkpoint(
+        cp,
+        {
+            pkg_norm: {
+                "state": "FAILED",
+                "failure_reason": reason,
+                "failed_at": utc_now_iso(),
+                **kw,
+            }
+        },
+        allow_overwrite=allow_overwrite,
+    )
 
 
 def _iter_checkpoint_paths() -> List[Path]:
@@ -733,9 +957,15 @@ def _write_report(path: Path, data: Dict[str, object]) -> None:
 def _load_all_acquired_license_statuses() -> List[str]:
     """Return a list of license_status for all packages with state ACQUIRED in checkpoints."""
     statuses = []
-    for cp in _iter_checkpoint_paths():
+    checkpoint_paths = _iter_checkpoint_paths()
+    read_workers = min(32, max(1, len(checkpoint_paths)))
+    with ThreadPoolExecutor(max_workers=read_workers) as checkpoint_readers:
+        checkpoint_data = list(
+            checkpoint_readers.map(_read_checkpoint_content, checkpoint_paths)
+        )
+
+    for cp, data in zip(checkpoint_paths, checkpoint_data):
         try:
-            data = _read_checkpoint_content(cp)
             for pkg, info in data.items():
                 if info.get("state") == "ACQUIRED":
                     status = info.get("licence_status", "UNKNOWN")
@@ -745,25 +975,84 @@ def _load_all_acquired_license_statuses() -> List[str]:
     return statuses
 
 
+def _resolve_checkpoint_archive_filename(
+    package: str,
+    info: Dict[str, object],
+) -> Tuple[Optional[str], bool]:
+    """Reconstruct a missing archive filename only from verified evidence."""
+    norm = normalize_package_name(package)
+    version = info.get("version")
+    expected_sha = info.get("archive_sha256")
+    if not version or not expected_sha:
+        return None, False
+    archive_dir = PYPI_PACKAGES_DIR / norm / str(version)
+    try:
+        if PYPI_REMOTE_STORAGE:
+            remote_dir = map_local_path_to_remote(archive_dir)
+            names = remote_list(remote_dir)
+        else:
+            if not archive_dir.is_dir():
+                return None, False
+            names = [path.name for path in archive_dir.iterdir() if path.is_file()]
+    except Exception:
+        return None, False
+
+    matches: List[str] = []
+    for filename in names:
+        if parse_version_from_filename(filename) != str(version):
+            continue
+        archive_path = archive_dir / filename
+        identity = verify_archive_identity(
+            requested_package=package,
+            requested_version=str(version),
+            meta={
+                "version": str(version),
+                "archive_filename": filename,
+                "archive_sha256": expected_sha,
+            },
+            archive_path=archive_path,
+            expected_sha256=str(expected_sha),
+        )
+        if identity.get("ok"):
+            matches.append(filename)
+    if len(matches) == 1:
+        return matches[0], True
+    return None, False
+
+
 def _regenerate_manifests_from_checkpoints() -> Tuple[List[Dict[str, object]], Dict[str, object]]:
     """Read all checkpoints and rebuild acquisition manifest and pilot report."""
     acquired: List[Dict[str, object]] = []
     failures: List[Dict[str, object]] = []
     skipped: List[Dict[str, object]] = []
 
-    for cp in _iter_checkpoint_paths():
+    checkpoint_paths = _iter_checkpoint_paths()
+    read_workers = min(32, max(1, len(checkpoint_paths)))
+    with ThreadPoolExecutor(max_workers=read_workers) as checkpoint_readers:
+        checkpoint_data = list(
+            checkpoint_readers.map(_read_checkpoint_content, checkpoint_paths)
+        )
+
+    for cp, data in zip(checkpoint_paths, checkpoint_data):
         try:
-            data = _read_checkpoint_content(cp)
             for pkg, info in data.items():
                 state = info.get("state")
                 if state == "ACQUIRED":
                     archive_filename = info.get("archive_filename")
+                    identity_verified = bool(info.get("identity_verified", False))
+                    if not archive_filename:
+                        archive_filename, reconstructed_identity = _resolve_checkpoint_archive_filename(
+                            pkg, info
+                        )
+                        identity_verified = identity_verified or reconstructed_identity
                     archive_path = None
                     if archive_filename:
                         # Prefer the verified archive filename recorded at acquisition time.
-                        archive_path = (
-                            f"/mnt/pythia-cloud/Pythia/raw/pypi/packages/"
-                            f"{normalize_package_name(pkg)}/{info.get('version')}/{archive_filename}"
+                        archive_path = str(
+                            PYPI_PACKAGES_DIR
+                            / normalize_package_name(pkg)
+                            / str(info.get("version"))
+                            / archive_filename
                         )
                     else:
                         # No verified archive filename was recorded. Mark for
@@ -779,6 +1068,9 @@ def _regenerate_manifests_from_checkpoints() -> Tuple[List[Dict[str, object]], D
                         "observed_metadata_version": info.get("observed_metadata_version"),
                         "archive_filename": archive_filename,
                         "archive_path": archive_path,
+                        "archive_sha256": info.get("archive_sha256"),
+                        "archive_size": info.get("archive_size"),
+                        "identity_verified": identity_verified,
                         "analysis": {
                             "ast_valid": info.get("ast_valid", 0),
                             "ast_invalid": info.get("ast_invalid", 0),
@@ -868,7 +1160,54 @@ def write_acquisition_manifest(packages: List[Dict[str, object]], path: Path = P
                                "record_count": len(packages), "packages": packages})
 
 
-def _download_file(url: str, dest: Path, timeout: int) -> None:
+def _download_file(
+    url: str,
+    dest: Path,
+    timeout: int,
+    *,
+    show_progress: bool = True,
+) -> None:
+    def _download_to(path: Path) -> None:
+        last_error: Optional[Exception] = None
+        for attempt in range(4):
+            path.unlink(missing_ok=True)
+            try:
+                with requests.get(url, stream=True, timeout=timeout) as response:
+                    response.raise_for_status()
+                    total = int(response.headers.get("content-length", 0))
+                    received = 0
+                    with path.open("wb") as handle, tqdm(
+                        total=total,
+                        unit="B",
+                        unit_scale=True,
+                        desc=dest.name,
+                        disable=not show_progress,
+                    ) as bar:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            if chunk:
+                                handle.write(chunk)
+                                received += len(chunk)
+                                bar.update(len(chunk))
+                if total and received != total:
+                    raise IOError(
+                        f"incomplete download for {dest.name}: "
+                        f"received {received} of {total} bytes"
+                    )
+                return
+            except Exception as exc:
+                last_error = exc
+                path.unlink(missing_ok=True)
+                if attempt >= 3:
+                    break
+                delay = 2 ** attempt
+                logger.warning(
+                    "Download attempt %s/4 failed for %s (%s); retrying in %ss",
+                    attempt + 1, dest.name, exc, delay,
+                )
+                time.sleep(delay)
+        assert last_error is not None
+        raise last_error
+
     if PYPI_REMOTE_STORAGE:
         # Download to a local temp, then upload through the two-phase
         # remote commit protocol (freeze checked first, verified, no
@@ -877,14 +1216,7 @@ def _download_file(url: str, dest: Path, timeout: int) -> None:
         with _tempfile.NamedTemporaryFile(prefix="pypi_dl_", delete=False) as _tf:
             _tmp_path = Path(_tf.name)
         try:
-            with requests.get(url, stream=True, timeout=timeout) as r:
-                r.raise_for_status()
-                total = int(r.headers.get("content-length", 0))
-                with _tmp_path.open("wb") as f, tqdm(total=total, unit="B", unit_scale=True, desc=dest.name) as bar:
-                    for chunk in r.iter_content(chunk_size=8192):
-                        if chunk:
-                            f.write(chunk)
-                            bar.update(len(chunk))
+            _download_to(_tmp_path)
             data = _tmp_path.read_bytes()
         finally:
             _tmp_path.unlink(missing_ok=True)
@@ -894,14 +1226,7 @@ def _download_file(url: str, dest: Path, timeout: int) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = Path(str(dest) + ".part")
     try:
-        with requests.get(url, stream=True, timeout=timeout) as r:
-            r.raise_for_status()
-            total = int(r.headers.get("content-length", 0))
-            with part.open("wb") as f, tqdm(total=total, unit="B", unit_scale=True, desc=dest.name) as bar:
-                for chunk in r.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-                        bar.update(len(chunk))
+        _download_to(part)
         part.replace(dest)
     except Exception:
         part.unlink(missing_ok=True)
@@ -909,6 +1234,16 @@ def _download_file(url: str, dest: Path, timeout: int) -> None:
 
 
 # ------------------------------------------------------------------ pilot orchestration
+def _make_writer_lock(lease_seconds: int = 600):
+    """Return the writer lock appropriate for the active storage mode."""
+    if PYPI_REMOTE_STORAGE:
+        return WriterLock(lease_seconds=lease_seconds)
+    return LocalWriterLock(
+        PYPI_METADATA_DIR / ".locks" / "writer.lock",
+        lease_seconds=lease_seconds,
+    )
+
+
 def run_pilot(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
     if freeze_sentinel_exists() if PYPI_REMOTE_STORAGE else PYPI_FREEZE_SENTINEL.exists():
         logger.error(
@@ -920,7 +1255,7 @@ def run_pilot(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
     # create-if-absent). Acquired before any PyPI mutation. The protected
     # lifecycle runs a heartbeat thread, checks the freeze, and fails closed
     # on ownership loss.
-    _lock = WriterLock(lease_seconds=600)
+    _lock = _make_writer_lock(lease_seconds=600)
     try:
         with _lock.protected(heartbeat_interval=30.0):
             if PYPI_REMOTE_STORAGE:
@@ -963,10 +1298,11 @@ def _run_pilot_locked(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
                 failures.append({**c, "reason": "metadata_fetch_failed"})
                 continue
 
+            observed_ver = meta.get("observed_filename_version") or meta.get("version")
             dest_dir = PYPI_PACKAGES_DIR / norm
             _mkdir_remote_aware(dest_dir)
             archive_name = meta.get("archive_filename", "")
-            version = meta.get("version")
+            version = observed_ver
             archive_path = (dest_dir / version / archive_name) if version else dest_dir / archive_name
             _mkdir_remote_aware(archive_path.parent)
 
@@ -999,7 +1335,7 @@ def _run_pilot_locked(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
             # the resolved distribution, archive filename, and internal metadata.
             id_check = verify_archive_identity(
                 requested_package=c["package"],
-                requested_version=version,
+                requested_version=observed_ver,
                 meta=meta,
                 archive_path=archive_path,
             )
@@ -1007,7 +1343,7 @@ def _run_pilot_locked(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
                 mark_failed(
                     norm,
                     f"identity_mismatch:{id_check.get('reason')}",
-                    requested_version=version,
+                    requested_version=observed_ver,
                     resolved_version=meta.get("version"),
                     observed_filename_version=id_check.get("observed_filename_version"),
                     observed_metadata_version=id_check.get("observed_metadata_version"),
@@ -1020,12 +1356,12 @@ def _run_pilot_locked(limit: int = 5, timeout: int = 60) -> Dict[str, object]:
             analysis = analyze_package(archive_path, c["package"])
 
             mark_acquired(norm,
-                          version=version,
+                          version=meta.get("observed_filename_version") or meta.get("version"),
                           requested_version=version,
-                          resolved_version=meta.get("version"),
+                          resolved_version=meta.get("observed_filename_version") or meta.get("version"),
                           archive_filename=meta.get("archive_filename"),
-                          observed_filename_version=id_check.get("observed_filename_version"),
-                          observed_metadata_version=id_check.get("observed_metadata_version"),
+                          observed_filename_version=meta.get("observed_filename_version"),
+                          observed_metadata_version=meta.get("observed_metadata_version"),
                           archive_sha256=meta["archive_sha256"],
                           archive_size=meta["archive_size"],
                           licence_status=meta["license_status"],
@@ -1087,7 +1423,7 @@ def _regenerate_and_write_manifests() -> None:
     acquired, failures, skipped, report_bundle = _regenerate_manifests_from_checkpoints()
     write_acquisition_manifest(acquired)
     _mkdir_remote_aware(PYPI_REPORTS_DIR)
-    _write_report(PYPI_PILOT_REPORT_PATH, {"experiment_id": "PYT-DATA-PYPI-002", **_regenerate_manifests_from_checkpoints()[3]["report"]})
+    _write_report(PYPI_PILOT_REPORT_PATH, report_bundle["report"])
 
 
 # NOTE: The single consolidated `_download_file` is defined above (remote-aware
@@ -1121,6 +1457,75 @@ def load_candidates_manifest(path: Path = PYPI_CANDIDATES_MANIFEST_PATH) -> List
     return candidates
 
 
+def _repair_marker_dir(kind: str) -> Path:
+    if kind == "completed":
+        return REPAIR_COMPLETED_DIR
+    if kind == "exhausted":
+        return REPAIR_EXHAUSTED_DIR
+    raise ValueError(f"unknown repair marker kind: {kind}")
+
+
+def _load_repair_plan() -> Dict[str, Dict[str, object]]:
+    merged: Dict[str, Dict[str, object]] = {}
+    for path in (REPAIR_PLAN_PATH, REPAIR_PLAN_ADDENDUM_PATH):
+        try:
+            if PYPI_REMOTE_STORAGE:
+                remote = map_local_path_to_remote(path)
+                if not remote_exists(remote):
+                    continue
+                data = json.loads(remote_read_text(remote))
+            else:
+                if not path.exists():
+                    continue
+                data = json.loads(_retry_io(lambda path=path: path.read_text(encoding="utf-8")))
+        except Exception as exc:
+            logger.warning("Could not load PyPI repair plan %s: %s", path.name, exc)
+            continue
+        entries = data.get("entries", {}) if isinstance(data, dict) else {}
+        if isinstance(entries, dict):
+            merged.update(entries)
+    return merged
+
+
+def _list_repair_marker_norms(kind: str) -> set:
+    directory = _repair_marker_dir(kind)
+    try:
+        if PYPI_REMOTE_STORAGE:
+            remote = map_local_path_to_remote(directory)
+            return {name[:-5] for name in remote_list(remote) if name.endswith(".json")}
+        if not directory.is_dir():
+            return set()
+        return {path.stem for path in directory.glob("*.json")}
+    except Exception as exc:
+        logger.warning("Could not list PyPI repair %s markers: %s", kind, exc)
+        return set()
+
+
+def _repair_pending_norms() -> set:
+    entries = set(_load_repair_plan())
+    if not entries:
+        return set()
+    return entries - _list_repair_marker_norms("completed") - _list_repair_marker_norms("exhausted")
+
+
+def _write_repair_marker(kind: str, pkg_norm: str, payload: Dict[str, object]) -> None:
+    directory = _repair_marker_dir(kind)
+    marker = {"package": pkg_norm, "marked_at": utc_now_iso(), **payload}
+    if PYPI_REMOTE_STORAGE:
+        remote = map_local_path_to_remote(directory / f"{pkg_norm}.json")
+        commit_write(
+            (json.dumps(marker, indent=2, sort_keys=True) + "\n").encode("utf-8"),
+            remote,
+            prevent_overwrite=False,
+            namespace=f"repair-{kind}",
+            verify=True,
+            journal=True,
+        )
+        return
+    directory.mkdir(parents=True, exist_ok=True)
+    _atomic_write_json(directory / f"{pkg_norm}.json", marker)
+
+
 def get_unprocessed_candidates(candidates: List[Dict[str, object]]) -> List[Dict[str, object]]:
     """Return candidates that have not been processed (no checkpoint exists).
 
@@ -1133,7 +1538,11 @@ def get_unprocessed_candidates(candidates: List[Dict[str, object]]) -> List[Dict
     checkpoint_norms = set()
     for cp in _iter_checkpoint_paths():
         checkpoint_norms.add(cp.name.replace("_checkpoint.json", ""))
-    unprocessed = [c for c in candidates if c["normalized"] not in checkpoint_norms]
+    repair_pending = _repair_pending_norms()
+    unprocessed = [
+        c for c in candidates
+        if c["normalized"] in repair_pending or c["normalized"] not in checkpoint_norms
+    ]
     return unprocessed
 
 
@@ -1163,59 +1572,60 @@ def verify_manifest_integrity(candidates: List[Dict[str, object]]) -> Dict[str, 
 def verify_checkpoint_consistency() -> Dict[str, object]:
     """Verify checkpoint state consistency from authoritative state.
 
-    Acquired count comes from the acquisition manifest. FAILED/SKIPPED counts:
-      * POSIX mode: full local scan of checkpoint states (fast locally).
-      * Remote mode: read states ONLY for checkpoints not present in the
-        acquired manifest set (a remote listing + a bounded number of reads,
-        e.g. ~102 in the current state, instead of reading every checkpoint).
+    The acquisition manifest identifies ACQUIRED packages; a checkpoint-name
+    listing supplies the total. Under the current checkpoint contract the
+    remaining terminal checkpoints are FAILED. This avoids opening thousands
+    of small checkpoint files on the Drive FUSE mount at every verification.
     """
-    acquired = 0
+    acquired_names = set()
+    manifest_count = 0
     try:
         if PYPI_REMOTE_STORAGE:
             data = json.loads(remote_read_text(
                 map_local_path_to_remote(PYPI_ACQUISITION_MANIFEST_PATH)))
         else:
             data = json.loads(_retry_io(lambda: PYPI_ACQUISITION_MANIFEST_PATH.read_text(encoding="utf-8")))
-        acquired = data.get("record_count", 0)
+        manifest_count = int(data.get("record_count", 0))
+        acquired_names = {
+            str(item.get("normalized", ""))
+            for item in data.get("packages", [])
+            if item.get("normalized")
+        }
     except Exception:
         pass
 
-    if PYPI_REMOTE_STORAGE:
-        # Fast remote pre-flight: derive FAILED = checkpoints - acquired from
-        # the authoritative listing + manifest (the state has only ACQUIRED and
-        # FAILED terminal checkpoints; SKIPPED is reported as 0). Avoids reading
-        # every checkpoint individually.
-        acquired_names = set()
+    checkpoint_paths = [
+        cp for cp in _iter_checkpoint_paths()
+        if cp.name.endswith("_checkpoint.json")
+    ]
+    path_by_name = {
+        cp.name[:-len("_checkpoint.json")]: cp for cp in checkpoint_paths
+    }
+    checkpoint_names = set(path_by_name)
+    failed = 0
+    skipped = 0
+    # Only inspect checkpoints absent from the acquired manifest. This keeps
+    # the FUSE/remote scan bounded to FAILED, SKIPPED, and anomalous states.
+    for norm in checkpoint_names - acquired_names:
         try:
-            data = json.loads(remote_read_text(
-                map_local_path_to_remote(PYPI_ACQUISITION_MANIFEST_PATH)))
-            for pkg_data in data.get("packages", []):
-                acquired_names.add(pkg_data.get("normalized", ""))
+            data = _read_checkpoint_content(path_by_name[norm])
+            state = data.get(norm, {}).get("state")
+            if state == "FAILED":
+                failed += 1
+            elif state == "SKIPPED":
+                skipped += 1
+            else:
+                failed += 1
         except Exception:
-            pass
-        checkpoint_names = {cp.name[:-len("_checkpoint.json")] for cp in _iter_checkpoint_paths()}
-        failed = max(0, len(checkpoint_names) - len(acquired_names))
-        skipped = 0
-        total_checkpoints = len(checkpoint_names)
-    else:
-        failed = 0
-        skipped = 0
-        for cp in _iter_checkpoint_paths():
-            try:
-                data = _read_checkpoint_content(cp)
-                for pkg, info in data.items():
-                    state = info.get("state")
-                    if state == "FAILED":
-                        failed += 1
-                    elif state == "SKIPPED":
-                        skipped += 1
-            except Exception:
-                pass
-        total_checkpoints = acquired + failed + skipped
+            failed += 1
+    acquired_count = len(acquired_names) if acquired_names else manifest_count
+    total_checkpoints = max(
+        len(checkpoint_names), acquired_count + failed + skipped
+    )
 
     return {
         "total_checkpoints": total_checkpoints,
-        "acquired": acquired,
+        "acquired": acquired_count,
         "failed": failed,
         "skipped": skipped,
     }
@@ -1223,44 +1633,44 @@ def verify_checkpoint_consistency() -> Dict[str, object]:
 
 def verify_archive_count() -> Dict[str, object]:
     """Verify archive count matches acquired packages."""
-    if PYPI_REMOTE_STORAGE:
-        # Remote archive count via the storage abstraction (list packages dir).
-        try:
-            archives = remote_list(f"{canonical_pypi_root()}/packages")
-            total_archives = len(archives)
-        except Exception:
+    try:
+        remote_packages = map_local_path_to_remote(PYPI_PACKAGES_DIR)
+        files = remote_list_recursive(remote_packages)
+        total_archives = sum(
+            1 for name in files
+            if name.lower().endswith((".tar.gz", ".tgz", ".tar.bz2", ".whl", ".zip"))
+        )
+    except Exception:
+        if PYPI_REMOTE_STORAGE:
             total_archives = -1
-        acquired_count = 0
-        try:
-            data = json.loads(remote_read_text(
-                map_local_path_to_remote(PYPI_ACQUISITION_MANIFEST_PATH)))
-            acquired_count = data.get("record_count", 0)
-        except Exception:
-            pass
-        return {
-            "total_archives": total_archives,
-            "acquired_packages": acquired_count,
-            "archives_match_acquired": total_archives >= acquired_count,
-        }
-    import os
-    archives = []
-    for root, dirs, files in os.walk(PYPI_PACKAGES_DIR):
-        for f in files:
-            if f.endswith(".tar.gz") or f.endswith(".whl"):
-                archives.append(os.path.join(root, f))
-    
-    # Read acquired count from acquisition manifest
+        else:
+            # Test/local fallback for roots that are intentionally not mapped
+            # to the authoritative remote namespace.
+            import os
+            archives = []
+            for root, _dirs, files in os.walk(PYPI_PACKAGES_DIR):
+                archives.extend(
+                    os.path.join(root, name)
+                    for name in files
+                    if name.lower().endswith((".tar.gz", ".tgz", ".tar.bz2", ".whl", ".zip"))
+                )
+            total_archives = len(archives)
+
     acquired_count = 0
     try:
-        data = json.loads(_retry_io(lambda: PYPI_ACQUISITION_MANIFEST_PATH.read_text(encoding="utf-8")))
+        if PYPI_REMOTE_STORAGE:
+            data = json.loads(remote_read_text(
+                map_local_path_to_remote(PYPI_ACQUISITION_MANIFEST_PATH)))
+        else:
+            data = json.loads(_retry_io(lambda: PYPI_ACQUISITION_MANIFEST_PATH.read_text(encoding="utf-8")))
         acquired_count = data.get("record_count", 0)
     except Exception:
         pass
-    
+
     return {
-        "total_archives": len(archives),
+        "total_archives": total_archives,
         "acquired_packages": acquired_count,
-        "archives_match_acquired": len(archives) >= acquired_count,
+        "archives_match_acquired": total_archives >= acquired_count,
     }
 
 
@@ -1269,7 +1679,10 @@ def verify_storage_headroom(min_free_gb: float = 100.0) -> Dict[str, object]:
     if PYPI_REMOTE_STORAGE:
         return remote_headroom(min_free_gb)
     import shutil
-    total, used, free = shutil.disk_usage("/mnt/pythia-cloud")
+    # Measure the filesystem that will receive package data. Checking the
+    # mount's parent can report the local root filesystem's capacity instead
+    # of the mounted Google Drive volume.
+    total, used, free = shutil.disk_usage(PYPI_DIR)
     free_gb = free / (1024**3)
     return {
         "free_gb": round(free_gb, 2),
@@ -1317,11 +1730,20 @@ def generate_reconciliation_report(
         logger.warning(f"Failed to read acquisition manifest: {e}")
     
     # Load failed packages from authoritative checkpoint state (backend-aware;
-    # every FAILED record is counted, not a hardcoded subset).
+    # only checkpoints absent from the acquired manifest need to be opened).
     failed_packages = []
-    for cp in _iter_checkpoint_paths():
+    acquired_norms = {str(item.get("normalized", "")) for item in acquired_packages}
+    failed_checkpoint_paths = [
+        cp for cp in _iter_checkpoint_paths()
+        if cp.name[:-len("_checkpoint.json")] not in acquired_norms
+    ]
+    read_workers = min(32, max(1, len(failed_checkpoint_paths)))
+    with ThreadPoolExecutor(max_workers=read_workers) as checkpoint_readers:
+        failed_checkpoint_data = list(
+            checkpoint_readers.map(_read_checkpoint_content, failed_checkpoint_paths)
+        )
+    for cp, data in zip(failed_checkpoint_paths, failed_checkpoint_data):
         try:
-            data = _read_checkpoint_content(cp)
             for pkg, info in data.items():
                 if info.get("state") == "FAILED":
                     failed_packages.append({
@@ -1421,10 +1843,13 @@ def generate_reconciliation_report(
         "F_failure_analysis": failed_packages,
         "G_resumability": {
             "checkpoint_consistency": checkpoint_info,
-            "rerun_behavior": "skips_existing_ACQUIRED_and_FAILED",
+            "rerun_behavior": (
+                "skips terminal checkpoints except pending repair-plan packages; "
+                "completed/exhausted repair markers prevent duplicate retries"
+            ),
             "no_duplicate_downloads": True,
             "no_duplicate_extraction": True,
-            "no_manifest_mutation": True,
+            "manifest_regenerated_from_checkpoints": True,
         },
         "H_storage": {
             "final_storage_used_bytes": storage_used_bytes,
@@ -1438,10 +1863,8 @@ def generate_reconciliation_report(
             "batches_completed": len(batch_results),
         },
         "J_tests": {
-            "full_test_count": 95,
-            "passed": 95,
-            "failed": 0,
-            "skipped": 1,
+            "run_during_acquisition": False,
+            "note": "Tests were run before acquisition; see repository test output and remediation report.",
         },
         "K_data_contract_compatibility": {
             "compatible": True,
@@ -1450,7 +1873,9 @@ def generate_reconciliation_report(
         "L_research_integrity": {
             "negative_results_preserved": True,
             "anomalies": [],
-            "stale_reports_corrected": ["pilot_size mismatch between report (475) and checkpoints (1998)"],
+            "stale_reports_corrected": [
+                "acquisition manifest and pilot report regenerated from authoritative checkpoints"
+            ],
             "assumptions": [
                 "token_count is PROVISIONAL until custom tokenizer trained",
                 "AST validity != semantic correctness",
@@ -1472,6 +1897,7 @@ def run_scaleup(
     timeout: int = 120,
     max_batches: Optional[int] = None,
     verify_every: int = 1,
+    workers: int = 8,
 ) -> Dict[str, object]:
     """Run controlled scale-up from 2K to 5K candidates."""
     if freeze_sentinel_exists() if PYPI_REMOTE_STORAGE else PYPI_FREEZE_SENTINEL.exists():
@@ -1484,7 +1910,7 @@ def run_scaleup(
     # create-if-absent). Acquired before any PyPI mutation. The protected
     # lifecycle runs a heartbeat thread, checks the freeze, and fails closed
     # on ownership loss.
-    _lock = WriterLock(lease_seconds=600)
+    _lock = _make_writer_lock(lease_seconds=600)
     try:
         with _lock.protected(heartbeat_interval=30.0):
             if PYPI_REMOTE_STORAGE:
@@ -1496,10 +1922,159 @@ def run_scaleup(
                     }
             return _run_scaleup_locked(
                 batch_size=batch_size, timeout=timeout,
-                max_batches=max_batches, verify_every=verify_every)
+                max_batches=max_batches, verify_every=verify_every,
+                workers=workers)
     except LockNotHeldError:
         return {"final_status": "LOCK_LOST",
                 "error": "writer lock lost during run (heartbeat failure)"}
+
+
+def _process_scaleup_candidate(
+    candidate: Dict[str, object],
+    repair_pending: set,
+    timeout: int,
+    analysis_executor: Optional[ProcessPoolExecutor] = None,
+) -> Dict[str, object]:
+    """Acquire and validate one candidate; safe to run concurrently per package."""
+    norm = str(candidate["normalized"])
+    package = str(candidate["package"])
+    cp = checkpoint_path(norm)
+    existing = _load_checkpoint(cp).get(norm, {})
+    is_repair = norm in repair_pending
+    old_version = existing.get("version")
+
+    def repair_failure(reason: str) -> None:
+        if is_repair:
+            try:
+                _write_repair_marker(
+                    "exhausted", norm,
+                    {"reason": reason, "old_version": old_version},
+                )
+            except Exception:
+                logger.exception("Could not write repair-exhausted marker for %s", norm)
+
+    def repair_completed(version: str, filename: str, archive_sha: str) -> None:
+        if is_repair:
+            try:
+                _write_repair_marker(
+                    "completed", norm,
+                    {
+                        "old_version": old_version,
+                        "new_version": version,
+                        "archive_filename": filename,
+                        "archive_sha256": archive_sha,
+                    },
+                )
+            except Exception:
+                logger.exception("Could not write repair-completed marker for %s", norm)
+
+    if existing.get("state") == "ACQUIRED" and not is_repair:
+        return {"package": package, "normalized": norm, "status": "skipped"}
+    if existing.get("state") == "FAILED" and not is_repair:
+        return {"package": package, "normalized": norm, "status": "skipped"}
+
+    try:
+        meta = fetch_package_metadata(package)
+        if meta is None:
+            reason = "metadata_fetch_failed"
+            mark_failed(norm, reason, allow_overwrite=is_repair)
+            repair_failure(reason)
+            return {"package": package, "normalized": norm, "status": "failed", "reason": reason}
+
+        archive_name = str(meta.get("archive_filename") or "")
+        version = str(meta.get("version") or "")
+        if not archive_name or not version:
+            reason = "metadata_missing_archive_identity"
+            mark_failed(norm, reason, allow_overwrite=is_repair)
+            repair_failure(reason)
+            return {"package": package, "normalized": norm, "status": "failed", "reason": reason}
+
+        archive_path = PYPI_PACKAGES_DIR / norm / version / archive_name
+        _mkdir_remote_aware(archive_path.parent)
+
+        downloaded = _archive_exists(
+            archive_path, pkg_norm=norm, version=version, filename=archive_name
+        )
+        sha_verified = False
+        if downloaded and meta.get("archive_sha256"):
+            observed_sha = _archive_sha256_value(
+                archive_path, pkg_norm=norm, version=version, filename=archive_name
+            )
+            sha_verified = observed_sha == meta["archive_sha256"]
+        if not downloaded or not sha_verified:
+            _download_file(meta["archive_url"], archive_path, timeout, show_progress=False)
+            if meta.get("archive_sha256"):
+                observed_sha = _archive_sha256_value(
+                    archive_path, pkg_norm=norm, version=version, filename=archive_name
+                )
+                sha_verified = observed_sha == meta["archive_sha256"]
+
+        if not sha_verified:
+            reason = "checksum_missing_or_mismatch"
+            mark_failed(norm, reason, allow_overwrite=is_repair)
+            repair_failure(reason)
+            return {"package": package, "normalized": norm, "status": "failed", "reason": reason}
+
+        identity = verify_archive_identity(
+            requested_package=package,
+            requested_version=version,
+            meta=meta,
+            archive_path=archive_path,
+        )
+        if not identity.get("ok"):
+            reason = f"identity_mismatch:{identity.get('reason')}"
+            mark_failed(
+                norm,
+                reason,
+                allow_overwrite=is_repair,
+                requested_version=version,
+                resolved_version=meta.get("version"),
+                observed_filename_version=identity.get("observed_filename_version"),
+                observed_metadata_version=identity.get("observed_metadata_version"),
+                archive_sha256_expected=identity.get("archive_sha256_expected"),
+                archive_sha256_observed=identity.get("archive_sha256_observed"),
+            )
+            repair_failure(reason)
+            return {"package": package, "normalized": norm, "status": "failed", "reason": reason}
+
+        if analysis_executor is None:
+            analysis = analyze_package(archive_path, package)
+        else:
+            analysis = analysis_executor.submit(
+                analyze_package, archive_path, package
+            ).result()
+        mark_acquired(
+            norm,
+            allow_overwrite=is_repair,
+            version=version,
+            requested_version=version,
+            resolved_version=meta.get("resolved_version", version),
+            archive_filename=archive_name,
+            observed_filename_version=identity.get("observed_filename_version"),
+            observed_metadata_version=identity.get("observed_metadata_version"),
+            archive_sha256=meta["archive_sha256"],
+            archive_size=meta["archive_size"],
+            licence_status=meta["license_status"],
+            licence_reason=meta["license_reason"],
+            docstring_ratio=analysis["docstring_ratio"],
+            comment_ratio=analysis["comment_ratio"],
+            ast_valid=analysis["ast_valid"],
+            ast_invalid=analysis["ast_invalid"],
+            python_files=analysis["python_files"],
+            python_loc=analysis["python_loc"],
+            identity_verified=True,
+        )
+        repair_completed(version, archive_name, str(meta["archive_sha256"]))
+        return {"package": package, "normalized": norm, "status": "acquired"}
+    except Exception as exc:
+        logger.exception("Unexpected error processing %s", package)
+        reason = f"unexpected_error:{exc}"
+        try:
+            mark_failed(norm, reason, allow_overwrite=is_repair)
+        except Exception:
+            logger.exception("Could not mark %s failed", norm)
+        repair_failure(reason)
+        return {"package": package, "normalized": norm, "status": "failed", "reason": reason}
 
 
 def _run_scaleup_locked(
@@ -1507,11 +2082,14 @@ def _run_scaleup_locked(
     timeout: int = 120,
     max_batches: Optional[int] = None,
     verify_every: int = 1,
+    workers: int = 8,
 ) -> Dict[str, object]:
     import time
     
     start_time = time.time()
     logger.info("Starting PyPI scale-up: 2,000 -> 5,000 candidates")
+    worker_count = max(1, int(workers))
+    logger.info("Concurrent package workers: %s", worker_count)
     
     # Load canonical manifest
     candidates = load_candidates_manifest()
@@ -1521,10 +2099,23 @@ def _run_scaleup_locked(
     manifest_info = verify_manifest_integrity(candidates)
     logger.info(f"Manifest SHA-256: {manifest_info['manifest_sha256']}")
     logger.info(f"Total candidates: {manifest_info['total_candidates']}")
+
+    # Checkpoints are authoritative; reconstruct stale aggregate artifacts
+    # before deriving resume/failure counts.
+    try:
+        _regenerate_and_write_manifests()
+    except Exception as exc:
+        logger.exception("Could not regenerate PyPI manifest from checkpoints")
+        return {
+            "final_status": "MANIFEST_REGEN_BLOCKED",
+            "error": f"checkpoint-to-manifest regeneration failed: {exc}",
+        }
     
     # Verify checkpoint consistency before starting
     checkpoint_info = verify_checkpoint_consistency()
     logger.info(f"Pre-flight checkpoint state: {checkpoint_info}")
+    repair_pending = _repair_pending_norms()
+    logger.info(f"Pending version-remediation packages: {len(repair_pending)}")
     
     # Get unprocessed candidates
     unprocessed = get_unprocessed_candidates(candidates)
@@ -1540,6 +2131,13 @@ def _run_scaleup_locked(
     # Process in batches
     batch_results = []
     batches_to_run = max_batches if max_batches else (len(unprocessed) + batch_size - 1) // batch_size
+    analysis_workers = min(worker_count, os.cpu_count() or worker_count)
+    analysis_executor = _get_analysis_pool(analysis_workers)
+    logger.info(
+        "Using %s package threads and %s analysis processes",
+        worker_count,
+        analysis_workers if analysis_executor is not None else 1,
+    )
     
     for batch_idx in range(batches_to_run):
         batch_start = batch_idx * batch_size
@@ -1555,119 +2153,56 @@ def _run_scaleup_locked(
         batch_failed = 0
         batch_skipped = 0
         batch_errors = []
-        
-        for c in tqdm(batch_candidates, desc=f"batch-{batch_idx+1}"):
-            norm = c["normalized"]
-            
-            # Skip if already acquired or failed
-            if is_acquired(norm):
-                batch_skipped += 1
-                continue
-            
-            cp = checkpoint_path(norm)
-            if _load_checkpoint(cp).get(norm, {}).get("state") == "FAILED":
-                batch_skipped += 1
-                continue
-            
-            try:
-                meta = fetch_package_metadata(c["package"])
-                if meta is None:
-                    mark_failed(norm, "metadata_fetch_failed")
-                    batch_failed += 1
-                    batch_errors.append({"package": c["package"], "reason": "metadata_fetch_failed"})
-                    continue
-                
-                dest_dir = PYPI_PACKAGES_DIR / norm
-                _mkdir_remote_aware(dest_dir)
-                archive_name = meta.get("archive_filename", "")
-                version = meta.get("version")
-                archive_path = (dest_dir / version / archive_name) if version else dest_dir / archive_name
-                _mkdir_remote_aware(archive_path.parent)
-                
-                downloaded = _archive_exists(
-                    archive_path, pkg_norm=norm, version=version, filename=archive_name)
-                sha_verified = False
-                if downloaded:
-                    if meta.get("archive_sha256"):
-                        obs = _archive_sha256_value(
-                            archive_path, pkg_norm=norm, version=version, filename=archive_name)
-                        sha_verified = obs is not None and obs == meta["archive_sha256"]
+        batch_worker_count = max(1, min(worker_count, len(batch_candidates)))
+        with ThreadPoolExecutor(max_workers=batch_worker_count) as executor:
+            future_to_candidate = {
+                executor.submit(
+                    _process_scaleup_candidate,
+                    candidate,
+                    repair_pending,
+                    timeout,
+                    analysis_executor,
+                ): candidate
+                for candidate in batch_candidates
+            }
+            with tqdm(total=len(batch_candidates), desc=f"batch-{batch_idx+1}") as progress:
+                for future in as_completed(future_to_candidate):
+                    candidate = future_to_candidate[future]
+                    try:
+                        result = future.result()
+                    except Exception as exc:
+                        logger.exception("Worker failed for %s", candidate["package"])
+                        result = {
+                            "package": candidate["package"],
+                            "normalized": candidate["normalized"],
+                            "status": "failed",
+                            "reason": f"worker_exception:{exc}",
+                        }
+                    if result["status"] == "acquired":
+                        batch_acquired += 1
+                    elif result["status"] == "failed":
+                        batch_failed += 1
+                        batch_errors.append({
+                            "package": result["package"],
+                            "reason": result.get("reason", "unknown"),
+                        })
                     else:
-                        sha_verified = False
-                if not downloaded or not sha_verified:
-                    _download_file(meta["archive_url"], archive_path, timeout)
-                    if meta.get("archive_sha256"):
-                        obs = _archive_sha256_value(
-                            archive_path, pkg_norm=norm, version=version, filename=archive_name)
-                        sha_verified = obs is not None and obs == meta["archive_sha256"]
-                    else:
-                        sha_verified = False
-                
-                if not sha_verified and meta.get("archive_sha256"):
-                    mark_failed(norm, "checksum_mismatch")
-                    batch_failed += 1
-                    batch_errors.append({"package": c["package"], "reason": "checksum_mismatch"})
-                    continue
-                
-                # Identity gate: SHA equality alone is NOT sufficient proof of
-                # package/version identity. The requested version must agree with
-                # the resolved distribution, archive filename, and internal metadata.
-                id_check = verify_archive_identity(
-                    requested_package=c["package"],
-                    requested_version=version,
-                    meta=meta,
-                    archive_path=archive_path,
-                )
-                if not id_check.get("ok"):
-                    mark_failed(
-                        norm,
-                        f"identity_mismatch:{id_check.get('reason')}",
-                        requested_version=version,
-                        resolved_version=meta.get("version"),
-                        observed_filename_version=id_check.get("observed_filename_version"),
-                        observed_metadata_version=id_check.get("observed_metadata_version"),
-                        archive_sha256_expected=id_check.get("archive_sha256_expected"),
-                        archive_sha256_observed=id_check.get("archive_sha256_observed"),
-                    )
-                    batch_failed += 1
-                    batch_errors.append({"package": c["package"], "reason": f"identity_mismatch:{id_check.get('reason')}"})
-                    continue
-                
-                analysis = analyze_package(archive_path, c["package"])
-                
-                mark_acquired(norm,
-                              version=version,
-                              requested_version=version,
-                              resolved_version=meta.get("version"),
-                              archive_filename=meta.get("archive_filename"),
-                              observed_filename_version=id_check.get("observed_filename_version"),
-                              observed_metadata_version=id_check.get("observed_metadata_version"),
-                              archive_sha256=meta["archive_sha256"],
-                              archive_size=meta["archive_size"],
-                              licence_status=meta["license_status"],
-                              licence_reason=meta["license_reason"],
-                              docstring_ratio=analysis["docstring_ratio"],
-                              comment_ratio=analysis["comment_ratio"],
-                              ast_valid=analysis["ast_valid"],
-                              ast_invalid=analysis["ast_invalid"],
-                              python_files=analysis["python_files"],
-                              python_loc=analysis["python_loc"],
-                              )
-                analysis["license_status"] = meta["license_status"]
-                batch_acquired += 1
-                
-            except Exception as exc:
-                logger.exception("Unexpected error processing %s", c["package"])
-                mark_failed(norm, f"unexpected_error:{exc}")
-                batch_failed += 1
-                batch_errors.append({"package": c["package"], "reason": f"unexpected_error:{exc}"})
-                continue
+                        batch_skipped += 1
+                    progress.update(1)
         
-        # Regenerate manifests after batch
-        _regenerate_and_write_manifests()
-        
-        # Verify after batch if requested
-        if (batch_idx + 1) % verify_every == 0:
+        # Checkpoints are durable per package. Regenerate the consolidated
+        # manifests/reports at each verification boundary rather than after
+        # every batch; remote Drive writes are expensive, and the next run can
+        # reconstruct these artifacts from checkpoints if interrupted.
+        verification_due = (
+            (batch_idx + 1) % verify_every == 0
+            or batch_idx + 1 == batches_to_run
+        )
+        if verification_due:
+            _regenerate_and_write_manifests()
+
+        # Verify at the same bounded checkpoint boundary.
+        if verification_due:
             checkpoint_info = verify_checkpoint_consistency()
             archive_info = verify_archive_count()
             storage_info = verify_storage_headroom()
@@ -1695,12 +2230,15 @@ def _run_scaleup_locked(
             "failed": batch_failed,
             "skipped": batch_skipped,
             "errors": batch_errors,
+            "workers": batch_worker_count,
         })
         
         logger.info(f"Batch {batch_idx + 1} complete: acquired={batch_acquired}, failed={batch_failed}, skipped={batch_skipped}")
     
     # Final reconciliation report
     report = generate_reconciliation_report(candidates, start_time, batch_results)
+    report["I_runtime"]["workers"] = worker_count
+    report["I_runtime"]["verification_interval_batches"] = verify_every
     
     _mkdir_remote_aware(PYPI_REPORTS_DIR)
     _write_report(PYPI_PILOT_REPORT_PATH, report)
@@ -1726,6 +2264,7 @@ if __name__ == "__main__":
     scaleup_parser.add_argument("--timeout", type=int, default=120, help="download timeout seconds")
     scaleup_parser.add_argument("--max-batches", type=int, default=None, help="max batches to run (default: all)")
     scaleup_parser.add_argument("--verify-every", type=int, default=1, help="verify checkpoint consistency every N batches")
+    scaleup_parser.add_argument("--workers", type=int, default=8, help="concurrent package workers per batch")
     
     args = parser.parse_args()
     
@@ -1737,4 +2276,5 @@ if __name__ == "__main__":
             timeout=args.timeout,
             max_batches=args.max_batches,
             verify_every=args.verify_every,
+            workers=args.workers,
         )

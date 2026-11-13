@@ -3,7 +3,7 @@
 
 Recovers/re-validates historical ACQUIRED records using the verified safe
 pipeline. Writes ONLY to an isolated recovery directory. Never modifies the
-frozen /mnt/pythia-cloud/Pythia/raw/pypi dataset.
+frozen /mnt/pythia-cloud/PythiaDrive/raw/pypi dataset.
 
 States (Mission 3):
   RECOVERED_VERIFIED, IDENTITY_MISMATCH, ARCHIVE_UNAVAILABLE, HASH_MISMATCH,
@@ -34,13 +34,13 @@ from scripts.scrapers.pypi import (
 )
 from scripts.research.pypi_metadata import content_hash, make_record_id
 
-RECOVERY_ROOT = Path("/mnt/pythia-cloud/Pythia/recovery")
+RECOVERY_ROOT = Path("/mnt/pythia-cloud/PythiaDrive/recovery")
 RECOVERY_DIR = RECOVERY_ROOT / "pypi"
 RECOVERY_ARCHIVES = RECOVERY_DIR / "archives"
 RECOVERY_STATE_PATH = RECOVERY_DIR / "recovery_state_v1.json"
 RECOVERY_MANIFEST_PATH = RECOVERY_DIR / "recovery_manifest_v1.jsonl"
 
-FROZEN_MANIFEST = Path("/mnt/pythia-cloud/Pythia/raw/pypi/manifests/pypi_acquisition_v1.json")
+FROZEN_MANIFEST = Path("/mnt/pythia-cloud/PythiaDrive/raw/pypi/manifests/pypi_acquisition_v1.json")
 
 
 def utc_now() -> str:

@@ -5,7 +5,7 @@ Recovery uses the historical archive_sha256 as the PRIMARY identity anchor:
   historical package + historical archive_sha256 -> exact PyPI distribution.
 
 Historical data is IMMUTABLE. Recovery writes ONLY under
-/mnt/pythia-cloud/Pythia/recovery/pypi/.
+/mnt/pythia-cloud/PythiaDrive/recovery/pypi/.
 
 Usage:
   python scripts/scrapers/pypi_sha_recovery.py --packages pkg1 pkg2 ... 
@@ -43,14 +43,14 @@ from scripts.scrapers.pypi_storage import (
     recovery_state_remote,
 )
 
-RECOVERY_ROOT = Path("/mnt/pythia-cloud/Pythia/recovery")
+RECOVERY_ROOT = Path("/mnt/pythia-cloud/PythiaDrive/recovery")
 RECOVERY_DIR = RECOVERY_ROOT / "pypi"
 RECOVERY_ARCHIVES = RECOVERY_DIR / "archives"
 RECOVERY_STATE_PATH = RECOVERY_DIR / "recovery_state_v1.json"
 RECOVERY_MANIFEST_PATH = RECOVERY_DIR / "recovery_manifest_v1.jsonl"
 
-FROZEN_MANIFEST = Path("/mnt/pythia-cloud/Pythia/raw/pypi/manifests/pypi_acquisition_v1.json")
-META_DIR = Path("/mnt/pythia-cloud/Pythia/raw/pypi/metadata")
+FROZEN_MANIFEST = Path("/mnt/pythia-cloud/PythiaDrive/raw/pypi/manifests/pypi_acquisition_v1.json")
+META_DIR = Path("/mnt/pythia-cloud/PythiaDrive/raw/pypi/metadata")
 
 # Route recovery writes through the remote storage abstraction when enabled.
 PYPI_REMOTE_STORAGE = os.environ.get("PYPI_REMOTE_STORAGE", "0") == "1"

@@ -22,12 +22,14 @@ if str(_here) not in sys.path:
 import scripts.scrapers.pypi_storage as storage
 from scripts.scrapers.pypi_storage import (
     LocalDirBackend,
+    LocalWriterLock,
     WriterLock,
     commit_write,
     freeze_sentinel_exists,
     freeze_sentinel_remote,
     map_local_path_to_remote,
     remote_headroom,
+    remote_list_recursive,
     save_archive_remote,
     save_checkpoint_remote,
     save_manifest_remote,
@@ -63,9 +65,15 @@ class StorageTestBase(unittest.TestCase):
 class TestPathMapping(StorageTestBase):
     def test_canonical_root_maps_to_pythia(self):
         root = storage.canonical_pypi_root()
-        self.assertEqual(str(root), "/mnt/pythia-cloud/Pythia/raw/pypi")
+        self.assertEqual(str(root), "/mnt/pythia-cloud/PythiaDrive/raw/pypi")
 
     def test_canonical_path_mapping(self):
+        self.assertEqual(
+            map_local_path_to_remote("/mnt/pythia-cloud/PythiaDrive/raw/pypi/metadata/x_checkpoint.json"),
+            "pythia:Pythia/raw/pypi/metadata/x_checkpoint.json",
+        )
+
+    def test_legacy_container_root_maps_to_pythia(self):
         self.assertEqual(
             map_local_path_to_remote("/mnt/pythia-cloud/Pythia/raw/pypi/metadata/x_checkpoint.json"),
             "pythia:Pythia/raw/pypi/metadata/x_checkpoint.json",
@@ -88,6 +96,29 @@ class TestPathMapping(StorageTestBase):
     def test_wrong_root_rejected(self):
         with self.assertRaises(storage.RemotePathMappingError):
             map_local_path_to_remote("/home/user/data/raw/pypi/x.json")
+
+    def test_recovery_root_maps_to_pythia(self):
+        self.assertEqual(
+            map_local_path_to_remote("/mnt/pythia-cloud/PythiaDrive/recovery/pypi/archives/x/1.0/x-1.0.tar.gz"),
+            "pythia:Pythia/recovery/pypi/archives/x/1.0/x-1.0.tar.gz",
+        )
+
+    def test_recursive_remote_file_listing_local_backend(self):
+        self._backend.write_bytes(
+            "pythia:Pythia/raw/pypi/packages/a/1.0/a-1.0.tar.gz",
+            b"a",
+            prevent_overwrite=False,
+        )
+        self._backend.write_bytes(
+            "pythia:Pythia/raw/pypi/packages/b/2.0/b-2.0.whl",
+            b"b",
+            prevent_overwrite=False,
+        )
+        names = remote_list_recursive("pythia:Pythia/raw/pypi/packages")
+        self.assertEqual(
+            names,
+            ["a/1.0/a-1.0.tar.gz", "b/2.0/b-2.0.whl"],
+        )
 
     def test_session4_path_rejected(self):
         with self.assertRaises(storage.RemotePathMappingError):
@@ -613,3 +644,26 @@ class TestWriteGuard(StorageTestBase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class TestLocalWriterLock(unittest.TestCase):
+    def test_local_lock_acquire_release(self):
+        with tempfile.TemporaryDirectory() as td:
+            lock_path = Path(td) / "metadata" / ".locks" / "writer.lock"
+            lock = LocalWriterLock(lock_path, lease_seconds=60)
+            with lock.protected(heartbeat_interval=5.0):
+                self.assertTrue(lock_path.exists())
+                self.assertTrue(lock.is_held())
+            self.assertFalse(lock_path.exists())
+
+    def test_local_lock_stale_takeover(self):
+        with tempfile.TemporaryDirectory() as td:
+            lock_path = Path(td) / "metadata" / ".locks" / "writer.lock"
+            lock_path.parent.mkdir(parents=True, exist_ok=True)
+            lock_path.write_text(
+                json.dumps({"owner_id": "dead", "acquired_at": 0, "lease_expires_at": 1}),
+                encoding="utf-8",
+            )
+            lock = LocalWriterLock(lock_path, lease_seconds=60)
+            self.assertTrue(lock.acquire(timeout=5))
+            lock.release()
+            self.assertFalse(lock_path.exists())
