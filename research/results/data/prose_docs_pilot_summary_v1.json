@@ -1,0 +1,139 @@
+{
+  "generated_at": "2026-10-22T10:02:24+00:00",
+  "notes": [
+    "CC0-1.0 for both sources; commit-pinned shallow clones.",
+    "Cross-document exact-hash repeats are identical governance/policy text appearing in multiple PEPs; records retain per-document provenance.",
+    "Superseded pilot runs are retained as evidence; the final run is the only one to consume.",
+    "Concurrent untracked scripts/scrapers/prose_plus_code.py was not modified or used."
+  ],
+  "outputs": {
+    "cpython_devguide": {
+      "bytes": 2050105,
+      "max_tokens": 2023,
+      "path": "data/filtered/stage1/prose_docs_prose-20261022T100121Z-f5fc9a3b_cpython_devguide.jsonl",
+      "provisional_tokens": 71869,
+      "records": 402,
+      "records_with_code": 119,
+      "sha256": "3ed29176bd2205bf6ee5bfefadae05a45d93c3b5f7325992f1a0682d88452549"
+    },
+    "peps": {
+      "bytes": 48460837,
+      "max_tokens": 2025,
+      "path": "data/filtered/stage1/prose_docs_prose-20261022T100121Z-f5fc9a3b_peps.jsonl",
+      "provisional_tokens": 1810060,
+      "records": 9838,
+      "records_with_code": 2836,
+      "sha256": "ad3c63565b0b95233806e11c87849ad62ec11aae20564b8127da86e39662fcda"
+    }
+  },
+  "pipeline": "scripts/scrapers/prose_docs.py",
+  "pipeline_version": "1.0.0",
+  "report_dir": "data/raw/prose_docs/reports/prose-20261022T100121Z-f5fc9a3b",
+  "run_id": "prose-20261022T100121Z-f5fc9a3b",
+  "schema": "prose_docs_v1",
+  "schema_version": "1.0",
+  "sources": [
+    {
+      "commit": "3b0eaa2021d57747ab83b9356eefe597c5745dde",
+      "documentation_version": "git:main",
+      "license": "Public domain / CC0-1.0",
+      "license_evidence": "PEP 1 (and every PEP) states the document is placed in the public domain or under the CC0-1.0-Universal license, whichever is more permissive. Source: https://peps.python.org/pep-0001/",
+      "license_spdx": "CC0-1.0",
+      "manifest_path": "data/raw/peps/ACQUISITION_MANIFEST.json",
+      "output": {
+        "bytes": 48460837,
+        "max_tokens": 2025,
+        "path": "data/filtered/stage1/prose_docs_prose-20261022T100121Z-f5fc9a3b_peps.jsonl",
+        "provisional_tokens": 1810060,
+        "records": 9838,
+        "records_with_code": 2836,
+        "sha256": "ad3c63565b0b95233806e11c87849ad62ec11aae20564b8127da86e39662fcda"
+      },
+      "raw_subdir": "peps",
+      "ref": "main",
+      "repo_url": "https://github.com/python/peps",
+      "source_name": "peps",
+      "stats": {
+        "code_blocks": 6131,
+        "code_tokens": 201121,
+        "documents_examined": 745,
+        "documents_with_records": 740,
+        "duplicates": 0,
+        "no_prose": 1612,
+        "prose_tokens": 1608939,
+        "retained": 9838,
+        "sections_seen": 14521,
+        "syntax_invalid_code_blocks": 145,
+        "syntax_valid_code_blocks": 2984,
+        "too_short": 1425
+      }
+    },
+    {
+      "commit": "ff9af798f7c216406da7699a46ac6b9052711745",
+      "documentation_version": "git:main",
+      "license": "CC0 1.0 Universal",
+      "license_evidence": "The python/devguide repository LICENSE is CC0 1.0 Universal.",
+      "license_spdx": "CC0-1.0",
+      "manifest_path": "data/raw/devguide/ACQUISITION_MANIFEST.json",
+      "output": {
+        "bytes": 2050105,
+        "max_tokens": 2023,
+        "path": "data/filtered/stage1/prose_docs_prose-20261022T100121Z-f5fc9a3b_cpython_devguide.jsonl",
+        "provisional_tokens": 71869,
+        "records": 402,
+        "records_with_code": 119,
+        "sha256": "3ed29176bd2205bf6ee5bfefadae05a45d93c3b5f7325992f1a0682d88452549"
+      },
+      "raw_subdir": "devguide",
+      "ref": "main",
+      "repo_url": "https://github.com/python/devguide",
+      "source_name": "cpython_devguide",
+      "stats": {
+        "code_blocks": 411,
+        "code_tokens": 5068,
+        "documents_examined": 63,
+        "documents_with_records": 49,
+        "duplicates": 0,
+        "no_prose": 36,
+        "prose_tokens": 66801,
+        "retained": 402,
+        "sections_seen": 538,
+        "syntax_invalid_code_blocks": 1,
+        "syntax_valid_code_blocks": 10,
+        "too_short": 68
+      }
+    }
+  ],
+  "stage": 1,
+  "superseded_runs": [
+    "prose-20261022T095336Z-f5fc9a3b",
+    "prose-20261022T095601Z-f5fc9a3b",
+    "prose-20261022T095715Z-f5fc9a3b"
+  ],
+  "token_count_method": "whitespace_prose_plus_code_tokens_v1",
+  "totals": {
+    "code_blocks": 6542,
+    "code_tokens": 206189,
+    "documents_examined": 808,
+    "documents_with_records": 789,
+    "duplicates": 0,
+    "no_prose": 1648,
+    "prose_tokens": 1675740,
+    "provisional_tokens": 1881929,
+    "retained": 10240,
+    "sections_seen": 15059,
+    "syntax_invalid_code_blocks": 146,
+    "syntax_valid_code_blocks": 2994,
+    "too_short": 1493
+  },
+  "validation": {
+    "all_records_have_segments": true,
+    "code_executed": false,
+    "cross_document_exact_hash_repeats_peps": 49,
+    "deterministic_repeat": true,
+    "footnote_references_removed": true,
+    "ids_unique": true,
+    "max_record_tokens_within_cap": true,
+    "within_document_duplicates": 0
+  }
+}

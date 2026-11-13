@@ -40,15 +40,21 @@ The repository has been reconciled against the final Pythia-160M master plan. Al
 
 - **Official Python documentation:** Raw archive exists at `data/raw/python_docs/python-3.14-docs-html.zip` with SHA-256 `44e94d921af3e1c4f46e6dd3a39d606e6847e37e9c3be22700a354de38a9a92f`. The report and raw manifest record 10,030 candidates, 4,512 syntax-valid examples, and 317 retained (per report) / 96 retained (per v3 filesystem). **Reconciled:** Manifest report (317) and v3 output (96) are both preserved as historical evidence; the discrepancy is documented in the reconciliation audit.
 
+- **Scientific Python documentation (NumPy/SciPy/pandas/Matplotlib):** License-first audit complete (DEC-20261022-002). ACCEPT NumPy 2.5, SciPy 1.18.0, pandas 2.3.3 (BSD-3-Clause, pinned versioned HTML archives); HOLD Matplotlib (no immutable HTML archive). All three approved sources acquired: 21,488 blocks examined → **441 Stage 1 retained** (NumPy 99, SciPy 301, pandas 41); SHA-256 verified for all archives. Raw at `data/raw/scientific_docs/`, Stage 1 at `data/filtered/stage1/scientific_docs_*.jsonl`. See `SESSION_4_SCIENTIFIC_DOCS_AUDIT_REPORT.md`.
+
+- **Corpus reconciliation (2026-10-22):** Discovery report at `SESSION_5_SOURCE_DISCOVERY_REPORT.md` (+ `research/results/data/source_discovery_priorities_v1.json`). Verified corpus is code-heavy (CodeSearchNet `full-v3` 312,723 accepted / 82.85M tokens) and prose-poor (Stage 1 992 records / 53,764 tokens; Jupyter 73 / 135,671). Highest-value missing family: licensed explanatory prose. Queue CC0/BSD/CC-BY-SA sources (PEPs, Devguide, scikit-learn, SymPy, packaging guide, A Byte of Python); new prose extractor required. **Stale canonical samples** (`data/canonical/*`) carry `license=UNKNOWN` — quarantine before assembly. **License flag:** Think Python (CC BY-NC 3.0) and ATBS (CC BY-NC-SA 4.0) are non-commercial; raw kept, promotion held. Stack Exchange blocked, The Stack review hold, GitHub-Python rejected (DEC-20261022-003).
+
+- **Prose + code documentation pilot (2026-10-22):** `scripts/scrapers/prose_docs.py` + `tests/test_prose_docs.py` (29/29 pass) implement structure-preserving extraction (ordered prose/code segments, section paths, document identity, pinned revisions; AST-only validation). Final run `prose-20261022T100121Z-f5fc9a3b` on CC0-1.0 sources: PEPs `3b0eaa2021d5` (745 docs) and CPython Devguide `ff9af798f7c2` (63 docs) → **10,240 candidate records / 1,881,929 provisional tokens** (9,838 PEPs, 402 Devguide; 6,542 code blocks, 2,994 AST-valid). Outputs at `data/filtered/stage1/prose_docs_*.jsonl`, reports under `data/raw/prose_docs/reports/`. Earlier in-session runs are superseded but retained. Not promoted to `data/final/`: open items are cross-document exact-hash dedupe and choosing between `prose_docs.py` and the concurrent untracked `prose_plus_code.py`. See `SESSION_6_PROSE_DOCS_PILOT_REPORT.md`, `research/results/data/prose_docs_pilot_summary_v1.json`, and DEC-20261022-005.
+
 - **Think Python:** Raw file has 293 records. The v3 filtered file has 293 records. Stage 1 manifest reports conflicting retained counts across sources. **Status:** Historical counts preserved; reconciliation audit documents the conflicts.
 
 - **Automate the Boring Stuff:** Raw files contain 123 main records and 39 Chapter 1 records; the v3 filtered file has 162 records. Manifests/reports conflict on retained counts. **Status:** Historical counts preserved; reconciliation audit documents the conflicts.
 
 - **Stack Overflow:** `scripts/prepare_so.py` and `scripts/scrapers/stackoverflow_hf.py` exist; Phase 1 streaming sanity check completed. Source verified: streaming works correctly, metadata structure confirmed (question_id, answer_id, title, question_text, answer_text, question_score, answer_score, is_accepted, tags, community, source URL, source license, source dataset, token_count, record type). However, 0 Stack Overflow records found in first 100k scanned records - all communities are niche StackExchange sites (3dprinting, academia, etc.). **Status:** Source acquisition profiling complete (research/results/data/stackoverflow_hf_source_profile_v1.json). HF source classified as SOURCE_PROFILING_ONLY. BigQuery public dataset `bigquery-public-data.stackoverflow` now primary source. However, **BIGQUERY_ACCESS_BLOCKED** - GCP Application Default Credentials not found. Scripts `scripts/scrapers/stackoverflow_bigquery.py` and `scripts/scrapers/stackoverflow_select.py` and `scripts/scrapers/stackoverflow_token_budget.py` prepared for BigQuery extraction but cannot execute without credentials. Raw snapshot `data/raw/stackoverflow/stackoverflow_candidates_v1.jsonl` present (0 records). Manifest and provenance artifacts created.
 
-- **Jupyter:** `data/raw/jupyter/jupyter_readme_code.jsonl` exists but is empty. **Blocked:** No Jupyter records available.
+- **Jupyter:** Acquired 178 raw notebooks (73 Stage 3 eligible) from 3 approved MIT/CC-BY-4.0 sources (jdhp-docs/notebooks, COGS108/Tutorials, jupyter-guide/jupyter-guide) at immutable commits, stored under `/mnt/pythia-cloud/PythiaDrive/raw/jupyter/`. Filtered Stage 3 outputs under `/mnt/pythia-cloud/PythiaDrive/filtered/stage3/`. Two candidates deferred (codebasics/py: no license; jupyter-agent: synthetic non-`.ipynb`). See `SESSION_3_JUPYTER_ACQUISITION_REPORT.md` and `DEC-20261022-001`.
 
-- **CodeSearchNet:** No raw directory, source snapshot, processor, manifest, or report is present. **Blocked:** Source acquisition not evidenced.
+- **CodeSearchNet:** Acquired from the official Zenodo archive (DOI 10.5281/zenodo.7908468; `python.zip` 940,909,997 bytes, MD5 verified). Run `full-v3`: 457,461 processed → **312,723 accepted** / 144,738 rejected; 82,854,131 provisional tokens; splits preserved (train 412,178 / valid 23,107 / test 22,176). Accepted corpus at `/mnt/pythia-cloud/PythiaDrive/filtered/stage2/codesearchnet_full-v3/` (1.38 GB, SHA-256 `420c36b2…bf318`); manifest `manifests/codesearchnet_acquisition_full-v3.json`; report `research/workstreams/codesearchnet_acquisition.md`. **Completed.**
 
 - **The Stack:** No raw directory, source snapshot, processor, manifest, or report is present. **Blocked:** Source acquisition not evidenced.
 
@@ -86,7 +92,7 @@ CD owns engineering, validators, pipeline, and research infrastructure. The AST 
 
 1. Stack Overflow output is empty; no raw snapshot, manifest, or report present.
 2. Jupyter raw data is empty; no provenance.
-3. CodeSearchNet source tree absent.
+3. ~~CodeSearchNet source tree absent.~~ Resolved 2026-10-22: official Zenodo archive acquired; run `full-v3` produced 312,723 accepted records.
 4. The Stack source tree absent.
 5. `data/final/corpus.jsonl` is empty — final corpus not assembled.
 6. No custom tokenizer, Knowledge Graph, model architecture, pretraining, evaluation, or release artifacts exist.
@@ -112,7 +118,7 @@ CD owns engineering, validators, pipeline, and research infrastructure. The AST 
 
 ## Next recommended actions
 
-1. **Exact next action:** Address blocked data tasks: acquire Stack Overflow source snapshot, resolve Jupyter provenance, or move to Stack/CodeSearchNet after raw-source establishment.
+1. **Exact next action:** CodeSearchNet acquisition is complete (`full-v3`, 312,723 accepted / 82.85M provisional tokens); feed the accepted corpus into deduplication/curriculum (PYTHIA-009/PYTHIA-010) and address remaining blocked sources (Stack Overflow, The Stack).
 2. Populate `data/sft/` repair_pairs/, docstring_to_code/, instruction/, and reasoning/ directories with metadata only (no data acquisition).
 3. Begin preliminary deduplication runs on existing Stage 1 candidates using the configured 0.85 threshold.
 4. Add explicit dataset/model/tokenizer versions to every meaningful run hereafter.

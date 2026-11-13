@@ -1,0 +1,60 @@
+{
+  "artifact": "scientific_docs_acquisition_summary_v1",
+  "sources": {
+    "numpy_docs": {
+      "archive_sha256": "42fe2b5d198db7f13669d7b51e849199afcb8c0a338d63fd70bf0dc4a93a15bb",
+      "documentation_version": "2.5",
+      "output_path": "/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/data/filtered/stage1/scientific_docs_scidocs-20261022T053610Z-ea912df1_numpy_docs.jsonl",
+      "run_id": "scidocs-20261022T053610Z-ea912df1",
+      "stats": {
+        "blocks_examined": 4736,
+        "exact_duplicates": 1063,
+        "low_documentation": 516,
+        "pep8_rejected": 22,
+        "retained": 99,
+        "syntax_invalid": 408,
+        "syntax_valid": 3265,
+        "too_long": 0,
+        "too_short": 2628
+      }
+    },
+    "pandas_docs": {
+      "archive_sha256": "851b0af5811e7ea029eb126a5dde362e91dcfd58f55c87b28aa371f1ac02ae91",
+      "documentation_version": "2.3.3",
+      "output_path": "/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/data/filtered/stage1/scientific_docs_scidocs-20261022T064353Z-91b4855a_pandas_docs.jsonl",
+      "run_id": "scidocs-20261022T064353Z-91b4855a",
+      "stats": {
+        "blocks_examined": 8973,
+        "exact_duplicates": 2461,
+        "low_documentation": 620,
+        "pep8_rejected": 14,
+        "retained": 41,
+        "syntax_invalid": 2688,
+        "syntax_valid": 3824,
+        "too_long": 0,
+        "too_short": 3149
+      }
+    },
+    "scipy_docs": {
+      "archive_sha256": "104a6fb25067eb7c75f26ba931cb36b9bb9f05b3624b575e2d8496a0783c4400",
+      "documentation_version": "1.18.0",
+      "output_path": "/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/data/filtered/stage1/scientific_docs_scidocs-20261022T063330Z-29c8f7b5_scipy_docs.jsonl",
+      "run_id": "scidocs-20261022T063330Z-29c8f7b5",
+      "stats": {
+        "blocks_examined": 7779,
+        "exact_duplicates": 1132,
+        "low_documentation": 1385,
+        "pep8_rejected": 27,
+        "retained": 301,
+        "syntax_invalid": 707,
+        "syntax_valid": 5940,
+        "too_long": 0,
+        "too_short": 4227
+      }
+    }
+  },
+  "totals": {
+    "blocks_examined": 21488,
+    "retained": 441
+  }
+}

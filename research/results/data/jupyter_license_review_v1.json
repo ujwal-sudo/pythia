@@ -1,0 +1,92 @@
+{
+  "approved_for_acquisition": [
+    "jdhp-docs__notebooks",
+    "COGS108__Tutorials",
+    "jupyter-guide__jupyter-guide"
+  ],
+  "artifact": "jupyter_license_review_v1",
+  "deferred_pending_license_review": [
+    "codebasics__py",
+    "jupyter-agent__jupyter-agent-dataset"
+  ],
+  "generated_at": "2026-10-22T05:23:52+00:00",
+  "policy": "A public repository, permissive repository-level license, HF license badge, or GitHub API license classification is not proof that every notebook is reusable. Ambiguous lineage is marked LICENSE_REVIEW_REQUIRED and not promoted.",
+  "review_summary": "Per-source license and provenance review for the notebook workstream.",
+  "sources": [
+    {
+      "attribution_required": false,
+      "attribution_text": null,
+      "canonical_url": "https://github.com/codebasics/py",
+      "content_note": "Popular Python learning repo (7353 stars). Many notebooks are large and output-heavy (up to ~1.2 MB).",
+      "decision": "NO_GO",
+      "decision_reason": "No repository license is present. Reuse cannot be authorized without a licensing decision.",
+      "license": null,
+      "license_evidence": "GitHub API reports license=null and no LICENSE file exists at the repository root. Default copyright (all rights reserved) applies.",
+      "license_spdx": null,
+      "license_status": "LICENSE_REVIEW_REQUIRED",
+      "revision": "3ee4bde332ae7a10499c2679900094fa22ae191f",
+      "revision_type": "git_commit",
+      "source_name": "codebasics__py"
+    },
+    {
+      "attribution_required": false,
+      "attribution_text": null,
+      "canonical_url": "https://github.com/jdhp-docs/notebooks",
+      "content_note": "Authored notebooks about Python, NumPy, pandas, matplotlib, SciPy, and more. A few near-empty notebooks (~35-41 bytes) exist.",
+      "decision": "GO",
+      "decision_reason": "MIT license with authored provenance; clear reuse terms.",
+      "license": "MIT License",
+      "license_evidence": "GitHub API reports MIT. Repository includes a LICENSE file. Content is authored educational material by jdhp (J. Decock).",
+      "license_spdx": "MIT",
+      "license_status": "APPROVED",
+      "revision": "7f375ebea5933b82d1b8e8965e4ea0f2efa3045d",
+      "revision_type": "git_commit",
+      "source_name": "jdhp-docs__notebooks"
+    },
+    {
+      "attribution_required": true,
+      "attribution_text": "COGS 108 \u2014 Data Science in Practice, UC San Diego (https://github.com/COGS108/Tutorials), CC-BY-4.0.",
+      "canonical_url": "https://github.com/COGS108/Tutorials",
+      "content_note": "Data science tutorial notebooks (Python, NumPy, pandas, statistics, ML). Several large output-heavy notebooks.",
+      "decision": "GO",
+      "decision_reason": "CC-BY-4.0 with required attribution; authored course material.",
+      "license": "Creative Commons Attribution 4.0 International",
+      "license_evidence": "GitHub API reports CC-BY-4.0. Data Science in Practice / UC San Diego course materials. Attribution is required.",
+      "license_spdx": "CC-BY-4.0",
+      "license_status": "APPROVED",
+      "revision": "d79b6169a34ad6fff2c96d4a872801182b4ff419",
+      "revision_type": "git_commit",
+      "source_name": "COGS108__Tutorials"
+    },
+    {
+      "attribution_required": false,
+      "attribution_text": null,
+      "canonical_url": "https://github.com/jupyter-guide/jupyter-guide",
+      "content_note": "Guide for reproducible research in Jupyter notebooks. Very small coverage (2 notebooks).",
+      "decision": "GO",
+      "decision_reason": "MIT license; small but reusable authored content.",
+      "license": "MIT License",
+      "license_evidence": "GitHub API reports MIT. Repository includes a LICENSE file.",
+      "license_spdx": "MIT",
+      "license_status": "APPROVED",
+      "revision": "18813d2aa64bdba3382087842f28a81832e7518a",
+      "revision_type": "git_commit",
+      "source_name": "jupyter-guide__jupyter-guide"
+    },
+    {
+      "attribution_required": false,
+      "attribution_text": null,
+      "canonical_url": "https://huggingface.co/datasets/jupyter-agent/jupyter-agent-dataset",
+      "content_note": "Parquet (not .ipynb). Synthetic, machine-generated, not authored notebooks. Fails the '.ipynb document' criterion and provenance policy for this workstream.",
+      "decision": "NO_GO",
+      "decision_reason": "Not .ipynb notebooks; synthetic machine-generated content with upstream Kaggle ToS dependencies.",
+      "license": "Apache License 2.0",
+      "license_evidence": "Dataset card declares Apache-2.0. The dataset is explicitly machine-generated/synthetic QA pairs and execution traces derived from Kaggle notebooks; it does not redistribute original notebooks.",
+      "license_spdx": "Apache-2.0",
+      "license_status": "LICENSE_REVIEW_REQUIRED",
+      "revision": "10a8dd461bb6c580fa25b83cd3b2f6810f1d6385",
+      "revision_type": "hf_dataset_revision",
+      "source_name": "jupyter-agent__jupyter-agent-dataset"
+    }
+  ]
+}

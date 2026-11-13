@@ -161,18 +161,18 @@ This registry is the persistent coordination index for the Pythia roadmap. Statu
 - **Task ID:** PYTHIA-007
 - **Task:** CodeSearchNet
 - **Owner (OP/CD/Lead):** OP
-- **Status:** blocked
+- **Status:** completed
 - **Priority:** medium
 - **Dependencies:** PYTHIA-001; PYTHIA-002
 - **Input:** CodeSearchNet Python subset
 - **Expected output:** Immutable raw snapshot, provenance, validated candidates, manifest, and report
-- **Actual output:** No CodeSearchNet raw directory, processor, manifest, report, or filtered output is present
-- **Files changed:** UNKNOWN
+- **Actual output:** Zenodo `python.zip` (940,909,997 bytes, MD5 verified) + extracted JSONL/license evidence in `raw/codesearchnet/`; run `full-v3` produced 457,461 processed → 312,723 accepted / 144,738 rejected; accepted 1,376,283,223 bytes (SHA-256 `420c36b2…bf318`); manifest `manifests/codesearchnet_acquisition_full-v3.json`; report `research/workstreams/codesearchnet_acquisition.md`
+- **Files changed:** `scripts/scrapers/codesearchnet_acquire.py`; `tests/test_codesearchnet_acquire.py`; `research/decisions.md`; `research/task_registry.md`; `research/workstreams/codesearchnet_acquisition.md`
 - **Experiment ID:** UNKNOWN
-- **Dataset version:** UNKNOWN
-- **Notes:** Source acquisition is not evidenced.
-- **Last verified:** 2026-09-15
-- **Next action:** Acquire and checksum the source subset, then define the processing run.
+- **Dataset version:** codesearchnet_full-v3 (raw = Zenodo DOI 10.5281/zenodo.7908468)
+- **Notes:** License-gated (13,590 repos); 0 exact content duplicates; 457,461 unique record IDs; 218 source-identity groups documented non-destructively.
+- **Last verified:** 2026-10-22
+- **Next action:** Feed accepted corpus into the dedup/curriculum stage (PYTHIA-009/PYTHIA-010); keep copyleft/unknown records in `LICENSE_REVIEW_REQUIRED`.
 
 ## PYTHIA-008 — The Stack
 

@@ -1,0 +1,69 @@
+{
+  "artifact": "source_discovery_priorities_v1",
+  "generated_at": "2026-10-22",
+  "status": "discovery_only_no_acquisition_started",
+  "active_workstreams": [
+    {"name": "codesearchnet_full-v3", "state": "running", "records_processed": 457461, "records_accepted": 312723, "records_rejected": 144738},
+    {"name": "pypi_remediation_v2", "state": "in_progress", "packages_completed": 3033},
+    {"name": "github_verification", "state": "running"}
+  ],
+  "policy_overrides": {
+    "stack_exchange": "BLOCKED",
+    "the_stack": "REVIEW_HOLD",
+    "github_python": "REJECTED"
+  },
+  "corpus_reconciliation": {
+    "verified_stage1_records": 992,
+    "verified_stage1_tokens": 53764,
+    "codesearchnet_accepted_records": 312723,
+    "codesearchnet_accepted_tokens": 82854131,
+    "jupyter_stage3_records": 73,
+    "jupyter_stage3_tokens": 135671,
+    "the_stack_pilot_records": 1000,
+    "the_stack_pilot_est_tokens": 135650,
+    "stackoverflow_hf_pilot_records": 10000,
+    "pypi_packages_staged": 3033,
+    "final_corpus_records": 0,
+    "stale_artifacts_to_quarantine": [
+      "data/canonical/codesearchnet/so_codesearchnet_canonical_v1.jsonl",
+      "data/canonical/the_stack/so_the_stack_canonical_v1.jsonl",
+      "data/canonical/pypi/pypi_canonical_v1_sample.jsonl"
+    ]
+  },
+  "highest_value_missing_family": "licensed_explanatory_prose_with_executable_examples",
+  "priorities": {
+    "official_documentation": [
+      {"source": "PEPs", "version": "python/peps commit", "license": "Public domain / CC0-1.0", "decision": "ACCEPT_READY", "access": "git clone python/peps", "est_prose_tokens": [3000000, 5000000], "acquisition_cost": "low", "provenance": "high"},
+      {"source": "CPython Developer's Guide", "version": "python/devguide commit", "license": "CC0-1.0", "decision": "ACCEPT_READY", "access": "git clone python/devguide", "est_prose_tokens": [300000, 500000], "acquisition_cost": "low", "provenance": "high"},
+      {"source": "scikit-learn docs", "version": "1.9.1", "license": "BSD-3-Clause", "decision": "ACCEPT_READY", "access": "versioned HTML zip 99.8MB", "est_prose_tokens": [5000000, 10000000], "est_retained_code_blocks": [400, 700], "acquisition_cost": "low", "provenance": "high"},
+      {"source": "SymPy docs", "version": "1.14.0", "license": "BSD-3-Clause", "decision": "ACCEPT_READY", "access": "sympy/sympy_doc latest at pinned commit", "est_prose_tokens": [3000000, 5000000], "est_retained_code_blocks": [200, 400], "acquisition_cost": "medium", "provenance": "high"},
+      {"source": "Python Packaging User Guide", "version": "pypa commit", "license": "CC BY-SA 3.0", "decision": "ACCEPT_READY", "access": "git clone pypa/packaging.python.org", "est_prose_tokens": [400000, 600000], "acquisition_cost": "low_to_medium", "provenance": "high"},
+      {"source": "Matplotlib docs", "version": "3.11.2", "license": "PSF-derived", "decision": "HOLD", "access": "no HTML zip; PDF only", "est_prose_tokens": [2000000, 4000000], "acquisition_cost": "medium", "provenance": "high_but_mechanism_unclear"}
+    ],
+    "educational": [
+      {"source": "A Byte of Python", "license": "CC BY-SA 4.0; code BSD-3-Clause", "decision": "ACCEPT_READY", "access": "github.com/swaroopch/byte-of-python", "est_tokens": [60000, 90000], "acquisition_cost": "low", "provenance": "high"},
+      {"source": "Composing Programs 3e", "license": "CC BY-NC-SA 4.0", "decision": "HOLD", "reason": "non-commercial", "est_tokens": [120000, 200000]},
+      {"source": "Think Python 2e", "license": "CC BY-NC 3.0", "decision": "PROMOTION_HOLD", "reason": "already acquired; non-commercial conflicts with weight release", "stage1_records": 293},
+      {"source": "Automate the Boring Stuff 3e", "license": "CC BY-NC-SA 4.0", "decision": "PROMOTION_HOLD", "reason": "already acquired; non-commercial conflicts with weight release", "stage1_records": 162},
+      {"source": "Invent with Python / Big Book of Small Python Projects", "license": "CC BY-NC-SA", "decision": "HOLD", "reason": "non-commercial"},
+      {"source": "Python for Everybody / Full Stack Python", "license": "CC BY-NC-SA", "decision": "HOLD", "reason": "non-commercial"}
+    ],
+    "repository_code": [
+      {"source": "CPython standard library", "license": "PSF-2.0", "decision": "DEFER_P3", "access": "release tarball pinned", "est_tokens": [3000000, 5000000], "reason": "canonical code; run overlap analysis vs CodeSearchNet/PyPI first"},
+      {"source": "pip / setuptools / wheel", "license": "MIT / PSF", "decision": "DEFER", "reason": "already covered by PyPI workstream"},
+      {"source": "GitHub-Python scrape", "license": "varies", "decision": "REJECTED", "reason": "policy override"},
+      {"source": "Stack Exchange", "license": "varies", "decision": "BLOCKED", "reason": "pending licensing review"},
+      {"source": "The Stack", "license": "UNKNOWN", "decision": "REVIEW_HOLD", "reason": "license unresolved", "pilot_records": 1000}
+    ]
+  },
+  "required_new_capability": "prose_extractor_html_markdown_to_clean_text",
+  "recommended_sequence": [
+    "wait_for_codesearchnet_full-v3_and_pypi_remediation_v2_to_finish_and_verify",
+    "acquire_peps_and_cpython_devguide_cc0",
+    "acquire_scikit-learn_docs_bsd3",
+    "acquire_sympy_docs_bsd3",
+    "acquire_packaging_guide_ccbysa",
+    "acquire_a_byte_of_python_ccbysa",
+    "defer_cpython_stdlib_until_overlap_analysis"
+  ]
+}

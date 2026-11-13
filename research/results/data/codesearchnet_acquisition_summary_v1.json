@@ -1,0 +1,84 @@
+{
+  "artifact": "codesearchnet_acquisition_summary_v1",
+  "generated_at": "2026-10-22T08:02:27+00:00",
+  "final_status": "READY_FOR_NEXT_ACQUISITION_STAGE",
+  "source": {
+    "name": "CodeSearchNet (Python subset)",
+    "zenodo_record_id": 7908468,
+    "doi": "10.5281/zenodo.7908468",
+    "url": "https://zenodo.org/api/records/7908468/files/python.zip/content",
+    "archive_bytes": 940909997,
+    "archive_md5": "07b49dd01fbac894fbdae22da6462e4f",
+    "splits": {
+      "train": 412178,
+      "valid": 23107,
+      "test": 22176,
+      "total": 457461
+    }
+  },
+  "license_policy": {
+    "approved": "permissive allowlist (MIT, Apache-2.0, BSD-2/3-Clause, ISC, Unlicense, CC0-1.0, Python-2.0, Zlib, 0BSD, WTFPL, BlueOak-1.0.0)",
+    "review_required": "copyleft (GPL/LGPL/AGPL/MPL/EPL), unknown, ambiguous, missing",
+    "ineligible": "explicit no-redistribution",
+    "provenance_insufficient": "no repository identity",
+    "note": "Evidence-based deterministic classification, not a legal opinion"
+  },
+  "runs": [
+    {
+      "run_id": "full-v3",
+      "manifest": "/mnt/pythia-cloud/PythiaDrive/manifests/codesearchnet_acquisition_full-v3.json",
+      "counts": {
+        "records_processed": 457461,
+        "records_accepted": 312723,
+        "records_rejected": 144738,
+        "license_review_required": 134996,
+        "quality_rejected_approved_license": 9742,
+        "distinct_repositories": 13590
+      },
+      "split_counts": {
+        "train": 412178,
+        "valid": 23107,
+        "test": 22176
+      },
+      "license_status_counts": {
+        "LICENSE_APPROVED_FOR_INTENDED_USE": 322465,
+        "LICENSE_REVIEW_REQUIRED": 134996
+      },
+      "provisional_tokens": 82854131,
+      "token_method": "char_count_div_4_provisional",
+      "deduplication": {
+        "distinct_record_ids": 457461,
+        "distinct_content_hashes": 457461,
+        "exact_content_duplicates": 0,
+        "source_identity_groups": 218,
+        "destructive_deduplication_performed": false
+      },
+      "outputs": {
+        "accepted": {
+          "path": "/mnt/pythia-cloud/PythiaDrive/filtered/stage2/codesearchnet_full-v3/codesearchnet_canonical_accepted.jsonl",
+          "bytes": 1376283223,
+          "sha256": "420c36b20ffcfd318f993df4c5e05b06d07fae3893cdf38982d5e867ab8bf318",
+          "lines": 312723
+        },
+        "rejected": {
+          "path": "/mnt/pythia-cloud/PythiaDrive/filtered/stage2/codesearchnet_full-v3/codesearchnet_rejected.jsonl",
+          "bytes": 46709966,
+          "sha256": "d7f4f3f1f3477cce0563f417ea1091dc73d8e826bde8844e0b5467faa014d289",
+          "lines": 144738
+        }
+      }
+    }
+  ],
+  "superseded_runs": [
+    {
+      "run_id": "full-v2",
+      "reason": "record_id omitted content discriminator and produced 148 colliding groups (177 records) in accepted output; regenerated as full-v3 and purged"
+    }
+  ],
+  "known_limitations": [
+    "Provisional token counts use char_count // 4 until a custom tokenizer exists",
+    "License classification is deterministic/evidence-based, not legal advice",
+    "218 source-identity groups map to multiple distinct code bodies and are documented non-destructively",
+    "python_dedupe_definitions_v2.pkl (Category B superset) intentionally not extracted"
+  ]
+}

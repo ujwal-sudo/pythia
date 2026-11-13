@@ -106,3 +106,18 @@ All original decisions from `DEC-20260915-001` through `DEC-20260915-004` are pr
 ### DEC-20260915-004 — Use persistent Lead coordination files
 - **Status:** accepted — incorporated into Versioning section
 - **Reason:** Cross-session reproducibility and coordination
+### DEC-20261022-001 — CodeSearchNet source: official Zenodo archive
+- **Status:** accepted
+- **Reason:** Original S3 is decommissioned; HF mirrors lack license/provenance. Zenodo `python.zip` (DOI 10.5281/zenodo.7908468) is the official frozen re-host with repo identity, commit SHA, original splits, and `python_licenses.pkl`.
+
+### DEC-20261022-002 — Load license evidence with a restricted unpickler
+- **Status:** accepted
+- **Reason:** `python_licenses.pkl` is a pickle; load it with a data-only `pickle.Unpickler` so no corpus/pickle code executes. Malicious pickles are rejected.
+
+### DEC-20261022-003 — Evidence-based four-state license gate
+- **Status:** accepted
+- **Reason:** Permissive allowlist → `LICENSE_APPROVED_FOR_INTENDED_USE`; copyleft/unknown/missing → `LICENSE_REVIEW_REQUIRED`; explicit no-redistribution → `LICENSE_INELIGIBLE`; missing identity → `PROVENANCE_INSUFFICIENT`. Only APPROVED + quality-ACCEPTED records enter the corpus.
+
+### DEC-20261022-004 — `record_id` includes a content digest
+- **Status:** accepted
+- **Reason:** Source identity (`repo/path/func_name/sha/partition`) is not unique in CodeSearchNet (same-named nested/getter-setter functions). Folding the normalized-content hash into the id yields 457,461/457,461 unique ids while keeping exact duplicates id-stable.

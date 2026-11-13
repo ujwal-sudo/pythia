@@ -1,0 +1,3432 @@
+{
+  "baseline": {
+    "provisional_tokens": 1881929,
+    "records": 10240
+  },
+  "definition": "exact_hash = sha256(normalize_code(content)); content is the rendered Markdown with '## section_path' header. Groups=2+ records with identical exact_hash.",
+  "generated_at": "2026-10-22T20:01:01+00:00",
+  "groups": [
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0337",
+          "document_path": "peps/pep-0337.rst",
+          "document_url": "https://peps.python.org/pep-0337/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-0337:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0368",
+          "document_path": "peps/pep-0368.rst",
+          "document_url": "https://peps.python.org/pep-0368/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-0368:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0400",
+          "document_path": "peps/pep-0400.rst",
+          "document_url": "https://peps.python.org/pep-0400/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-0400:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0419",
+          "document_path": "peps/pep-0419.rst",
+          "document_url": "https://peps.python.org/pep-0419/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-0419:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3143",
+          "document_path": "peps/pep-3143.rst",
+          "document_url": "https://peps.python.org/pep-3143/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-3143:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "7895fef3d3059eb0a19a8fffe812c410f214d80558495940109fe49900281394",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0368",
+          "document_path": "peps/pep-0368.rst",
+          "document_url": "https://peps.python.org/pep-0368/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-0368:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0400",
+          "document_path": "peps/pep-0400.rst",
+          "document_url": "https://peps.python.org/pep-0400/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-0400:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0419",
+          "document_path": "peps/pep-0419.rst",
+          "document_url": "https://peps.python.org/pep-0419/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-0419:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3143",
+          "document_path": "peps/pep-3143.rst",
+          "document_url": "https://peps.python.org/pep-3143/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-3143:1:1:7895fef3",
+          "section_path": [
+            "PEP Deferral"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "7895fef3d3059eb0a19a8fffe812c410f214d80558495940109fe49900281394",
+      "kept_record": {
+        "document_id": "pep-0337",
+        "document_path": "peps/pep-0337.rst",
+        "document_url": "https://peps.python.org/pep-0337/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 40,
+        "record_id": "peps:pep-0337:1:1:7895fef3",
+        "section_path": [
+          "PEP Deferral"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "PEP Deferral"
+      ],
+      "size": 5
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 45,
+          "record_id": "peps:pep-0333:19:1:33926b42",
+          "section_path": [
+            "Specification Details",
+            "Thread Support"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0444",
+          "document_path": "peps/pep-0444.rst",
+          "document_url": "https://peps.python.org/pep-0444/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 45,
+          "record_id": "peps:pep-0444:19:1:33926b42",
+          "section_path": [
+            "Specification Details",
+            "Thread Support"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 45,
+          "record_id": "peps:pep-3333:20:1:33926b42",
+          "section_path": [
+            "Specification Details",
+            "Thread Support"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "33926b426802a2f234abd6ebd54d00e44380b05f51ecceb01f7289448f13bb4a",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0444",
+          "document_path": "peps/pep-0444.rst",
+          "document_url": "https://peps.python.org/pep-0444/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 45,
+          "record_id": "peps:pep-0444:19:1:33926b42",
+          "section_path": [
+            "Specification Details",
+            "Thread Support"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 45,
+          "record_id": "peps:pep-3333:20:1:33926b42",
+          "section_path": [
+            "Specification Details",
+            "Thread Support"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "33926b426802a2f234abd6ebd54d00e44380b05f51ecceb01f7289448f13bb4a",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 45,
+        "record_id": "peps:pep-0333:19:1:33926b42",
+        "section_path": [
+          "Specification Details",
+          "Thread Support"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification Details",
+        "Thread Support"
+      ],
+      "size": 3
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 51,
+          "record_id": "peps:pep-0344:11:1:013e6b65",
+          "section_path": [
+            "Open Issue: Extra Information"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 51,
+          "record_id": "peps:pep-3134:11:1:013e6b65",
+          "section_path": [
+            "Open Issue: Extra Information"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "013e6b65325dedaa2a30f42e15391a4b89a062c7434b756254c614402aa00dce",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 51,
+          "record_id": "peps:pep-3134:11:1:013e6b65",
+          "section_path": [
+            "Open Issue: Extra Information"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "013e6b65325dedaa2a30f42e15391a4b89a062c7434b756254c614402aa00dce",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 51,
+        "record_id": "peps:pep-0344:11:1:013e6b65",
+        "section_path": [
+          "Open Issue: Extra Information"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Open Issue: Extra Information"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 452,
+          "record_id": "peps:pep-0333:21:1:0f336a49",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Server Extension APIs"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 452,
+          "record_id": "peps:pep-3333:22:1:0f336a49",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Server Extension APIs"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "0f336a492651c8918f25a693deb53ce958a1543d6b728a82ff8bf51698d7c74e",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 452,
+          "record_id": "peps:pep-3333:22:1:0f336a49",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Server Extension APIs"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "0f336a492651c8918f25a693deb53ce958a1543d6b728a82ff8bf51698d7c74e",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 452,
+        "record_id": "peps:pep-0333:21:1:0f336a49",
+        "section_path": [
+          "Implementation/Application Notes",
+          "Server Extension APIs"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Implementation/Application Notes",
+        "Server Extension APIs"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0427",
+          "document_path": "peps/pep-0427.rst",
+          "document_url": "https://peps.python.org/pep-0427/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 42,
+          "record_id": "peps:pep-0427:7:1:133c3e5a",
+          "section_path": [
+            "Details",
+            "Installing a wheel 'distribution-1.0-py32-none-any.whl'",
+            "Recommended archiver features"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 42,
+          "record_id": "peps:pep-0491:6:1:133c3e5a",
+          "section_path": [
+            "Details",
+            "Installing a wheel 'distribution-1.0-py32-none-any.whl'",
+            "Recommended archiver features"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "133c3e5a078d0390be6e88770da403efe9eee14b9467afb0ffb44301586d5f8c",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 42,
+          "record_id": "peps:pep-0491:6:1:133c3e5a",
+          "section_path": [
+            "Details",
+            "Installing a wheel 'distribution-1.0-py32-none-any.whl'",
+            "Recommended archiver features"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "133c3e5a078d0390be6e88770da403efe9eee14b9467afb0ffb44301586d5f8c",
+      "kept_record": {
+        "document_id": "pep-0427",
+        "document_path": "peps/pep-0427.rst",
+        "document_url": "https://peps.python.org/pep-0427/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 42,
+        "record_id": "peps:pep-0427:7:1:133c3e5a",
+        "section_path": [
+          "Details",
+          "Installing a wheel 'distribution-1.0-py32-none-any.whl'",
+          "Recommended archiver features"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Details",
+        "Installing a wheel 'distribution-1.0-py32-none-any.whl'",
+        "Recommended archiver features"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0314",
+          "document_path": "peps/pep-0314.rst",
+          "document_url": "https://peps.python.org/pep-0314/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 59,
+          "record_id": "peps:pep-0314:3:1:1a8aee33",
+          "section_path": [
+            "Fields"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0345",
+          "document_path": "peps/pep-0345.rst",
+          "document_url": "https://peps.python.org/pep-0345/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 59,
+          "record_id": "peps:pep-0345:2:1:1a8aee33",
+          "section_path": [
+            "Fields"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "1a8aee33987fee46962cf2939ac51539fc1bb028f358ac22fae2c683a4098dfc",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0345",
+          "document_path": "peps/pep-0345.rst",
+          "document_url": "https://peps.python.org/pep-0345/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 59,
+          "record_id": "peps:pep-0345:2:1:1a8aee33",
+          "section_path": [
+            "Fields"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "1a8aee33987fee46962cf2939ac51539fc1bb028f358ac22fae2c683a4098dfc",
+      "kept_record": {
+        "document_id": "pep-0314",
+        "document_path": "peps/pep-0314.rst",
+        "document_url": "https://peps.python.org/pep-0314/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 59,
+        "record_id": "peps:pep-0314:3:1:1a8aee33",
+        "section_path": [
+          "Fields"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Fields"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0382",
+          "document_path": "peps/pep-0382.rst",
+          "document_url": "https://peps.python.org/pep-0382/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 50,
+          "record_id": "peps:pep-0382:0:1:2206e53b",
+          "section_path": [
+            "Rejection Notice"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0402",
+          "document_path": "peps/pep-0402.rst",
+          "document_url": "https://peps.python.org/pep-0402/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 50,
+          "record_id": "peps:pep-0402:0:1:2206e53b",
+          "section_path": [
+            "Rejection Notice"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "2206e53bf5d50e8cb2ba2cdbb9a3e051757f346d4ee43fe3647d393d135bdc37",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0402",
+          "document_path": "peps/pep-0402.rst",
+          "document_url": "https://peps.python.org/pep-0402/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 50,
+          "record_id": "peps:pep-0402:0:1:2206e53b",
+          "section_path": [
+            "Rejection Notice"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "2206e53bf5d50e8cb2ba2cdbb9a3e051757f346d4ee43fe3647d393d135bdc37",
+      "kept_record": {
+        "document_id": "pep-0382",
+        "document_path": "peps/pep-0382.rst",
+        "document_url": "https://peps.python.org/pep-0382/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 50,
+        "record_id": "peps:pep-0382:0:1:2206e53b",
+        "section_path": [
+          "Rejection Notice"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Rejection Notice"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 237,
+          "record_id": "peps:pep-0333:3:1:2a142812",
+          "section_path": [
+            "Specification Overview"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 237,
+          "record_id": "peps:pep-3333:3:1:2a142812",
+          "section_path": [
+            "Specification Overview"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "2a142812df4ff39d3f322a811eccca9ee20c027ce23f392768c3452fba41ad8b",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 237,
+          "record_id": "peps:pep-3333:3:1:2a142812",
+          "section_path": [
+            "Specification Overview"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "2a142812df4ff39d3f322a811eccca9ee20c027ce23f392768c3452fba41ad8b",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 237,
+        "record_id": "peps:pep-0333:3:1:2a142812",
+        "section_path": [
+          "Specification Overview"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification Overview"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0013",
+          "document_path": "peps/pep-0013.rst",
+          "document_url": "https://peps.python.org/pep-0013/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-0013:11:1:32f9a0e5",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Ejecting core team members"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-8016:13:1:32f9a0e5",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Ejecting core team members"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "32f9a0e5ede502db284a1eb20a56ffa65c04e8cb132713cccd0bf9ef36739ef4",
+      "duplicate_records": [
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-8016:13:1:32f9a0e5",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Ejecting core team members"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "32f9a0e5ede502db284a1eb20a56ffa65c04e8cb132713cccd0bf9ef36739ef4",
+      "kept_record": {
+        "document_id": "pep-0013",
+        "document_path": "peps/pep-0013.rst",
+        "document_url": "https://peps.python.org/pep-0013/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 125,
+        "record_id": "peps:pep-0013:11:1:32f9a0e5",
+        "section_path": [
+          "Specification",
+          "The steering council",
+          "Ejecting core team members"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification",
+        "The steering council",
+        "Ejecting core team members"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0367",
+          "document_path": "peps/pep-0367.rst",
+          "document_url": "https://peps.python.org/pep-0367/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 116,
+          "record_id": "peps:pep-0367:19:1:344c1f09",
+          "section_path": [
+            "Alternative Proposals",
+            "super(\\p, \\\\*kw)"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 116,
+          "record_id": "peps:pep-3135:15:1:344c1f09",
+          "section_path": [
+            "Alternative Proposals",
+            "super(\\p, \\\\*kw)"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "344c1f0980b586e66bc91a313c6cf7e79a7673fd5a46aef539894311bcc71d04",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 116,
+          "record_id": "peps:pep-3135:15:1:344c1f09",
+          "section_path": [
+            "Alternative Proposals",
+            "super(\\p, \\\\*kw)"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "344c1f0980b586e66bc91a313c6cf7e79a7673fd5a46aef539894311bcc71d04",
+      "kept_record": {
+        "document_id": "pep-0367",
+        "document_path": "peps/pep-0367.rst",
+        "document_url": "https://peps.python.org/pep-0367/",
+        "has_code": true,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 116,
+        "record_id": "peps:pep-0367:19:1:344c1f09",
+        "section_path": [
+          "Alternative Proposals",
+          "super(\\p, \\\\*kw)"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Alternative Proposals",
+        "super(\\p, \\\\*kw)"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-0344:10:1:35140f07",
+          "section_path": [
+            "Compatibility"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-3134:10:1:35140f07",
+          "section_path": [
+            "Compatibility"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "35140f07646629cccfc0b4bd520970fb8635ed16764bd6ceb3a5c3ee6cf8a650",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-3134:10:1:35140f07",
+          "section_path": [
+            "Compatibility"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "35140f07646629cccfc0b4bd520970fb8635ed16764bd6ceb3a5c3ee6cf8a650",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 58,
+        "record_id": "peps:pep-0344:10:1:35140f07",
+        "section_path": [
+          "Compatibility"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Compatibility"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 74,
+          "record_id": "peps:pep-0344:9:1:3938cac4",
+          "section_path": [
+            "C API"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 74,
+          "record_id": "peps:pep-3134:9:1:3938cac4",
+          "section_path": [
+            "C API"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "3938cac41572c3a004db707fca0e4760a176efe0b64cb86afd1234c822665573",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 74,
+          "record_id": "peps:pep-3134:9:1:3938cac4",
+          "section_path": [
+            "C API"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "3938cac41572c3a004db707fca0e4760a176efe0b64cb86afd1234c822665573",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 74,
+        "record_id": "peps:pep-0344:9:1:3938cac4",
+        "section_path": [
+          "C API"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "C API"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0367",
+          "document_path": "peps/pep-0367.rst",
+          "document_url": "https://peps.python.org/pep-0367/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 47,
+          "record_id": "peps:pep-0367:15:1:3a273a85",
+          "section_path": [
+            "Alternative Proposals",
+            "self.__super__.foo(\\*args)"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 47,
+          "record_id": "peps:pep-3135:12:1:3a273a85",
+          "section_path": [
+            "Alternative Proposals",
+            "self.__super__.foo(\\*args)"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "3a273a85d43a66c89acb9a625087e61a4a3e5a96758372472c029bab495366ff",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 47,
+          "record_id": "peps:pep-3135:12:1:3a273a85",
+          "section_path": [
+            "Alternative Proposals",
+            "self.__super__.foo(\\*args)"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "3a273a85d43a66c89acb9a625087e61a4a3e5a96758372472c029bab495366ff",
+      "kept_record": {
+        "document_id": "pep-0367",
+        "document_path": "peps/pep-0367.rst",
+        "document_url": "https://peps.python.org/pep-0367/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 47,
+        "record_id": "peps:pep-0367:15:1:3a273a85",
+        "section_path": [
+          "Alternative Proposals",
+          "self.__super__.foo(\\*args)"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Alternative Proposals",
+        "self.__super__.foo(\\*args)"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0660",
+          "document_path": "peps/pep-0660.rst",
+          "document_url": "https://peps.python.org/pep-0660/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 150,
+          "record_id": "peps:pep-0660:7:1:3b31fb2a",
+          "section_path": [
+            "The Mechanism",
+            "prepare_metadata_for_build_editable"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0662",
+          "document_path": "peps/pep-0662.rst",
+          "document_url": "https://peps.python.org/pep-0662/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 150,
+          "record_id": "peps:pep-0662:6:1:3b31fb2a",
+          "section_path": [
+            "The Mechanism",
+            "prepare_metadata_for_build_editable"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "3b31fb2a2ad346bfa9dc3d984e718dbe40cfc14fc58987391dde63d9470f12fb",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0662",
+          "document_path": "peps/pep-0662.rst",
+          "document_url": "https://peps.python.org/pep-0662/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 150,
+          "record_id": "peps:pep-0662:6:1:3b31fb2a",
+          "section_path": [
+            "The Mechanism",
+            "prepare_metadata_for_build_editable"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "3b31fb2a2ad346bfa9dc3d984e718dbe40cfc14fc58987391dde63d9470f12fb",
+      "kept_record": {
+        "document_id": "pep-0660",
+        "document_path": "peps/pep-0660.rst",
+        "document_url": "https://peps.python.org/pep-0660/",
+        "has_code": true,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 150,
+        "record_id": "peps:pep-0660:7:1:3b31fb2a",
+        "section_path": [
+          "The Mechanism",
+          "prepare_metadata_for_build_editable"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "The Mechanism",
+        "prepare_metadata_for_build_editable"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0013",
+          "document_path": "peps/pep-0013.rst",
+          "document_url": "https://peps.python.org/pep-0013/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 74,
+          "record_id": "peps:pep-0013:5:1:404b9e59",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Mandate"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 74,
+          "record_id": "peps:pep-8016:7:1:404b9e59",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Mandate"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "404b9e59fbe9326d03ad6693b13ade5ba365d76d981cc1ad4351eb0e13827cdc",
+      "duplicate_records": [
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 74,
+          "record_id": "peps:pep-8016:7:1:404b9e59",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Mandate"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "404b9e59fbe9326d03ad6693b13ade5ba365d76d981cc1ad4351eb0e13827cdc",
+      "kept_record": {
+        "document_id": "pep-0013",
+        "document_path": "peps/pep-0013.rst",
+        "document_url": "https://peps.python.org/pep-0013/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 74,
+        "record_id": "peps:pep-0013:5:1:404b9e59",
+        "section_path": [
+          "Specification",
+          "The steering council",
+          "Mandate"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification",
+        "The steering council",
+        "Mandate"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0367",
+          "document_path": "peps/pep-0367.rst",
+          "document_url": "https://peps.python.org/pep-0367/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 44,
+          "record_id": "peps:pep-0367:3:1:447569cd",
+          "section_path": [
+            "Rationale"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 44,
+          "record_id": "peps:pep-3135:3:1:447569cd",
+          "section_path": [
+            "Rationale"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "447569cd869b1f780046a7d7e94009ed344a8780fa13f5c363c744b1249cb07d",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 44,
+          "record_id": "peps:pep-3135:3:1:447569cd",
+          "section_path": [
+            "Rationale"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "447569cd869b1f780046a7d7e94009ed344a8780fa13f5c363c744b1249cb07d",
+      "kept_record": {
+        "document_id": "pep-0367",
+        "document_path": "peps/pep-0367.rst",
+        "document_url": "https://peps.python.org/pep-0367/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 44,
+        "record_id": "peps:pep-0367:3:1:447569cd",
+        "section_path": [
+          "Rationale"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Rationale"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-0344:3:1:4a347680",
+          "section_path": [
+            "History"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-3134:3:1:4a347680",
+          "section_path": [
+            "History"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "4a3476805d528d23cf8833cda6f1b30aa1de4b152bbcdd9af7f84892981bbc20",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-3134:3:1:4a347680",
+          "section_path": [
+            "History"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "4a3476805d528d23cf8833cda6f1b30aa1de4b152bbcdd9af7f84892981bbc20",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 125,
+        "record_id": "peps:pep-0344:3:1:4a347680",
+        "section_path": [
+          "History"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "History"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 389,
+          "record_id": "peps:pep-0333:16:1:503ac820",
+          "section_path": [
+            "Specification Details",
+            "Error Handling"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 389,
+          "record_id": "peps:pep-3333:17:1:503ac820",
+          "section_path": [
+            "Specification Details",
+            "Error Handling"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "503ac820a66f25cb92ef9b9fc4377d1178eb71e52fc9a11606f2a5ab16c5f878",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 389,
+          "record_id": "peps:pep-3333:17:1:503ac820",
+          "section_path": [
+            "Specification Details",
+            "Error Handling"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "503ac820a66f25cb92ef9b9fc4377d1178eb71e52fc9a11606f2a5ab16c5f878",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": true,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 389,
+        "record_id": "peps:pep-0333:16:1:503ac820",
+        "section_path": [
+          "Specification Details",
+          "Error Handling"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification Details",
+        "Error Handling"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 150,
+          "record_id": "peps:pep-0333:17:1:616e3bc8",
+          "section_path": [
+            "Specification Details",
+            "HTTP 1.1 Expect/Continue"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 150,
+          "record_id": "peps:pep-3333:18:1:616e3bc8",
+          "section_path": [
+            "Specification Details",
+            "HTTP 1.1 Expect/Continue"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "616e3bc82ddba24c10bfd9eafa95abd8e621bfd8d1fb523c35840b6578c87fe2",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 150,
+          "record_id": "peps:pep-3333:18:1:616e3bc8",
+          "section_path": [
+            "Specification Details",
+            "HTTP 1.1 Expect/Continue"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "616e3bc82ddba24c10bfd9eafa95abd8e621bfd8d1fb523c35840b6578c87fe2",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 150,
+        "record_id": "peps:pep-0333:17:1:616e3bc8",
+        "section_path": [
+          "Specification Details",
+          "HTTP 1.1 Expect/Continue"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification Details",
+        "HTTP 1.1 Expect/Continue"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0427",
+          "document_path": "peps/pep-0427.rst",
+          "document_url": "https://peps.python.org/pep-0427/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 104,
+          "record_id": "peps:pep-0427:21:1:69583df1",
+          "section_path": [
+            "FAQ",
+            "What's the deal with \"purelib\" vs. \"platlib\"?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 104,
+          "record_id": "peps:pep-0491:21:1:69583df1",
+          "section_path": [
+            "FAQ",
+            "What's the deal with \"purelib\" vs. \"platlib\"?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "69583df18145f247619239f560a97d072ac087b3599f7ee007f5eff66df0211a",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 104,
+          "record_id": "peps:pep-0491:21:1:69583df1",
+          "section_path": [
+            "FAQ",
+            "What's the deal with \"purelib\" vs. \"platlib\"?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "69583df18145f247619239f560a97d072ac087b3599f7ee007f5eff66df0211a",
+      "kept_record": {
+        "document_id": "pep-0427",
+        "document_path": "peps/pep-0427.rst",
+        "document_url": "https://peps.python.org/pep-0427/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 104,
+        "record_id": "peps:pep-0427:21:1:69583df1",
+        "section_path": [
+          "FAQ",
+          "What's the deal with \"purelib\" vs. \"platlib\"?"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "FAQ",
+        "What's the deal with \"purelib\" vs. \"platlib\"?"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 330,
+          "record_id": "peps:pep-0333:24:1:71357bd3",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Supporting Older (<2.2) Versions of Python"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 330,
+          "record_id": "peps:pep-3333:25:1:71357bd3",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Supporting Older (<2.2) Versions of Python"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "71357bd350ef2fb5d92f362240aeefa8b24bf4dd30c320aeb9813798de896a4c",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 330,
+          "record_id": "peps:pep-3333:25:1:71357bd3",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Supporting Older (<2.2) Versions of Python"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "71357bd350ef2fb5d92f362240aeefa8b24bf4dd30c320aeb9813798de896a4c",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 330,
+        "record_id": "peps:pep-0333:24:1:71357bd3",
+        "section_path": [
+          "Implementation/Application Notes",
+          "Supporting Older (<2.2) Versions of Python"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Implementation/Application Notes",
+        "Supporting Older (<2.2) Versions of Python"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 318,
+          "record_id": "peps:pep-0333:22:1:78276299",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Application Configuration"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 318,
+          "record_id": "peps:pep-3333:23:1:78276299",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Application Configuration"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "78276299d7470b560e98540c7cad6fab644eabbd1d2d040a5526280ce593265a",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 318,
+          "record_id": "peps:pep-3333:23:1:78276299",
+          "section_path": [
+            "Implementation/Application Notes",
+            "Application Configuration"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "78276299d7470b560e98540c7cad6fab644eabbd1d2d040a5526280ce593265a",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": true,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 318,
+        "record_id": "peps:pep-0333:22:1:78276299",
+        "section_path": [
+          "Implementation/Application Notes",
+          "Application Configuration"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Implementation/Application Notes",
+        "Application Configuration"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 63,
+          "record_id": "peps:pep-0344:17:1:7bdf27ff",
+          "section_path": [
+            "Possible Future Incompatible Changes"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 63,
+          "record_id": "peps:pep-3134:17:1:7bdf27ff",
+          "section_path": [
+            "Possible Future Incompatible Changes"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "7bdf27ffef5069157604144a6d0993d05886fc1b52fdc41991a4fb1242be7d2d",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 63,
+          "record_id": "peps:pep-3134:17:1:7bdf27ff",
+          "section_path": [
+            "Possible Future Incompatible Changes"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "7bdf27ffef5069157604144a6d0993d05886fc1b52fdc41991a4fb1242be7d2d",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 63,
+        "record_id": "peps:pep-0344:17:1:7bdf27ff",
+        "section_path": [
+          "Possible Future Incompatible Changes"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Possible Future Incompatible Changes"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0427",
+          "document_path": "peps/pep-0427.rst",
+          "document_url": "https://peps.python.org/pep-0427/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 200,
+          "record_id": "peps:pep-0427:12:1:87791eef",
+          "section_path": [
+            "Details",
+            "File Format",
+            "File contents",
+            "The .dist-info directory"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 200,
+          "record_id": "peps:pep-0491:11:1:87791eef",
+          "section_path": [
+            "Details",
+            "File Format",
+            "File contents",
+            "The .dist-info directory"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "87791eefd202f554d5a5f1e79f36cc2314d3289c235af9aab241a0864d8c7b8e",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 200,
+          "record_id": "peps:pep-0491:11:1:87791eef",
+          "section_path": [
+            "Details",
+            "File Format",
+            "File contents",
+            "The .dist-info directory"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "87791eefd202f554d5a5f1e79f36cc2314d3289c235af9aab241a0864d8c7b8e",
+      "kept_record": {
+        "document_id": "pep-0427",
+        "document_path": "peps/pep-0427.rst",
+        "document_url": "https://peps.python.org/pep-0427/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 200,
+        "record_id": "peps:pep-0427:12:1:87791eef",
+        "section_path": [
+          "Details",
+          "File Format",
+          "File contents",
+          "The .dist-info directory"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Details",
+        "File Format",
+        "File contents",
+        "The .dist-info directory"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 211,
+          "record_id": "peps:pep-0344:8:1:88994523",
+          "section_path": [
+            "Enhanced Reporting"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 211,
+          "record_id": "peps:pep-3134:8:1:88994523",
+          "section_path": [
+            "Enhanced Reporting"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "889945234c366e5e9e208a92fd6bd0762d754e9c5f0aef6d2fb8cd160e784bc1",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 211,
+          "record_id": "peps:pep-3134:8:1:88994523",
+          "section_path": [
+            "Enhanced Reporting"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "889945234c366e5e9e208a92fd6bd0762d754e9c5f0aef6d2fb8cd160e784bc1",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": true,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 211,
+        "record_id": "peps:pep-0344:8:1:88994523",
+        "section_path": [
+          "Enhanced Reporting"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Enhanced Reporting"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0241",
+          "document_path": "peps/pep-0241.rst",
+          "document_url": "https://peps.python.org/pep-0241/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 94,
+          "record_id": "peps:pep-0241:13:1:944f793f",
+          "section_path": [
+            "Fields",
+            "Author-email"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0314",
+          "document_path": "peps/pep-0314.rst",
+          "document_url": "https://peps.python.org/pep-0314/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 94,
+          "record_id": "peps:pep-0314:15:1:944f793f",
+          "section_path": [
+            "Fields",
+            "Author-email"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "944f793f1c1f5ae438ca8a20d1d7c0cd3cb95a3595470064572a90078ad31b30",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0314",
+          "document_path": "peps/pep-0314.rst",
+          "document_url": "https://peps.python.org/pep-0314/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 94,
+          "record_id": "peps:pep-0314:15:1:944f793f",
+          "section_path": [
+            "Fields",
+            "Author-email"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "944f793f1c1f5ae438ca8a20d1d7c0cd3cb95a3595470064572a90078ad31b30",
+      "kept_record": {
+        "document_id": "pep-0241",
+        "document_path": "peps/pep-0241.rst",
+        "document_url": "https://peps.python.org/pep-0241/",
+        "has_code": true,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 94,
+        "record_id": "peps:pep-0241:13:1:944f793f",
+        "section_path": [
+          "Fields",
+          "Author-email"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Fields",
+        "Author-email"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0722",
+          "document_path": "peps/pep-0722.rst",
+          "document_url": "https://peps.python.org/pep-0722/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 70,
+          "record_id": "peps:pep-0722:24:1:95b38788",
+          "section_path": [
+            "Rejected Ideas",
+            "What about local dependencies?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0723",
+          "document_path": "peps/pep-0723.rst",
+          "document_url": "https://peps.python.org/pep-0723/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 70,
+          "record_id": "peps:pep-0723:24:1:95b38788",
+          "section_path": [
+            "Rejected Ideas",
+            "What about local dependencies?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "95b387884020c6a48b88f9b4e9a2a16166b297749ab056a572f6c8912fde2095",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0723",
+          "document_path": "peps/pep-0723.rst",
+          "document_url": "https://peps.python.org/pep-0723/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 70,
+          "record_id": "peps:pep-0723:24:1:95b38788",
+          "section_path": [
+            "Rejected Ideas",
+            "What about local dependencies?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "95b387884020c6a48b88f9b4e9a2a16166b297749ab056a572f6c8912fde2095",
+      "kept_record": {
+        "document_id": "pep-0722",
+        "document_path": "peps/pep-0722.rst",
+        "document_url": "https://peps.python.org/pep-0722/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 70,
+        "record_id": "peps:pep-0722:24:1:95b38788",
+        "section_path": [
+          "Rejected Ideas",
+          "What about local dependencies?"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Rejected Ideas",
+        "What about local dependencies?"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0367",
+          "document_path": "peps/pep-0367.rst",
+          "document_url": "https://peps.python.org/pep-0367/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 70,
+          "record_id": "peps:pep-0367:13:1:9bba921d",
+          "section_path": [
+            "Alternative Proposals",
+            "Dynamic attribute on super type"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 70,
+          "record_id": "peps:pep-3135:11:1:9bba921d",
+          "section_path": [
+            "Alternative Proposals",
+            "Dynamic attribute on super type"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "9bba921d3485bf657b2860635e0e1ae1a8ccbe3d4afda9ff85aa3a7cf8770ebe",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 70,
+          "record_id": "peps:pep-3135:11:1:9bba921d",
+          "section_path": [
+            "Alternative Proposals",
+            "Dynamic attribute on super type"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "9bba921d3485bf657b2860635e0e1ae1a8ccbe3d4afda9ff85aa3a7cf8770ebe",
+      "kept_record": {
+        "document_id": "pep-0367",
+        "document_path": "peps/pep-0367.rst",
+        "document_url": "https://peps.python.org/pep-0367/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 70,
+        "record_id": "peps:pep-0367:13:1:9bba921d",
+        "section_path": [
+          "Alternative Proposals",
+          "Dynamic attribute on super type"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Alternative Proposals",
+        "Dynamic attribute on super type"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0427",
+          "document_path": "peps/pep-0427.rst",
+          "document_url": "https://peps.python.org/pep-0427/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-0427:17:1:9c015c98",
+          "section_path": [
+            "FAQ",
+            "Wheel defines a .data directory. Should I put all my data there?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-0491:17:1:9c015c98",
+          "section_path": [
+            "FAQ",
+            "Wheel defines a .data directory. Should I put all my data there?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "9c015c98e2c0f41d02493e15958f16efd5fe4559e7abd308e9afaed17ee11919",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-0491:17:1:9c015c98",
+          "section_path": [
+            "FAQ",
+            "Wheel defines a .data directory. Should I put all my data there?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "9c015c98e2c0f41d02493e15958f16efd5fe4559e7abd308e9afaed17ee11919",
+      "kept_record": {
+        "document_id": "pep-0427",
+        "document_path": "peps/pep-0427.rst",
+        "document_url": "https://peps.python.org/pep-0427/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 58,
+        "record_id": "peps:pep-0427:17:1:9c015c98",
+        "section_path": [
+          "FAQ",
+          "Wheel defines a .data directory. Should I put all my data there?"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "FAQ",
+        "Wheel defines a .data directory. Should I put all my data there?"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 200,
+          "record_id": "peps:pep-0344:2:1:a41f027b",
+          "section_path": [
+            "Motivation"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 200,
+          "record_id": "peps:pep-3134:2:1:a41f027b",
+          "section_path": [
+            "Motivation"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "a41f027bf35cc1a93dc1b3b045a308e7ec1bbd70a5e7d49c3f1e2bdffffeb7a5",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 200,
+          "record_id": "peps:pep-3134:2:1:a41f027b",
+          "section_path": [
+            "Motivation"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "a41f027bf35cc1a93dc1b3b045a308e7ec1bbd70a5e7d49c3f1e2bdffffeb7a5",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 200,
+        "record_id": "peps:pep-0344:2:1:a41f027b",
+        "section_path": [
+          "Motivation"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Motivation"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 353,
+          "record_id": "peps:pep-0333:18:1:addc6e6c",
+          "section_path": [
+            "Specification Details",
+            "Other HTTP Features"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 353,
+          "record_id": "peps:pep-3333:19:1:addc6e6c",
+          "section_path": [
+            "Specification Details",
+            "Other HTTP Features"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "addc6e6c1e8b138825f65ae1dc8d1a2f6543da40c27c2999ae25606a94c07e95",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 353,
+          "record_id": "peps:pep-3333:19:1:addc6e6c",
+          "section_path": [
+            "Specification Details",
+            "Other HTTP Features"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "addc6e6c1e8b138825f65ae1dc8d1a2f6543da40c27c2999ae25606a94c07e95",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 353,
+        "record_id": "peps:pep-0333:18:1:addc6e6c",
+        "section_path": [
+          "Specification Details",
+          "Other HTTP Features"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification Details",
+        "Other HTTP Features"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-8102",
+          "document_path": "peps/pep-8102.rst",
+          "document_url": "https://peps.python.org/pep-8102/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 72,
+          "record_id": "peps:pep-8102:4:1:baf1aff3",
+          "section_path": [
+            "Voter Roll"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-8103",
+          "document_path": "peps/pep-8103.rst",
+          "document_url": "https://peps.python.org/pep-8103/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 72,
+          "record_id": "peps:pep-8103:4:1:baf1aff3",
+          "section_path": [
+            "Voter Roll"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "baf1aff3229489a519e7bf9125de5cf7aca40d1ee4d6e79493c05d1a467421e0",
+      "duplicate_records": [
+        {
+          "document_id": "pep-8103",
+          "document_path": "peps/pep-8103.rst",
+          "document_url": "https://peps.python.org/pep-8103/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 72,
+          "record_id": "peps:pep-8103:4:1:baf1aff3",
+          "section_path": [
+            "Voter Roll"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "baf1aff3229489a519e7bf9125de5cf7aca40d1ee4d6e79493c05d1a467421e0",
+      "kept_record": {
+        "document_id": "pep-8102",
+        "document_path": "peps/pep-8102.rst",
+        "document_url": "https://peps.python.org/pep-8102/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 72,
+        "record_id": "peps:pep-8102:4:1:baf1aff3",
+        "section_path": [
+          "Voter Roll"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Voter Roll"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0333",
+          "document_path": "peps/pep-0333.rst",
+          "document_url": "https://peps.python.org/pep-0333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 82,
+          "record_id": "peps:pep-0333:27:1:c0c63b3d",
+          "section_path": [
+            "Proposed/Under Discussion"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 82,
+          "record_id": "peps:pep-3333:28:1:c0c63b3d",
+          "section_path": [
+            "Proposed/Under Discussion"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "c0c63b3dddd8170c877717706dce7859b75c9cf21f6709e1005a9d011ca4d048",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3333",
+          "document_path": "peps/pep-3333.rst",
+          "document_url": "https://peps.python.org/pep-3333/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 82,
+          "record_id": "peps:pep-3333:28:1:c0c63b3d",
+          "section_path": [
+            "Proposed/Under Discussion"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "c0c63b3dddd8170c877717706dce7859b75c9cf21f6709e1005a9d011ca4d048",
+      "kept_record": {
+        "document_id": "pep-0333",
+        "document_path": "peps/pep-0333.rst",
+        "document_url": "https://peps.python.org/pep-0333/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 82,
+        "record_id": "peps:pep-0333:27:1:c0c63b3d",
+        "section_path": [
+          "Proposed/Under Discussion"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Proposed/Under Discussion"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-0344:1:1:c2c29c95",
+          "section_path": [
+            "Abstract"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-3134:1:1:c2c29c95",
+          "section_path": [
+            "Abstract"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "c2c29c95ddd917717578dde2f9238df2669dca71dd357d031378be33a67925d1",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 40,
+          "record_id": "peps:pep-3134:1:1:c2c29c95",
+          "section_path": [
+            "Abstract"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "c2c29c95ddd917717578dde2f9238df2669dca71dd357d031378be33a67925d1",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 40,
+        "record_id": "peps:pep-0344:1:1:c2c29c95",
+        "section_path": [
+          "Abstract"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Abstract"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0013",
+          "document_path": "peps/pep-0013.rst",
+          "document_url": "https://peps.python.org/pep-0013/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 63,
+          "record_id": "peps:pep-0013:9:1:c41b8a44",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Vacancies"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 63,
+          "record_id": "peps:pep-8016:11:1:c41b8a44",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Vacancies"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "c41b8a443ef01bbb33dafaf298fbaebde4e704c9490d82c9f4329ddc59ce7471",
+      "duplicate_records": [
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 63,
+          "record_id": "peps:pep-8016:11:1:c41b8a44",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Vacancies"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "c41b8a443ef01bbb33dafaf298fbaebde4e704c9490d82c9f4329ddc59ce7471",
+      "kept_record": {
+        "document_id": "pep-0013",
+        "document_path": "peps/pep-0013.rst",
+        "document_url": "https://peps.python.org/pep-0013/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 63,
+        "record_id": "peps:pep-0013:9:1:c41b8a44",
+        "section_path": [
+          "Specification",
+          "The steering council",
+          "Vacancies"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification",
+        "The steering council",
+        "Vacancies"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0427",
+          "document_path": "peps/pep-0427.rst",
+          "document_url": "https://peps.python.org/pep-0427/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 196,
+          "record_id": "peps:pep-0427:15:1:ce10d6c4",
+          "section_path": [
+            "Details",
+            "Comparison to .egg"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 196,
+          "record_id": "peps:pep-0491:15:1:ce10d6c4",
+          "section_path": [
+            "Details",
+            "Comparison to .egg"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "ce10d6c46d8d873411924de2d8a998b15c2081eb74b67ba46d166ddb325b1fb5",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 196,
+          "record_id": "peps:pep-0491:15:1:ce10d6c4",
+          "section_path": [
+            "Details",
+            "Comparison to .egg"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "ce10d6c46d8d873411924de2d8a998b15c2081eb74b67ba46d166ddb325b1fb5",
+      "kept_record": {
+        "document_id": "pep-0427",
+        "document_path": "peps/pep-0427.rst",
+        "document_url": "https://peps.python.org/pep-0427/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 196,
+        "record_id": "peps:pep-0427:15:1:ce10d6c4",
+        "section_path": [
+          "Details",
+          "Comparison to .egg"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Details",
+        "Comparison to .egg"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0013",
+          "document_path": "peps/pep-0013.rst",
+          "document_url": "https://peps.python.org/pep-0013/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 145,
+          "record_id": "peps:pep-0013:10:1:d04b11d2",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Conflicts of interest"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 145,
+          "record_id": "peps:pep-8016:12:1:d04b11d2",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Conflicts of interest"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "d04b11d2c39afa7f4757913e5a8386fde47625b9aaef456c3dd8d5537d1bdd25",
+      "duplicate_records": [
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 145,
+          "record_id": "peps:pep-8016:12:1:d04b11d2",
+          "section_path": [
+            "Specification",
+            "The steering council",
+            "Conflicts of interest"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "d04b11d2c39afa7f4757913e5a8386fde47625b9aaef456c3dd8d5537d1bdd25",
+      "kept_record": {
+        "document_id": "pep-0013",
+        "document_path": "peps/pep-0013.rst",
+        "document_url": "https://peps.python.org/pep-0013/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 145,
+        "record_id": "peps:pep-0013:10:1:d04b11d2",
+        "section_path": [
+          "Specification",
+          "The steering council",
+          "Conflicts of interest"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification",
+        "The steering council",
+        "Conflicts of interest"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0367",
+          "document_path": "peps/pep-0367.rst",
+          "document_url": "https://peps.python.org/pep-0367/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-0367:12:1:d359d830",
+          "section_path": [
+            "Alternative Proposals",
+            "No Changes"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-3135:10:1:d359d830",
+          "section_path": [
+            "Alternative Proposals",
+            "No Changes"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "d359d8300166d072d13c65f5d4c8275546bd7cb46059e6ab38dca63056654894",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3135",
+          "document_path": "peps/pep-3135.rst",
+          "document_url": "https://peps.python.org/pep-3135/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 58,
+          "record_id": "peps:pep-3135:10:1:d359d830",
+          "section_path": [
+            "Alternative Proposals",
+            "No Changes"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "d359d8300166d072d13c65f5d4c8275546bd7cb46059e6ab38dca63056654894",
+      "kept_record": {
+        "document_id": "pep-0367",
+        "document_path": "peps/pep-0367.rst",
+        "document_url": "https://peps.python.org/pep-0367/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 58,
+        "record_id": "peps:pep-0367:12:1:d359d830",
+        "section_path": [
+          "Alternative Proposals",
+          "No Changes"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Alternative Proposals",
+        "No Changes"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0427",
+          "document_path": "peps/pep-0427.rst",
+          "document_url": "https://peps.python.org/pep-0427/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 43,
+          "record_id": "peps:pep-0427:18:1:dc58415e",
+          "section_path": [
+            "FAQ",
+            "Why does wheel include attached signatures?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 43,
+          "record_id": "peps:pep-0491:18:1:dc58415e",
+          "section_path": [
+            "FAQ",
+            "Why does wheel include attached signatures?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "dc58415e85c1bf4244a754c4a40ee86558a99589e7f15769d8a97e5a26078e62",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 43,
+          "record_id": "peps:pep-0491:18:1:dc58415e",
+          "section_path": [
+            "FAQ",
+            "Why does wheel include attached signatures?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "dc58415e85c1bf4244a754c4a40ee86558a99589e7f15769d8a97e5a26078e62",
+      "kept_record": {
+        "document_id": "pep-0427",
+        "document_path": "peps/pep-0427.rst",
+        "document_url": "https://peps.python.org/pep-0427/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 43,
+        "record_id": "peps:pep-0427:18:1:dc58415e",
+        "section_path": [
+          "FAQ",
+          "Why does wheel include attached signatures?"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "FAQ",
+        "Why does wheel include attached signatures?"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0013",
+          "document_path": "peps/pep-0013.rst",
+          "document_url": "https://peps.python.org/pep-0013/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-0013:14:1:e0018124",
+          "section_path": [
+            "Specification",
+            "The core team",
+            "Role"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-8016:16:1:e0018124",
+          "section_path": [
+            "Specification",
+            "The core team",
+            "Role"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "e0018124b642a1cdfac7d69404a52bf98e2558778218c13a31ddc82cfd938ac1",
+      "duplicate_records": [
+        {
+          "document_id": "pep-8016",
+          "document_path": "peps/pep-8016.rst",
+          "document_url": "https://peps.python.org/pep-8016/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 125,
+          "record_id": "peps:pep-8016:16:1:e0018124",
+          "section_path": [
+            "Specification",
+            "The core team",
+            "Role"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "e0018124b642a1cdfac7d69404a52bf98e2558778218c13a31ddc82cfd938ac1",
+      "kept_record": {
+        "document_id": "pep-0013",
+        "document_path": "peps/pep-0013.rst",
+        "document_url": "https://peps.python.org/pep-0013/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 125,
+        "record_id": "peps:pep-0013:14:1:e0018124",
+        "section_path": [
+          "Specification",
+          "The core team",
+          "Role"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Specification",
+        "The core team",
+        "Role"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0722",
+          "document_path": "peps/pep-0722.rst",
+          "document_url": "https://peps.python.org/pep-0722/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 393,
+          "record_id": "peps:pep-0722:22:1:e32552fa",
+          "section_path": [
+            "Rejected Ideas",
+            "Why not use a requirements file for dependencies?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0723",
+          "document_path": "peps/pep-0723.rst",
+          "document_url": "https://peps.python.org/pep-0723/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 393,
+          "record_id": "peps:pep-0723:22:1:e32552fa",
+          "section_path": [
+            "Rejected Ideas",
+            "Why not use a requirements file for dependencies?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "e32552fa456e494d26c8e27c30c726205c8e658686a3e128482abe4183a74b98",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0723",
+          "document_path": "peps/pep-0723.rst",
+          "document_url": "https://peps.python.org/pep-0723/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 393,
+          "record_id": "peps:pep-0723:22:1:e32552fa",
+          "section_path": [
+            "Rejected Ideas",
+            "Why not use a requirements file for dependencies?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "e32552fa456e494d26c8e27c30c726205c8e658686a3e128482abe4183a74b98",
+      "kept_record": {
+        "document_id": "pep-0722",
+        "document_path": "peps/pep-0722.rst",
+        "document_url": "https://peps.python.org/pep-0722/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 393,
+        "record_id": "peps:pep-0722:22:1:e32552fa",
+        "section_path": [
+          "Rejected Ideas",
+          "Why not use a requirements file for dependencies?"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Rejected Ideas",
+        "Why not use a requirements file for dependencies?"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0427",
+          "document_path": "peps/pep-0427.rst",
+          "document_url": "https://peps.python.org/pep-0427/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 358,
+          "record_id": "peps:pep-0427:22:1:e801540a",
+          "section_path": [
+            "FAQ",
+            "Is it possible to import Python code directly from a wheel file?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 358,
+          "record_id": "peps:pep-0491:22:1:e801540a",
+          "section_path": [
+            "FAQ",
+            "Is it possible to import Python code directly from a wheel file?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "e801540a2ae0895fd8ad385a3aa1b7760ae35c4df6d17d3ab486413b98569275",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 358,
+          "record_id": "peps:pep-0491:22:1:e801540a",
+          "section_path": [
+            "FAQ",
+            "Is it possible to import Python code directly from a wheel file?"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "e801540a2ae0895fd8ad385a3aa1b7760ae35c4df6d17d3ab486413b98569275",
+      "kept_record": {
+        "document_id": "pep-0427",
+        "document_path": "peps/pep-0427.rst",
+        "document_url": "https://peps.python.org/pep-0427/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 358,
+        "record_id": "peps:pep-0427:22:1:e801540a",
+        "section_path": [
+          "FAQ",
+          "Is it possible to import Python code directly from a wheel file?"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "FAQ",
+        "Is it possible to import Python code directly from a wheel file?"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0427",
+          "document_path": "peps/pep-0427.rst",
+          "document_url": "https://peps.python.org/pep-0427/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 227,
+          "record_id": "peps:pep-0427:14:1:f257bfe9",
+          "section_path": [
+            "Details",
+            "Signed wheel files"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 227,
+          "record_id": "peps:pep-0491:14:1:f257bfe9",
+          "section_path": [
+            "Details",
+            "Signed wheel files"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "f257bfe9c7bccdb6efc927e292508068283ba87f39f4d74f1f354ec71df1efc1",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0491",
+          "document_path": "peps/pep-0491.rst",
+          "document_url": "https://peps.python.org/pep-0491/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 227,
+          "record_id": "peps:pep-0491:14:1:f257bfe9",
+          "section_path": [
+            "Details",
+            "Signed wheel files"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "f257bfe9c7bccdb6efc927e292508068283ba87f39f4d74f1f354ec71df1efc1",
+      "kept_record": {
+        "document_id": "pep-0427",
+        "document_path": "peps/pep-0427.rst",
+        "document_url": "https://peps.python.org/pep-0427/",
+        "has_code": true,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 227,
+        "record_id": "peps:pep-0427:14:1:f257bfe9",
+        "section_path": [
+          "Details",
+          "Signed wheel files"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Details",
+        "Signed wheel files"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0344",
+          "document_path": "peps/pep-0344.rst",
+          "document_url": "https://peps.python.org/pep-0344/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 107,
+          "record_id": "peps:pep-0344:13:1:f4076ed4",
+          "section_path": [
+            "Open Issue: Limiting Exception Types"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 107,
+          "record_id": "peps:pep-3134:13:1:f4076ed4",
+          "section_path": [
+            "Open Issue: Limiting Exception Types"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "f4076ed40b9cbd232932723b23370f985d8b38cbed03be0e742adbfec1cb4045",
+      "duplicate_records": [
+        {
+          "document_id": "pep-3134",
+          "document_path": "peps/pep-3134.rst",
+          "document_url": "https://peps.python.org/pep-3134/",
+          "has_code": true,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 107,
+          "record_id": "peps:pep-3134:13:1:f4076ed4",
+          "section_path": [
+            "Open Issue: Limiting Exception Types"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "f4076ed40b9cbd232932723b23370f985d8b38cbed03be0e742adbfec1cb4045",
+      "kept_record": {
+        "document_id": "pep-0344",
+        "document_path": "peps/pep-0344.rst",
+        "document_url": "https://peps.python.org/pep-0344/",
+        "has_code": true,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 107,
+        "record_id": "peps:pep-0344:13:1:f4076ed4",
+        "section_path": [
+          "Open Issue: Limiting Exception Types"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Open Issue: Limiting Exception Types"
+      ],
+      "size": 2
+    },
+    {
+      "all_records": [
+        {
+          "document_id": "pep-0283",
+          "document_path": "peps/pep-0283.rst",
+          "document_url": "https://peps.python.org/pep-0283/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 113,
+          "record_id": "peps:pep-0283:4:1:fb339c03",
+          "section_path": [
+            "Ongoing tasks"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        },
+        {
+          "document_id": "pep-0320",
+          "document_path": "peps/pep-0320.rst",
+          "document_url": "https://peps.python.org/pep-0320/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 113,
+          "record_id": "peps:pep-0320:5:1:fb339c03",
+          "section_path": [
+            "Ongoing tasks"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "content_sha256": "fb339c033e5cbc2c0e870707a6ec92911b1efe3675f16f226dfc7b05b25739a8",
+      "duplicate_records": [
+        {
+          "document_id": "pep-0320",
+          "document_path": "peps/pep-0320.rst",
+          "document_url": "https://peps.python.org/pep-0320/",
+          "has_code": false,
+          "part": 1,
+          "part_count": 1,
+          "provisional_token_count": 113,
+          "record_id": "peps:pep-0320:5:1:fb339c03",
+          "section_path": [
+            "Ongoing tasks"
+          ],
+          "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+        }
+      ],
+      "exact_hash": "fb339c033e5cbc2c0e870707a6ec92911b1efe3675f16f226dfc7b05b25739a8",
+      "kept_record": {
+        "document_id": "pep-0283",
+        "document_path": "peps/pep-0283.rst",
+        "document_url": "https://peps.python.org/pep-0283/",
+        "has_code": false,
+        "part": 1,
+        "part_count": 1,
+        "provisional_token_count": 113,
+        "record_id": "peps:pep-0283:4:1:fb339c03",
+        "section_path": [
+          "Ongoing tasks"
+        ],
+        "source_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde"
+      },
+      "section_path": [
+        "Ongoing tasks"
+      ],
+      "size": 2
+    }
+  ],
+  "license_review_documents": [
+    "pep-0003",
+    "pep-0005",
+    "pep-0042",
+    "pep-0100",
+    "pep-0200",
+    "pep-0202",
+    "pep-0206",
+    "pep-0210",
+    "pep-0211",
+    "pep-0213",
+    "pep-0214",
+    "pep-0216",
+    "pep-0217",
+    "pep-0219",
+    "pep-0220",
+    "pep-0225",
+    "pep-0226",
+    "pep-0227",
+    "pep-0230",
+    "pep-0233",
+    "pep-0235",
+    "pep-0339",
+    "pep-0350",
+    "pep-0401",
+    "pep-0437",
+    "pep-0483",
+    "pep-0551",
+    "pep-0578",
+    "pep-0600",
+    "pep-0720",
+    "pep-0772",
+    "pep-3106",
+    "pep-3145"
+  ],
+  "near_duplicate_proxy": {
+    "definition": "lowercase + collapse whitespace of prose; not applied",
+    "extra_records": 60,
+    "groups": 55
+  },
+  "policies": {
+    "P0_keep_all": {
+      "records": 10240,
+      "tokens": 1881929
+    },
+    "P1_exact_dedupe_all": {
+      "dropped_tokens": 6586,
+      "extra_records": 49,
+      "groups": 45,
+      "involved_records": 94,
+      "records": 10191,
+      "tokens": 1875343
+    },
+    "P2_license_filter": {
+      "records": 9990,
+      "tokens": 1827135
+    },
+    "P3_license_filter_exact_dedupe": {
+      "dropped_tokens": 6586,
+      "extra_records": 49,
+      "groups": 45,
+      "involved_records": 94,
+      "records": 9941,
+      "tokens": 1820549
+    }
+  },
+  "schema_version": "1.0",
+  "source_run_id": "prose-20261022T100121Z-f5fc9a3b"
+}

@@ -1,0 +1,1037 @@
+{
+  "artifact": "jupyter_acquisition_summary_v1",
+  "category_distribution": {
+    "algorithms_data_structures": 1,
+    "data_engineering_analysis": 3,
+    "machine_learning_deep_learning": 4,
+    "numpy_pandas_scientific": 17,
+    "python_fundamentals": 22,
+    "reproducible_research_advanced": 4,
+    "statistics_visualization": 11,
+    "uncategorized": 11
+  },
+  "deferred_reason": "license/provenance (codebasics: no license; jupyter-agent: synthetic non-.ipynb)",
+  "deferred_sources": [
+    "codebasics__py",
+    "jupyter-agent__jupyter-agent-dataset"
+  ],
+  "final_status": "READY_FOR_NEXT_ACQUISITION_STAGE",
+  "generated_at": "2026-10-22T05:24:03+00:00",
+  "rejection_reasons": {
+    "markdown_proportion_not_gt_0.4": 63,
+    "no_meaningful_python": 53
+  },
+  "runs": [
+    {
+      "counts": {
+        "eligible_notebooks": 59,
+        "raw_notebooks_acquired": 154,
+        "rejected_notebooks": 95,
+        "rejection_reasons": {
+          "markdown_proportion_not_gt_0.4": 60,
+          "no_meaningful_python": 46
+        },
+        "token_estimation_method": "char_count_div_4_provisional",
+        "total_source_bytes": 1488375,
+        "total_tokens_estimate": 173548
+      },
+      "run_id": "jupyter-20261022T052005Z-98b816b5",
+      "sources": [
+        {
+          "acquired_at": "2026-10-22T05:20:33+00:00",
+          "attribution": null,
+          "canonical_url": "https://github.com/jdhp-docs/notebooks",
+          "files": [
+            {
+              "path": "nb_dev_jupyter/notebook_ipywidgets_en.ipynb",
+              "sha256": "fc5889c8e82e09b26b04eb7511b50c71efe83519a0a6f1e2d8a62348d9d2a9d7",
+              "size": 40205
+            },
+            {
+              "path": "nb_dev_jupyter/notebook_snippets_en.ipynb",
+              "sha256": "ef2bfb00979ee3d5675bd4e2082a9e27387ee3ff652b5e0cf43c45a32e6dbf5c",
+              "size": 32936
+            },
+            {
+              "path": "nb_dev_jupyter/notebook_write_extensions_en.ipynb",
+              "sha256": "897aa9ca99063eb595aa16a11090661bae2299c7e49f9676de0811740a48217e",
+              "size": 10097
+            },
+            {
+              "path": "nb_dev_python/baselines_PPO_cartpole.ipynb",
+              "sha256": "9b7f7b03efbfb69b410c90e8891a787ce4daa636b40d5964534eb7666b58e462",
+              "size": 12756
+            },
+            {
+              "path": "nb_dev_python/baselines_PPO_env_point_mass.ipynb",
+              "sha256": "c0a79802d8f32d44dd2537b5b9c540b3fa06c8f057d632d9677c0c5b9bc978b5",
+              "size": 19581
+            },
+            {
+              "path": "nb_dev_python/gym_env_perso_point_mass.ipynb",
+              "sha256": "c0a79802d8f32d44dd2537b5b9c540b3fa06c8f057d632d9677c0c5b9bc978b5",
+              "size": 19581
+            },
+            {
+              "path": "nb_dev_python/python_ai_libs_en.ipynb",
+              "sha256": "d3024df59c651dd081674398b29cef3decf3b7d9e385a4bf057d7b71ada321d9",
+              "size": 1053
+            },
+            {
+              "path": "nb_dev_python/python_astropy_en.ipynb",
+              "sha256": "da9d55a1a04f78fa485413d1724bb01e98e15da25807c1dd9bedef7dcdf6d82d",
+              "size": 2777
+            },
+            {
+              "path": "nb_dev_python/python_bokeh_en.ipynb",
+              "sha256": "21266d25d6248f38d43e52a75718a0be6620aef761683f8a6e0e1c1c4f77f70b",
+              "size": 14195
+            },
+            {
+              "path": "nb_dev_python/python_collections_en.ipynb",
+              "sha256": "c3cb7a9d11674bc6c84a20d27daf8322c36b4e39d30519a864a4ae6f64beca8f",
+              "size": 1597
+            },
+            {
+              "path": "nb_dev_python/python_date_time_en.ipynb",
+              "sha256": "ad2bee79df809aa10dcdee4becc86251484014864c7eb5f968605006be9ad579",
+              "size": 1519
+            },
+            {
+              "path": "nb_dev_python/python_datetime_timezone.ipynb",
+              "sha256": "61642e899681290379a55c7b78013abe7f9578d9483dfa858069a9887e441181",
+              "size": 2047
+            },
+            {
+              "path": "nb_dev_python/python_format_en.ipynb",
+              "sha256": "55afaec9a47c9a8a85a294069c83305bcdbbb288f3ef0808b9ccbc7dc057c84c",
+              "size": 16210
+            },
+            {
+              "path": "nb_dev_python/python_geopandas_cities_near_paris_saclay_en.ipynb",
+              "sha256": "54d7fd16af88e0c31fa95338ff8211f3455591784c43b70c7b0cfd1f09915ec0",
+              "size": 15246
+            },
+            {
+              "path": "nb_dev_python/python_geopandas_departements_en.ipynb",
+              "sha256": "7a3d93d6a3cb121d9a4b42512858579569cc64c3f6d61985b740cce0d421b374",
+              "size": 5062
+            },
+            {
+              "path": "nb_dev_python/python_geopandas_gps_tracks_lines_en.ipynb",
+              "sha256": "f2338a8bdb9a1f2ffe237617915f74691c4594f5a66df4fec3350f3ae85c3169",
+              "size": 7167
+            },
+            {
+              "path": "nb_dev_python/python_geopandas_gps_tracks_points_en.ipynb",
+              "sha256": "6db4708e9c038e598114edf76ff362a01dce3c0f533eb5dbffe5e4e76f9dcf29",
+              "size": 6713
+            },
+            {
+              "path": "nb_dev_python/python_igraph_en.ipynb",
+              "sha256": "bfe6ec8e1edb3acf341a1321201931ec2d80906dbe53483b18cf079a4b2d6b2f",
+              "size": 830
+            },
+            {
+              "path": "nb_dev_python/python_iterators_generators_en.ipynb",
+              "sha256": "a778650a56df8fe46d4a537b76e5e53fc832fb66e3743ac2329093aef1a19cfd",
+              "size": 8773
+            },
+            {
+              "path": "nb_dev_python/python_itertools_en.ipynb",
+              "sha256": "40535385dc5d3fe7ce1ed806e7757a34a1ab573d783a562476d0d13b9c5abbef",
+              "size": 976
+            },
+            {
+              "path": "nb_dev_python/python_keras_1d_linear_regression.ipynb",
+              "sha256": "057d421ed033b8c7331df50f3eabfb18ef3bf4056fc167dad8418c2b567f5914",
+              "size": 5245
+            },
+            {
+              "path": "nb_dev_python/python_keras_1d_non-linear_regression.ipynb",
+              "sha256": "362270740d4af04ddf080f992746d5350cc6d2b4173b7c1d2f369bd53cb5e4fa",
+              "size": 5452
+            },
+            {
+              "path": "nb_dev_python/python_keras_hello_en.ipynb",
+              "sha256": "e7d1f3a0afd525a1d48a035c904c0a0d4fa48efb40075b1237fffc290dacebae",
+              "size": 5113
+            },
+            {
+              "path": "nb_dev_python/python_keras_toy_2d_binary_classification.ipynb",
+              "sha256": "b0a2e191736a8b1292dc8e3c9702f061a2488b749553f7ff8f326b4aadb0f391",
+              "size": 6055
+            },
+            {
+              "path": "nb_dev_python/python_matplotlib_efficient_interactive_matplotlib_plots_in_jupyter_notebooks_en.ipynb",
+              "sha256": "e0a30463ac01261f0606e7fd0072f236eef53263121f8348f7c0e846b14ef322",
+              "size": 3589
+            },
+            {
+              "path": "nb_dev_python/python_matplotlib_geo_fr.ipynb",
+              "sha256": "c8307fa8a04f234fc74770033742fdb89c93b22cfc6eb8f078c9cda55ae9aa88",
+              "size": 4442
+            },
+            {
+              "path": "nb_dev_python/python_matplotlib_hist_log_scale_en.ipynb",
+              "sha256": "0425a860bbd45736fef51d7faf7a07faf428666bef0cb45c8719e8e479840c01",
+              "size": 4112
+            },
+            {
+              "path": "nb_dev_python/python_mayavi_en.ipynb",
+              "sha256": "2fb635c381194b5a82eed02e8a72c7caa8ff65af8a9ad399f9c19f61dae01e27",
+              "size": 1023
+            },
+            {
+              "path": "nb_dev_python/python_mpmath_en.ipynb",
+              "sha256": "d9fc2704284c09a8196b274e4a5a166ecfc667f28c443c6a3020050813b4b6fb",
+              "size": 4434
+            },
+            {
+              "path": "nb_dev_python/python_networkx_en.ipynb",
+              "sha256": "210e22033ff87643e979ff03be07b1978b9c2a938650873ee62d3fa5df9e55c6",
+              "size": 4134
+            },
+            {
+              "path": "nb_dev_python/python_numba_en.ipynb",
+              "sha256": "40d271342c2560e0dff6eeb0c3354582b2a330103551c90002ad854ab0244f51",
+              "size": 4580
+            },
+            {
+              "path": "nb_dev_python/python_numpy_en.ipynb",
+              "sha256": "dafa543f5344c38c20dbeaa82053f93d39bb106d36d6c2fa06a72869164fb9dc",
+              "size": 40520
+            },
+            {
+              "path": "nb_dev_python/python_numpy_fourier_transform_en.ipynb",
+              "sha256": "e2c9b24514cde74aab0bc3fb93c1a8d13ac805cd68264f2b9d6f6a0d95897896",
+              "size": 4911
+            },
+            {
+              "path": "nb_dev_python/python_numpy_random_en.ipynb",
+              "sha256": "c751286b42d0e0b8b9d45f99e29280b0f9c498c28dedff9554269812aab6c4cb",
+              "size": 26319
+            },
+            {
+              "path": "nb_dev_python/python_pandas_en.ipynb",
+              "sha256": "2cc96e2c10448810e1afaab588831d66606d7fd105f0618d878f1cc69bcd6d5e",
+              "size": 100343
+            },
+            {
+              "path": "nb_dev_python/python_pandas_hdf5_en.ipynb",
+              "sha256": "726457a54e39203a50f4e31f8abe2eb765e99731be3f50f84a8df0b80780d948",
+              "size": 10718
+            },
+            {
+              "path": "nb_dev_python/python_pil_pillow_tiff_to_npy_en.ipynb",
+              "sha256": "02618bb077683ceb296e3fcfba8dc0db258b1ac233ad71e245eef5e8e8e8fb5f",
+              "size": 2127
+            },
+            {
+              "path": "nb_dev_python/python_plotly_en.ipynb",
+              "sha256": "0cecd40c527c708663e76dbdb6fdd1abadabd692db5b71a9a05506c609fb24e9",
+              "size": 1952
+            },
+            {
+              "path": "nb_dev_python/python_pulp_getting_started.ipynb",
+              "sha256": "39e96b0401afd184a5a85e80c884876040279d1fc12a34450bc69702f7223eeb",
+              "size": 2949
+            },
+            {
+              "path": "nb_dev_python/python_pyomo_getting_started_0_installation_instructions_pyomo_and_solvers.ipynb",
+              "sha256": "493bbe093301dce42420719d22b37b99c2a8adfd786babe16b14b27513d16706",
+              "size": 8915
+            },
+            {
+              "path": "nb_dev_python/python_pyomo_getting_started_0_introduction.ipynb",
+              "sha256": "061a0196a46f49c47e5fb539fdc8d900238b1845d37639cb555ac25d34e2b31d",
+              "size": 13222
+            },
+            {
+              "path": "nb_dev_python/python_pyomo_getting_started_1.ipynb",
+              "sha256": "c9c9ffa946788ab7177847f81fa6b9c8b7261b2d4d5a814c2bbfe985607f0c49",
+              "size": 4099
+            },
+            {
+              "path": "nb_dev_python/python_pyomo_getting_started_2.ipynb",
+              "sha256": "6448abc8e66314165f26232747b83fd35646dd7d77c707584a6bd8d10d0f710a",
+              "size": 6912
+            },
+            {
+              "path": "nb_dev_python/python_pyomo_getting_started_3.ipynb",
+              "sha256": "8830b686f146364d1939338e5e1d3aeb4a8150487c7a545d0ded8558a1938bd2",
+              "size": 5154
+            },
+            {
+              "path": "nb_dev_python/python_pyomo_non_linear_rosenbrock.ipynb",
+              "sha256": "72c8cbd38f6cdd9f4c47d2810844444a03deaff1bd652425816e3ddaadda6043",
+              "size": 1984
+            },
+            {
+              "path": "nb_dev_python/python_pyomo_stock_problem_1.ipynb",
+              "sha256": "4d9aac7c78d2aa51ffb2f51aa1ce422008e8dac168eef6680574d8b18469cca1",
+              "size": 12381
+            },
+            {
+              "path": "nb_dev_python/python_pyomo_stock_problem_2.ipynb",
+              "sha256": "7435a72aafb36a08af05d7d0e8bf8bd4cb8006c033e871d58e5b11fa1e5b5f10",
+              "size": 6101
+            },
+            {
+              "path": "nb_dev_python/python_random_en.ipynb",
+              "sha256": "783471119aae192bd1d5737a251d841ac7f8272d057f92df48add6fe50906740",
+              "size": 1644
+            },
+            {
+              "path": "nb_dev_python/python_re.ipynb",
+              "sha256": "f5f292234ad344f8b9d992443359fa87a2dcc1fc1b08caf473a9923873d4fd27",
+              "size": 5048
+            },
+            {
+              "path": "nb_dev_python/python_scipy_finding_roots_fr.ipynb",
+              "sha256": "353a022e8d908bfd135b57599b4b3c91b60e09ff6d54a6d413f298230b22a84d",
+              "size": 1224
+            },
+            {
+              "path": "nb_dev_python/python_scipy_fitting_en.ipynb",
+              "sha256": "1b6cf443400641748310c2a5e743046a952a15e8ad781201f2198b1a5e405bc8",
+              "size": 1918
+            },
+            {
+              "path": "nb_dev_python/python_scipy_image_datasets_en.ipynb",
+              "sha256": "70511fec811503f46c3eac88c3f6f99ad640093acc64bb19638aa5ab0a8dd9cd",
+              "size": 1184
+            },
+            {
+              "path": "nb_dev_python/python_scipy_integrate.ipynb",
+              "sha256": "a146965ce0527db6c21ab536a09ff9ccb8331894b8ea77bb03eb6fe00227fd9e",
+              "size": 3081
+            },
+            {
+              "path": "nb_dev_python/python_scipy_integrate_ode_ivp.ipynb",
+              "sha256": "cbde256589e3ad3bd1590680bdee31c7fcd795ab54470e6fd234219ce3e6f3b7",
+              "size": 15444
+            },
+            {
+              "path": "nb_dev_python/python_scipy_interpolate_en.ipynb",
+              "sha256": "a187af607df592488ef1520d891d45decb18c9064789130464386f77ee1e3634",
+              "size": 17019
+            },
+            {
+              "path": "nb_dev_python/python_scipy_io_wave_en.ipynb",
+              "sha256": "25b7a3395310df25a2c4ba1353fd73d46078fd0b5b1ddcb769cdd3211027c2e7",
+              "size": 5572
+            },
+            {
+              "path": "nb_dev_python/python_scipy_linear_programming_en.ipynb",
+              "sha256": "57f9f5814e9cb9bd924328e90facb2fc98f5f561bb408ac972f5a0733f2c3ac4",
+              "size": 6101
+            },
+            {
+              "path": "nb_dev_python/python_scipy_linear_regression_en.ipynb",
+              "sha256": "3639f5c8f0e9b9b09ca8d971652a72ce52a19172065b27c7e127b2f47deb9c35",
+              "size": 4328
+            },
+            {
+              "path": "nb_dev_python/python_scipy_optimize_brute_force_en.ipynb",
+              "sha256": "68aa220e9fe9e056aee6ecd13c16a7bc1442e7be1fa99d796418ecc0d3ff928c",
+              "size": 7880
+            },
+            {
+              "path": "nb_dev_python/python_scipy_optimize_differential_evolution_standalone.ipynb",
+              "sha256": "b878508f1fe3dfed072db515c9a64f62cd1f99584828499df80a4028fe025065",
+              "size": 15671
+            },
+            {
+              "path": "nb_dev_python/python_scipy_optimize_global_optimization_en.ipynb",
+              "sha256": "aba73a4aa140c9b529e7569c8e3dfa04beac9b5b68a9dbd29fad5debf3ac7b3d",
+              "size": 20543
+            },
+            {
+              "path": "nb_dev_python/python_scipy_optimize_local_optimization_en.ipynb",
+              "sha256": "9fa0d9257b08d8fed001ea7075a6c3fbdfc46de411b955168b713ff234879193",
+              "size": 3254
+            },
+            {
+              "path": "nb_dev_python/python_scipy_optimize_newton.ipynb",
+              "sha256": "a4d450768da702545d87afbbce313d3d527a2a969c4a5bfe624ce5a71d5033ea",
+              "size": 2869
+            },
+            {
+              "path": "nb_dev_python/python_scipy_stats_en.ipynb",
+              "sha256": "b940746697e232714a705d56b07e9410b4eff5d13e1498b4fbd6583962518b2a",
+              "size": 5644
+            },
+            {
+              "path": "nb_dev_python/python_scipy_stats_inverse_transform_sampling_fr.ipynb",
+              "sha256": "4c162736bcc964be30e7d79ce1945d199fb7802511bda7dffff66221444ee43a",
+              "size": 11614
+            },
+            {
+              "path": "nb_dev_python/python_seaborn_en.ipynb",
+              "sha256": "1ea9729a8344d3aeb4bd7de891d551a80538df3cb95af4a91bee94c121b207ad",
+              "size": 13053
+            },
+            {
+              "path": "nb_dev_python/python_skimage_datasets_en.ipynb",
+              "sha256": "eb23930f3057a659ab0a6d043ca250f2febfd9d2339ecb4eb2cbc7beff56d850",
+              "size": 3784
+            },
+            {
+              "path": "nb_dev_python/python_skimage_en.ipynb",
+              "sha256": "00701bfd58554b359156236136d9bc14cbdd678d4d375ce6fbec04e4dc25bfe8",
+              "size": 1005
+            },
+            {
+              "path": "nb_dev_python/python_sklearn_decision_trees_fr.ipynb",
+              "sha256": "fe6aa0ddd7d8ba8796216f9f0fb9d95329d93a57df08bc674405aa07e3864363",
+              "size": 2603
+            },
+            {
+              "path": "nb_dev_python/python_sklearn_mlp_fr.ipynb",
+              "sha256": "0011d3fef5d08834bea9a473379dd243e446af15f65a92ab71d91cb14f620cac",
+              "size": 7737
+            },
+            {
+              "path": "nb_dev_python/python_super_fr.ipynb",
+              "sha256": "1bfcd6e27bbaf1a0a3ccc847db032515e3f29e7c783d117fd7db449e0e5b9c96",
+              "size": 17645
+            },
+            {
+              "path": "nb_dev_python/python_sympy_calculus_en.ipynb",
+              "sha256": "1cfa2c60b61013d3b5530b01c81c9d83f76a034a544cc30ca49314448c650af2",
+              "size": 13255
+            },
+            {
+              "path": "nb_dev_python/python_sympy_functions_and_constants_en.ipynb",
+              "sha256": "b58e61a7a6a4048aa50bb083944ef0da1cb706d505ece5a1d8a9009650315f91",
+              "size": 4858
+            },
+            {
+              "path": "nb_dev_python/python_sympy_printing_en.ipynb",
+              "sha256": "b66245c4239e01d7a9517011d0eceb4b806bf60c02df1300ee7fb6248bd72627",
+              "size": 2261
+            },
+            {
+              "path": "nb_dev_python/python_tempfile.ipynb",
+              "sha256": "2a6248777363db8caa804c5312c97c4c450a2d02f9542c1854bf6b775e1bdd6a",
+              "size": 1957
+            },
+            {
+              "path": "nb_dev_python/python_tensorflow_getting_started_fr.ipynb",
+              "sha256": "613a81cc7461dba1a9fb1eccb13b3b22e4b3b228102b390264395ef39f132c74",
+              "size": 1317
+            },
+            {
+              "path": "nb_dev_python/stable_baselines_PPO_cartpole.ipynb",
+              "sha256": "9b7f7b03efbfb69b410c90e8891a787ce4daa636b40d5964534eb7666b58e462",
+              "size": 12756
+            },
+            {
+              "path": "nb_dev_python/stable_baselines_PPO_env_point_mass.ipynb",
+              "sha256": "c0a79802d8f32d44dd2537b5b9c540b3fa06c8f057d632d9677c0c5b9bc978b5",
+              "size": 19581
+            },
+            {
+              "path": "nb_misc/misc_optimization_sphere4d_benchmark_en.ipynb",
+              "sha256": "97851c1ab387cfa800dacc56f4df16990867e4333460541208901a172194d794",
+              "size": 8599
+            },
+            {
+              "path": "nb_misc/misc_read_ca_csv_fr.ipynb",
+              "sha256": "b4179257ba9dc486ea03d12bcace85799d36dc16594c1fb8a7e84526d06e69b0",
+              "size": 33973
+            },
+            {
+              "path": "nb_misc/misc_sparce2d_en.ipynb",
+              "sha256": "2bdbce516125d93ba1c2bc96887171ab0827ad7c834a3c43eef635787f8ce580",
+              "size": 3037
+            },
+            {
+              "path": "nb_misc/photography_fr.ipynb",
+              "sha256": "73c9928aa558d0e26b56529f5812fbe1ccb0e2089046fe5597a2808b5a934347",
+              "size": 3642
+            },
+            {
+              "path": "nb_opendata/opendata_fr.ipynb",
+              "sha256": "931456db0b42c9652cc3e2f242a4a1f7c0d4c88c6265e6406c07cd3f2acc4927",
+              "size": 3565
+            },
+            {
+              "path": "nb_opendata/opendata_liste_postes_mcf_2018.ipynb",
+              "sha256": "88edef79d66a82802358f6a728c8a5071921f91b5972d44a9e63a2a2e3f200ab",
+              "size": 120821
+            },
+            {
+              "path": "nb_opendata/opendata_observatoires_des_loyers_fr.ipynb",
+              "sha256": "1052a5d03003f09a0dbbb6b2c62ad2c5901272cd3098a7dbced8461a74f5c29b",
+              "size": 9122
+            },
+            {
+              "path": "nb_opendata/opendata_qualite_air_mesuree_dans_la_station_chatelet_fr.ipynb",
+              "sha256": "da9d61f4b71cda6a7a208029197ea79fa36779b98b8d9cf1e1dcda82599bb7bc",
+              "size": 9514
+            },
+            {
+              "path": "nb_sci_ai/ai_adaptive_coordinate_descent_fr.ipynb",
+              "sha256": "51f14e4dbad533b85dd345b96b8f374f396ce36beb948f7e54ce3d09e3c7da5f",
+              "size": 1186
+            },
+            {
+              "path": "nb_sci_ai/ai_arma_en.ipynb",
+              "sha256": "ae98d5697f89f1b0c8b62aeb26422db034f8568e6a9091ab55d3c6b59e5ad6f7",
+              "size": 53374
+            },
+            {
+              "path": "nb_sci_ai/ai_boosting_fr.ipynb",
+              "sha256": "e38aef1af7d6690f307fdabf1dc7a90c0bbca3ad3367f3d48417025fdd4269f1",
+              "size": 563
+            },
+            {
+              "path": "nb_sci_ai/ai_dynamic_programming_fr.ipynb",
+              "sha256": "0d0b1ba5217172997c59c4aeb221ed3dc7d64437af2076d04f0dc7b16b4a03a9",
+              "size": 973
+            },
+            {
+              "path": "nb_sci_ai/ai_game_of_life_fr.ipynb",
+              "sha256": "0d0b1ba5217172997c59c4aeb221ed3dc7d64437af2076d04f0dc7b16b4a03a9",
+              "size": 973
+            },
+            {
+              "path": "nb_sci_ai/ai_hidden_markov_model_fr.ipynb",
+              "sha256": "e38aef1af7d6690f307fdabf1dc7a90c0bbca3ad3367f3d48417025fdd4269f1",
+              "size": 563
+            },
+            {
+              "path": "nb_sci_ai/ai_lasso_fr.ipynb",
+              "sha256": "cf8a17c7043246adb8a8a4596fc1c608368a07bda42c6e4e1613fb02cc23107b",
+              "size": 1018
+            },
+            {
+              "path": "nb_sci_ai/ai_mcts_fr.ipynb",
+              "sha256": "0d0b1ba5217172997c59c4aeb221ed3dc7d64437af2076d04f0dc7b16b4a03a9",
+              "size": 973
+            },
+            {
+              "path": "nb_sci_ai/ai_minimax_fr.ipynb",
+              "sha256": "0d0b1ba5217172997c59c4aeb221ed3dc7d64437af2076d04f0dc7b16b4a03a9",
+              "size": 973
+            },
+            {
+              "path": "nb_sci_ai/ai_ml_adaline_fr.ipynb",
+              "sha256": "8c370e535b6abf08875a56e1b3cdbcafa9eb7cf7aea2926600a615dbb126deac",
+              "size": 587
+            },
+            {
+              "path": "nb_sci_ai/ai_ml_convolutional_neural_network_fr.ipynb",
+              "sha256": "0fe548514c69f4d9d6c1f5f4b360a5a97936ec3f7a529646d066eec99a7c3ee2",
+              "size": 765
+            },
+            {
+              "path": "nb_sci_ai/ai_ml_datasets_benchmarks_and_competitions_en.ipynb",
+              "sha256": "251134a4d7dfa61b16463bcdc7814a8c259efa3d9d845658083d8fd28abb0043",
+              "size": 9112
+            },
+            {
+              "path": "nb_sci_ai/ai_ml_id3_fr.ipynb",
+              "sha256": "5e80d864587e698d86dc1a02dacff7c5a2f07583cff307c24bdc0e052336bd8d",
+              "size": 13255
+            },
+            {
+              "path": "nb_sci_ai/ai_ml_linear_regression.ipynb",
+              "sha256": "0c51c2613b666f093747949d80bb1f8787188b906f3002132c7d22463b0de363",
+              "size": 2046
+            },
+            {
+              "path": "nb_sci_ai/ai_ml_multilayer_perceptron_fr.ipynb",
+              "sha256": "ef00e91dfe5b8a72fc4a873f39da89b4d5d3adebd10a5e9b9ec91bd67ce22b9f",
+              "size": 68275
+            },
+            {
+              "path": "nb_sci_ai/ai_ml_perceptron_fr.ipynb",
+              "sha256": "6e4b2760f217856b0862ac64643df6197c8702edd84a9af4aab303438676a5f3",
+              "size": 10972
+            },
+            {
+              "path": "nb_sci_ai/ai_ml_radial_basis_function_network_fr.ipynb",
+              "sha256": "dae5cebb285e435abfcad230edd0519244eb3f1b505330e0f1b431e2537e8a0c",
+              "size": 763
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_algorithms_en.ipynb",
+              "sha256": "d19d66d1d935fbbe5b8d0c225ca155ee7652b438917d8029f4d04b323e511a57",
+              "size": 5498
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_benchmark_problems_en.ipynb",
+              "sha256": "ec1f8e5648ff43008153c486f363dd8280d2b6d311ae8e562dd0b9ff5fd93468",
+              "size": 48487
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_cmaes_convergence_vs_number_of_dimensions.ipynb",
+              "sha256": "414147d0ff5d342f55767824b5d3fa192d534b8416fecbb2e4ad2d4833d152ae",
+              "size": 6507
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_cmaes_en.ipynb",
+              "sha256": "865684ee31578c7aceb52b8a76806269c41c8001efa2ed6add3a0402dfe5e4fb",
+              "size": 1704
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_differential_evolution_en.ipynb",
+              "sha256": "f17f387a43ddae95115949b369f4a8d62c85c05a8e6d72cd76f02bbe4c15a79b",
+              "size": 7345
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_differential_evolution_fr.ipynb",
+              "sha256": "7ed7201198cc75e1b7baad442b558ceb099b67396e151182d04902c5e2769e03",
+              "size": 7752
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_eda_en.ipynb",
+              "sha256": "ae59b0c02d29ad535ce8abe7a4b46f0741bed9bb0666d4812f863140d3a22dbf",
+              "size": 1128
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_gradient_descent_fr.ipynb",
+              "sha256": "8c370e535b6abf08875a56e1b3cdbcafa9eb7cf7aea2926600a615dbb126deac",
+              "size": 587
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_levenberg_marquardt_fr.ipynb",
+              "sha256": "9b68c4addfa144e2c0724520200120e262c9ec93b0a3a4c0c0b6b4af4ce7b533",
+              "size": 1109
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_linear_programming_stock_problem_en.ipynb",
+              "sha256": "abe68dd2196be184fc3cb31a5104fa48e9c9ffdf28f81c11b407a21f9d12c1dd",
+              "size": 12457
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_newton_method_fr.ipynb",
+              "sha256": "8eb63ba2c94a7fee757163532dc77739e05c2831721aec1d68899b88281bf925",
+              "size": 981
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_optimality_conditions_fr.ipynb",
+              "sha256": "504f42f5f984506e4d2dac69acbec717d0302e6156f29104afc163e6a5b92fbf",
+              "size": 2056
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_saes_en.ipynb",
+              "sha256": "5fcc2436575049ca55ecda9876a276f4dcc909461a23cff191143f7dd8fcc71c",
+              "size": 19474
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_simplex_method_fr.ipynb",
+              "sha256": "0d0b1ba5217172997c59c4aeb221ed3dc7d64437af2076d04f0dc7b16b4a03a9",
+              "size": 973
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_simulated_annealing_fr.ipynb",
+              "sha256": "1da87a7f6f80d549a5d065ca7645af12d6c315c9245f5ce70b2fd7b5458c3499",
+              "size": 1116
+            },
+            {
+              "path": "nb_sci_ai/ai_optimization_stochastic_gradient_descent_fr.ipynb",
+              "sha256": "8c370e535b6abf08875a56e1b3cdbcafa9eb7cf7aea2926600a615dbb126deac",
+              "size": 587
+            },
+            {
+              "path": "nb_sci_ai/ai_qlearning_fr.ipynb",
+              "sha256": "0d0b1ba5217172997c59c4aeb221ed3dc7d64437af2076d04f0dc7b16b4a03a9",
+              "size": 973
+            },
+            {
+              "path": "nb_sci_image_processing/image_processing_hough_transform_fr.ipynb",
+              "sha256": "e38aef1af7d6690f307fdabf1dc7a90c0bbca3ad3367f3d48417025fdd4269f1",
+              "size": 563
+            },
+            {
+              "path": "nb_sci_image_processing/image_processing_sobel_edge_detection_fr.ipynb",
+              "sha256": "e38aef1af7d6690f307fdabf1dc7a90c0bbca3ad3367f3d48417025fdd4269f1",
+              "size": 563
+            },
+            {
+              "path": "nb_sci_maths/maths_2d_transforms_fr.ipynb",
+              "sha256": "36451ffae1c6c4133b0d6bfa11b694f03c815e3ba0a230655252e55ca151ab0c",
+              "size": 6325
+            },
+            {
+              "path": "nb_sci_maths/maths_algebra_plot_animated_linear_equations_fr.ipynb",
+              "sha256": "20c7af5af4a461660210e53998420232daf8a5232983b51e62637da9c6dd67e6",
+              "size": 5694
+            },
+            {
+              "path": "nb_sci_maths/maths_algebra_plot_animated_linear_equations_with_bokeh_fr.ipynb",
+              "sha256": "4d23f13be7f8a3ef922b82e9fc9e378ca7ec39eef5ba5f818d4fadff82fd1207",
+              "size": 3165
+            },
+            {
+              "path": "nb_sci_maths/maths_algebra_plot_systems_of_linear_equations_fr.ipynb",
+              "sha256": "9c75528f7ef15ebbda02d0c0b6f5186186d74f5fab90a18ace7c3aa58ca8a3d1",
+              "size": 4545
+            },
+            {
+              "path": "nb_sci_maths/maths_algebra_solve_systems_of_linear_equations_fr.ipynb",
+              "sha256": "7bd3030d3ef4b4d5dc403ab85a7c21772b33a9d8ae03ba9dd94850e8d58d8d84",
+              "size": 6496
+            },
+            {
+              "path": "nb_sci_maths/maths_algebra_solving_systems_of_non-linear_equations_fr.ipynb",
+              "sha256": "f06449e49ff1553df95dadeb22e72cd28f94cbbde71cbe3713e50ef1999a4926",
+              "size": 555
+            },
+            {
+              "path": "nb_sci_maths/maths_algebra_system_of_linear_equations_complete_matrix_to_latex_fr.ipynb",
+              "sha256": "4284e1f4a1fd9441d35f5c5973d72944d443ad8a4061308e9391c9eddb22aa48",
+              "size": 2270
+            },
+            {
+              "path": "nb_sci_maths/maths_analysis_differential_calculus_fr.ipynb",
+              "sha256": "c3fd44652181d237799fb58eeb2ead0dde9b86bf0dc78c72f0a733a6dfce7579",
+              "size": 1502
+            },
+            {
+              "path": "nb_sci_maths/maths_analysis_method_of_lagrange_multipliers_fr.ipynb",
+              "sha256": "c9fc2e35352f997a0383b6ea025c4fddf3e54d4fc22659d819b5af64ea93cf2e",
+              "size": 24080
+            },
+            {
+              "path": "nb_sci_maths/maths_analysis_roots_and_extremums_finding_fr.ipynb",
+              "sha256": "b0a6e8286cbbf22d20038f93856f5e4780af3777f65820d68983259a86d55bfa",
+              "size": 2393
+            },
+            {
+              "path": "nb_sci_maths/maths_bezier_curves_fr.ipynb",
+              "sha256": "b00a0c70ab55ed1a72890e6bd35a0eecc77407fc449d008c9fffcf922f8312d4",
+              "size": 8644
+            },
+            {
+              "path": "nb_sci_maths/maths_chaos_sierpinski_triangle.ipynb",
+              "sha256": "08b782cfbf3ff17ebba783a764abe3f6784f220d4f91c3ecac8643016c998480",
+              "size": 1871
+            },
+            {
+              "path": "nb_sci_maths/maths_euclidean_geometry_en.ipynb",
+              "sha256": "b08a2b54e00b18b517226f804361d3d7088dfe905be1adf003b390b7a7d24440",
+              "size": 25589
+            },
+            {
+              "path": "nb_sci_maths/maths_likelihood_maximization_fr.ipynb",
+              "sha256": "8c370e535b6abf08875a56e1b3cdbcafa9eb7cf7aea2926600a615dbb126deac",
+              "size": 587
+            },
+            {
+              "path": "nb_sci_maths/maths_logistic_regression_fr.ipynb",
+              "sha256": "bcaba8f49ad2c708551b027e2da13db49b0d9b38e64e8033026c1701d4f10bde",
+              "size": 605
+            },
+            {
+              "path": "nb_sci_maths/maths_mandelbrot_set_en.ipynb",
+              "sha256": "5c73647cdde98584e3a0a72febe4ee87267a95c51e76b731c1770a1cd9c37da8",
+              "size": 8284
+            },
+            {
+              "path": "nb_sci_maths/maths_mandelbrot_set_fr.ipynb",
+              "sha256": "d5a444be0ab68a6bb5ac965db60612436e9f88faff0a5bc08fd989dffb9ba282",
+              "size": 9177
+            },
+            {
+              "path": "nb_sci_maths/maths_montecarlo_compute_integral_en.ipynb",
+              "sha256": "5d270fb8dbbccec927c0db1291baef81b8186d2844fcdf0236068e226b51a276",
+              "size": 8547
+            },
+            {
+              "path": "nb_sci_maths/maths_montecarlo_compute_integral_fr.ipynb",
+              "sha256": "ec2f869d97dce946641df454270a7896dd1947811f753cdbaa263201c98c757a",
+              "size": 9001
+            },
+            {
+              "path": "nb_sci_maths/maths_montecarlo_compute_pi_fr.ipynb",
+              "sha256": "830649f11cd6afd371d1bf9c85901bd24e16c1eaa8a73829f8223d486e4d0ad4",
+              "size": 4204
+            },
+            {
+              "path": "nb_sci_maths/maths_pca_fr.ipynb",
+              "sha256": "2d33d14b15808e3b10776023586488b0d817b7fb06b60d8128c125d7835f1eeb",
+              "size": 3963
+            },
+            {
+              "path": "nb_sci_maths/maths_stats_chi_squared_min_fr.ipynb",
+              "sha256": "e6236560562e32c9d43fb66ae52b44a7d89f120316ae13abd507e6775a9d064c",
+              "size": 9870
+            },
+            {
+              "path": "nb_sci_maths/maths_stats_covariance_and_correlation_fr.ipynb",
+              "sha256": "791e0fbbe4d532b9b4d1dd52b8e6d502593f46e3e8d3b06f820e6cb556799b00",
+              "size": 2666
+            },
+            {
+              "path": "nb_sci_maths/maths_stats_sum_random_variables_fr.ipynb",
+              "sha256": "2013969b3392cb7b6df7686ad9d4efa66052dd845612dc6538b95112e5cd874d",
+              "size": 23126
+            },
+            {
+              "path": "nb_sci_maths/maths_svd_fr.ipynb",
+              "sha256": "658607a8f276dd38b65e1c3ce41f928960d7625bdb5eaa5ac3c203070daa578f",
+              "size": 614
+            },
+            {
+              "path": "nb_sci_or/or_a_star_fr.ipynb",
+              "sha256": "0d0b1ba5217172997c59c4aeb221ed3dc7d64437af2076d04f0dc7b16b4a03a9",
+              "size": 973
+            },
+            {
+              "path": "nb_sci_or/or_graph_traversal_fr.ipynb",
+              "sha256": "e38aef1af7d6690f307fdabf1dc7a90c0bbca3ad3367f3d48417025fdd4269f1",
+              "size": 563
+            },
+            {
+              "path": "nb_sci_signal_processing/signal_processing_fourier_transform_en.ipynb",
+              "sha256": "425aee6b697333f8ca899c545a462f447030e660437c0b70d79bcf456cdee7a2",
+              "size": 28840
+            },
+            {
+              "path": "nb_sci_signal_processing/signal_processing_fourier_transform_fr.ipynb",
+              "sha256": "ce8f506a359e1a9ce5405379ca42e9664a72ceee4c31ea4aa6a2375c2672ab5f",
+              "size": 30223
+            },
+            {
+              "path": "nb_sci_signal_processing/signal_processing_matched_filters_fr.ipynb",
+              "sha256": "f06449e49ff1553df95dadeb22e72cd28f94cbbde71cbe3713e50ef1999a4926",
+              "size": 555
+            },
+            {
+              "path": "nb_sci_signal_processing/signal_processing_wavelet_transform_fr.ipynb",
+              "sha256": "952a97556744cb08c01f62fa339a0a33a483c205ce74708b3262ad374963c4bc",
+              "size": 26022
+            },
+            {
+              "path": "skeleton_fr.ipynb",
+              "sha256": "aa4c948b2ff17ecae87194424368c041a324a26a3668cb7280ebb89744574a28",
+              "size": 965
+            }
+          ],
+          "license": "MIT License",
+          "license_evidence": "GitHub API reports MIT. Repository includes a LICENSE file. Content is authored educational material by jdhp (J. Decock).",
+          "license_file": {
+            "path": "LICENSE",
+            "sha256": "13f2f44ce4ea55b2b19e815d184b37ebcfa95e359a8333dd73ae4933f2443830",
+            "size": 1101
+          },
+          "license_spdx": "MIT",
+          "license_status": "APPROVED",
+          "manifest_version": "1",
+          "notebook_count": 154,
+          "pipeline_version": "1.0.0",
+          "repository_id": "jdhp-docs/notebooks",
+          "revision": "7f375ebea5933b82d1b8e8965e4ea0f2efa3045d",
+          "revision_type": "git_commit",
+          "run_id": "jupyter-20261022T052005Z-98b816b5",
+          "source_family": "github",
+          "source_name": "jdhp-docs__notebooks"
+        }
+      ],
+      "stage3_path": "/mnt/pythia-cloud/PythiaDrive/filtered/stage3/jupyter_stage3_v1_jupyter-20261022T052005Z-98b816b5.jsonl",
+      "stage3_sha256": "b4472b482de36a8d9f1a483427bcf0afac427bbb4115f902da6215806d1b97c3"
+    },
+    {
+      "counts": {
+        "eligible_notebooks": 14,
+        "raw_notebooks_acquired": 24,
+        "rejected_notebooks": 10,
+        "rejection_reasons": {
+          "markdown_proportion_not_gt_0.4": 3,
+          "no_meaningful_python": 7
+        },
+        "token_estimation_method": "char_count_div_4_provisional",
+        "total_source_bytes": 1194047,
+        "total_tokens_estimate": 45290
+      },
+      "run_id": "jupyter-20261022T052157Z-e17930e2",
+      "sources": [
+        {
+          "acquired_at": "2026-10-22T05:22:02+00:00",
+          "attribution": "COGS 108 \u2014 Data Science in Practice, UC San Diego (https://github.com/COGS108/Tutorials), CC-BY-4.0.",
+          "canonical_url": "https://github.com/COGS108/Tutorials",
+          "files": [
+            {
+              "path": "00-Introduction.ipynb",
+              "sha256": "37b1f7dbc2428268d6075d23e559e9539cafcdce6984964e8d996ac1226fcd4c",
+              "size": 14362
+            },
+            {
+              "path": "01-Python.ipynb",
+              "sha256": "59141b3faa4878264a207b58dca447d8c441f577717305e79bc290adcaa56f42",
+              "size": 7637
+            },
+            {
+              "path": "02-JupyterNotebooks.ipynb",
+              "sha256": "a54a8e862a3247031629e2a79a919f26836bd6032800117a94a1180af17ed699",
+              "size": 16836
+            },
+            {
+              "path": "03-DataAnalysis.ipynb",
+              "sha256": "db0f9330f3583842c5902c8090ef827ebacd9e886c64efa2d164b093dfad6983",
+              "size": 49398
+            },
+            {
+              "path": "04-ScientificPython.ipynb",
+              "sha256": "33fd73160ed7239299f11b296e9b85aa9ea37445aa99757d7757e44dcb624c19",
+              "size": 30837
+            },
+            {
+              "path": "05-DataGathering.ipynb",
+              "sha256": "5102ebd4ab6f688df0a299fcc195da027dde6c86c2954b36390e708372fc9f93",
+              "size": 22353
+            },
+            {
+              "path": "06-DataWrangling.ipynb",
+              "sha256": "a499d3abc6812855b196e45bf48a31a8bbccf9465ce0d2b61774b83a0ca712bc",
+              "size": 13554
+            },
+            {
+              "path": "07-DataCleaning.ipynb",
+              "sha256": "4c40a972e2fe8f675749a0fbdddc7f0e66509dec79f39165323b23035cd486fd",
+              "size": 27091
+            },
+            {
+              "path": "08-DataPrivacy&Anonymization.ipynb",
+              "sha256": "04149796f695f7eee3b84659793632b979cf50b69b136466a5bedd06bb4e0477",
+              "size": 11591
+            },
+            {
+              "path": "09-DataVisualization.ipynb",
+              "sha256": "35a9d3520553abfb6e0824c27074479cab7088c74ee1ba81c07796e04209ecab",
+              "size": 196308
+            },
+            {
+              "path": "10-Distributions.ipynb",
+              "sha256": "f7f1c6575128a0c54c1aa5f7582069a521217919eb2b619b59d334c3914c5e0a",
+              "size": 45122
+            },
+            {
+              "path": "11-TestingDistributions.ipynb",
+              "sha256": "a5b2431a858339ef38532605b8b9a9872e31f05bc097621bd5ede3991312cee6",
+              "size": 57593
+            },
+            {
+              "path": "12-StatisticalComparisons.ipynb",
+              "sha256": "d48a27c03bed24d20800d8239d60510bf16932c8e7e4ca84197b8ccd98e07b94",
+              "size": 23976
+            },
+            {
+              "path": "13-OrdinaryLeastSquares.ipynb",
+              "sha256": "9eb1c9719de000299ba887053cb93fc3834a9658ca2d8f3f6d9e812d9d2c11a9",
+              "size": 49641
+            },
+            {
+              "path": "14-LinearModels.ipynb",
+              "sha256": "f3de67b17098e8c4fc7e7ab2e59f32cabc142f22a4a1c9a2dd7aa41de7b34292",
+              "size": 240980
+            },
+            {
+              "path": "15-Clustering.ipynb",
+              "sha256": "e5b948a14670880f359e1a072f4e9722ff9c3e47697f3e6fe38805128fe64158",
+              "size": 80374
+            },
+            {
+              "path": "16-DimensionalityReduction.ipynb",
+              "sha256": "cf331c3a65ac55013e161ddb1c78a82d248371493589ad7dafd5ac514fda7340",
+              "size": 73296
+            },
+            {
+              "path": "17-Classification.ipynb",
+              "sha256": "4746e120744d5b42332a8adf719ea3335ed70f64ed86817c51305963b301deae",
+              "size": 89123
+            },
+            {
+              "path": "18-NaturalLanguageProcessing.ipynb",
+              "sha256": "c82ff8dc7444d9ed5603b0fc351811cbe239f1c9dfcc318b4d9fe46c2c4b73ad",
+              "size": 73977
+            },
+            {
+              "path": "A1-PythonPackages.ipynb",
+              "sha256": "214e99c74adcac9534b143dd3d7708f676dcdeae49b929c08bce55831618fe21",
+              "size": 4749
+            },
+            {
+              "path": "A2-Git.ipynb",
+              "sha256": "61bcfec71a9ec33cc287638a88c72f99edfb9a480bc8eeac4c42540ec88aa7a3",
+              "size": 13472
+            },
+            {
+              "path": "Monte_Carlo_simulation_of_coin_flip.ipynb",
+              "sha256": "567d53d8f158a35fdd4fdbb432db988bb3f0765214defd15f3279ed58e7747d8",
+              "size": 33207
+            }
+          ],
+          "license": "Creative Commons Attribution 4.0 International",
+          "license_evidence": "GitHub API reports CC-BY-4.0. Data Science in Practice / UC San Diego course materials. Attribution is required.",
+          "license_file": {
+            "path": "LICENSE.txt",
+            "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+            "size": 18657
+          },
+          "license_spdx": "CC-BY-4.0",
+          "license_status": "APPROVED",
+          "manifest_version": "1",
+          "notebook_count": 22,
+          "pipeline_version": "1.0.0",
+          "repository_id": "COGS108/Tutorials",
+          "revision": "d79b6169a34ad6fff2c96d4a872801182b4ff419",
+          "revision_type": "git_commit",
+          "run_id": "jupyter-20261022T052157Z-e17930e2",
+          "source_family": "github",
+          "source_name": "COGS108__Tutorials"
+        },
+        {
+          "acquired_at": "2026-10-22T05:22:09+00:00",
+          "attribution": null,
+          "canonical_url": "https://github.com/jupyter-guide/jupyter-guide",
+          "files": [
+            {
+              "path": "notebooks/Rule3_Index_Markdown.ipynb",
+              "sha256": "8352963e13e0862668da716b6cccd27428315caa1642f75de30bb65ea8a66cc4",
+              "size": 7361
+            },
+            {
+              "path": "notebooks/Rule5_Watermark.ipynb",
+              "sha256": "5d492b8edca2b79fe76eea7ba28d6d70349ee2d0d84cfa1b9fe946338bba698c",
+              "size": 11209
+            }
+          ],
+          "license": "MIT License",
+          "license_evidence": "GitHub API reports MIT. Repository includes a LICENSE file.",
+          "license_file": {
+            "path": "LICENSE",
+            "sha256": "8fe9f492cb966e47345530bd8bae11a2dd02e65834f16bdae8d10880ec83d34a",
+            "size": 1092
+          },
+          "license_spdx": "MIT",
+          "license_status": "APPROVED",
+          "manifest_version": "1",
+          "notebook_count": 2,
+          "pipeline_version": "1.0.0",
+          "repository_id": "jupyter-guide/jupyter-guide",
+          "revision": "18813d2aa64bdba3382087842f28a81832e7518a",
+          "revision_type": "git_commit",
+          "run_id": "jupyter-20261022T052157Z-e17930e2",
+          "source_family": "github",
+          "source_name": "jupyter-guide__jupyter-guide"
+        }
+      ],
+      "stage3_path": "/mnt/pythia-cloud/PythiaDrive/filtered/stage3/jupyter_stage3_v1_jupyter-20261022T052157Z-e17930e2.jsonl",
+      "stage3_sha256": "d2b5f3d386e54e3902bcd5b282bf20226e0ee0a024e8f3cd21871593d24dda3b"
+    }
+  ],
+  "totals": {
+    "bytes": 2682422,
+    "elig": 73,
+    "raw": 178,
+    "rej": 105,
+    "tokens": 218838
+  },
+  "workstream": "PYTHIA-160M Jupyter Notebook Acquisition"
+}

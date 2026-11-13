@@ -1,0 +1,68 @@
+{
+  "artifact": "scientific_docs_license_audit_v1",
+  "generated_at": "2026-10-22T05:36:04+00:00",
+  "note": "Assessed training, dataset redistribution, and model-weight release separately; a license permitting one does not settle the others.",
+  "policy": {
+    "accept": "Clear license/permission covers intended use, provenance verifiable, conditions met.",
+    "hold": "License scope, ownership, attribution, or redistribution rights unclear.",
+    "reject": "No acceptable permission, or fails project policy."
+  },
+  "sources": [
+    {
+      "decision": "ACCEPT",
+      "decision_reason": "BSD-3-Clause documentation license clearly covers redistribution and derivative use; pinned versioned HTML archive with verifiable checksum.",
+      "documentation_version": "2.5",
+      "download_evidence": "Official versioned HTML archive: https://numpy.org/doc/2.5/numpy-html.zip (36,455,676 bytes, last-modified 2026-06-28).",
+      "download_url": "https://numpy.org/doc/2.5/numpy-html.zip",
+      "license": "BSD 3-Clause License",
+      "license_evidence": "NumPy documentation is published under the BSD 3-Clause license; the docs site carries the full license text on its license page. The numpy/numpy.org LICENSE is BSD-3-Clause.",
+      "license_spdx": "BSD-3-Clause",
+      "license_url": "https://numpy.org/doc/stable/license.html",
+      "project": "NumPy",
+      "source_name": "numpy_docs",
+      "source_url": "https://numpy.org/doc/2.5/"
+    },
+    {
+      "decision": "ACCEPT",
+      "decision_reason": "BSD-3-Clause explicitly covers documentation; pinned versioned HTML archive with verifiable checksum.",
+      "documentation_version": "1.18.0",
+      "download_evidence": "Official versioned HTML archive: https://docs.scipy.org/doc/scipy-1.18.0/scipy-html-1.18.0.zip (76,758,514 bytes, last-modified 2026-06-19).",
+      "download_url": "https://docs.scipy.org/doc/scipy-1.18.0/scipy-html-1.18.0.zip",
+      "license": "BSD 3-Clause License",
+      "license_evidence": "SciPy's developer guide states: 'SciPy is distributed under the modified (3-clause) BSD license. All code, documentation and other files added to SciPy by contributors is licensed under this license.'",
+      "license_spdx": "BSD-3-Clause",
+      "license_url": "https://docs.scipy.org/doc/scipy/dev/core-dev/index.html",
+      "project": "SciPy",
+      "source_name": "scipy_docs",
+      "source_url": "https://docs.scipy.org/doc/scipy-1.18.0/"
+    },
+    {
+      "decision": "ACCEPT",
+      "decision_reason": "BSD-3-Clause documentation license; versioned HTML archive with verifiable checksum.",
+      "documentation_version": "2.3.3",
+      "download_evidence": "Official versioned HTML archive ('Zipped HTML'): https://pandas.pydata.org/pandas-docs/version/2.3.3/pandas.zip (40,509,391 bytes, last-modified 2026-10-21). Latest stable 3.0.6 lacks a versioned archive URL, so the latest versioned archive is used.",
+      "download_url": "https://pandas.pydata.org/pandas-docs/version/2.3.3/pandas.zip",
+      "license": "BSD 3-Clause License",
+      "license_evidence": "pandas documentation describes the project as 'an open source, BSD-licensed library'; the overview page carries the BSD 3-Clause license text.",
+      "license_spdx": "BSD-3-Clause",
+      "license_url": "https://pandas.pydata.org/pandas-docs/version/2.3.3/getting_started/overview.html",
+      "project": "pandas",
+      "source_name": "pandas_docs",
+      "source_url": "https://pandas.pydata.org/pandas-docs/version/2.3.3/"
+    },
+    {
+      "decision": "HOLD",
+      "decision_reason": "License is clear and permissive, but there is no immutable HTML archive to acquire; a source-repo or PDF acquisition path would require a separate mechanism decision.",
+      "documentation_version": "3.11.2",
+      "download_evidence": "No versioned HTML archive is published (only a PDF: https://matplotlib.org/stable/Matplotlib.pdf). An HTML-archive acquisition path has not been established.",
+      "download_url": null,
+      "license": "Matplotlib License (PSF-derived, BSD-compatible)",
+      "license_evidence": "Matplotlib's license is based on the PSF license and only uses BSD-compatible code; the license explicitly covers 'associated documentation'.",
+      "license_spdx": "Matplotlib",
+      "license_url": "https://matplotlib.org/stable/project/license.html",
+      "project": "Matplotlib",
+      "source_name": "matplotlib_docs",
+      "source_url": "https://matplotlib.org/stable/"
+    }
+  ]
+}

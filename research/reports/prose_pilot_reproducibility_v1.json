@@ -1,0 +1,340 @@
+{
+  "baseline": {
+    "clone_head_matches_manifest_commit": {
+      "cpython_devguide": true,
+      "peps": true
+    },
+    "code_blocks": 6542,
+    "code_blocks_ast_invalid": 146,
+    "code_blocks_ast_valid": 2994,
+    "code_tokens": 206189,
+    "cpython_devguide_output_sha256": "3ed29176bd2205bf6ee5bfefadae05a45d93c3b5f7325992f1a0682d88452549",
+    "cpython_devguide_records": 402,
+    "cpython_devguide_records_with_empty_document_title": 111,
+    "cpython_devguide_revision": "ff9af798f7c216406da7699a46ac6b9052711745",
+    "documents_with_records": 789,
+    "max_record_tokens": 2025,
+    "multi_part_records": 4,
+    "outputs_unchanged_during_verification": true,
+    "peps_output_sha256": "ad3c63565b0b95233806e11c87849ad62ec11aae20564b8127da86e39662fcda",
+    "peps_revision": "3b0eaa2021d57747ab83b9356eefe597c5745dde",
+    "prose_tokens": 1675740,
+    "provisional_tokens": 1881929,
+    "records": 10240,
+    "records_cpython_devguide": 402,
+    "records_peps": 9838,
+    "records_with_invalid_code": 94,
+    "records_with_invalid_code_cpython_devguide": 1,
+    "records_with_invalid_code_peps": 93,
+    "records_with_odd_markdown_fence_count": 3,
+    "records_with_prose_and_code": 2955,
+    "records_with_within_record_repeated_code": 9,
+    "run_id": "prose-20261022T100121Z-f5fc9a3b",
+    "sections_seen": 15059
+  },
+  "concurrent_report_crosscheck": {
+    "additional_verified_numbers": {
+      "invalid_code_blocks": 146,
+      "multi_part_document": "pep-0101",
+      "multi_part_records_starting_with_code": 1,
+      "records_with_any_invalid_code": 94,
+      "records_with_any_invalid_code_cpython_devguide": 1,
+      "records_with_any_invalid_code_peps": 93
+    },
+    "correction": {
+      "clarification": "The concurrent report's '32 PEP documents / 250 records' counts documents that produce candidate records. There are 33 review-required PEP documents in total; 32 produce 250 candidate records and pep-0210 produces none. The companion breakdown (26 no-Copyright + 7 Copyright-heading) correctly totals 33. This is a unit-of-count clarification, not a data discrepancy.",
+      "documents_total": 33,
+      "documents_with_candidate_records": 32,
+      "documents_without_candidate_records": [
+        "pep-0210"
+      ],
+      "field": "review-required PEP documents",
+      "records": 250,
+      "reported_value": 32,
+      "tokens": 54794,
+      "verified_value": 33
+    },
+    "report_id": "RECON-PROSE-001",
+    "report_path": "research/workstreams/prose_extractor_reconciliation_v1.md",
+    "status": "Comprehensive and consistent with this verification except for one count; not modified by this session.",
+    "verified_claims": {
+      "devguide_empty_titles_111_of_402": true,
+      "final_output_hashes_match": true,
+      "final_pilot_10240_records": true,
+      "invalid_code_93_pep_records": true,
+      "ppc_38_tests_pass": true,
+      "ppc_pep8_zero_valid_code_blocks": true,
+      "prose_docs_29_tests_pass": true,
+      "prose_docs_canonical_recommendation": true,
+      "review_documents_total": 33,
+      "review_documents_with_candidate_records": 32,
+      "sections_15059": true
+    }
+  },
+  "duplicate_policy": {
+    "analysis_path": "research/reports/prose_duplicate_analysis_v1.json",
+    "definition": "Exact groups use sha256(normalize_code(content)); content includes the rendered section header and part marker.",
+    "dropped_tokens_keep_first": 6586,
+    "evidence_interpretation": "The 49 extras are legitimate cross-document reuse (superseded PEP rewrites, shared governance boilerplate, voter rolls, deferral notices), not parser noise. Keep-first is sufficient for a candidate mapping but must preserve kept_source/discarded_sources per the global dedup contract.",
+    "extra_records": 49,
+    "groups": 45,
+    "groups_with_code": 8,
+    "largest_group": {
+      "documents": [
+        "pep-0337",
+        "pep-0368",
+        "pep-0400",
+        "pep-0419",
+        "pep-3143"
+      ],
+      "section_path": [
+        "PEP Deferral"
+      ],
+      "size": 5
+    },
+    "near_duplicate_proxy": {
+      "definition": "lowercase prose with collapsed whitespace, not applied",
+      "extra_records": 60,
+      "groups": 55
+    },
+    "policies": {
+      "P0_keep_all": {
+        "records": 10240,
+        "tokens": 1881929
+      },
+      "P1_exact_dedupe_all": {
+        "records": 10191,
+        "tokens": 1875343
+      },
+      "P2_license_filter_only": {
+        "records": 9990,
+        "tokens": 1827135
+      },
+      "P3_license_filter_plus_exact_dedupe": {
+        "records": 9941,
+        "tokens": 1820549
+      }
+    },
+    "policy_status": "NOT_APPLIED",
+    "records_involved": 94,
+    "same_document_groups": 0,
+    "unique_records": 10191
+  },
+  "generated_at": "2026-10-22T20:08:44Z",
+  "license_gated_run": {
+    "accepted_cpython_devguide": 402,
+    "accepted_peps": 9588,
+    "accepted_records": 9990,
+    "accepted_tokens": 1827135,
+    "baseline_outputs_untouched": true,
+    "candidate_records": 10240,
+    "empty_document_titles": 0,
+    "license_rejected_documents_total": 33,
+    "license_rejected_documents_with_records": 32,
+    "license_rejected_records": 250,
+    "license_rejected_tokens": 54794,
+    "max_record_tokens": 2025,
+    "missing_required_fields": 0,
+    "outputs": {
+      "cpython_devguide": {
+        "bytes": 2400454,
+        "path": "data/filtered/stage1/prose_docs_prose-license-gated-v2_cpython_devguide.jsonl",
+        "sha256": "ec713e7db9b6b2e5f6398369c1e9a6b26d5cd040b295a9f40a9830341b6eec04"
+      },
+      "cpython_devguide_rejected": {
+        "bytes": 65809,
+        "path": "data/filtered/stage1/prose_docs_prose-license-gated-v2_cpython_devguide_rejected.jsonl",
+        "sha256": "cb5c657038ec0f990aa81f3ce90ad7d2c4528b4c6d72b458a0379f0a3b44d9ad"
+      },
+      "peps": {
+        "bytes": 55106524,
+        "path": "data/filtered/stage1/prose_docs_prose-license-gated-v2_peps.jsonl",
+        "sha256": "3e432ba1dee2b78beb8121d696e5872a4093b3778d8c63f1977a447a05cd2c29"
+      },
+      "peps_rejected": {
+        "bytes": 1817287,
+        "path": "data/filtered/stage1/prose_docs_prose-license-gated-v2_peps_rejected.jsonl",
+        "sha256": "c8b7001e678385bf75060a3352870f8f53c04b410e94cf9806927d925037f5f0"
+      }
+    },
+    "parser_rejected_entries": 3040,
+    "raw_root": "data/raw (existing clones; no acquisition)",
+    "run_id": "prose-license-gated-v2",
+    "stage1_root": "data/filtered/stage1",
+    "status": "completed",
+    "superseded_run": "prose-license-gated-v1 (retained; parser rejects from license-quarantined documents were double-counted in its rejected file)",
+    "total_rejected_entries": 3290
+  },
+  "license_reconciliation": {
+    "approved": 712,
+    "conclusion": "Fail-closed license gate is mandatory before promotion.",
+    "copyright_heading_but_not_approved": {
+      "documents": 7,
+      "documents_list": [
+        "pep-0227",
+        "pep-0401",
+        "pep-0437",
+        "pep-0483",
+        "pep-0551",
+        "pep-0578",
+        "pep-3145"
+      ],
+      "documents_with_candidate_records": 7,
+      "records": 63,
+      "tokens": 16203
+    },
+    "empty_copyright_heading": {
+      "document": "pep-0227",
+      "documents": 1,
+      "records": 12,
+      "tokens": 3030
+    },
+    "explicit_non_cc0_or_restrictive": {
+      "details": {
+        "pep-0401": "Restrictive: 'property of the Python Steering Union ... don't even think about quoting, copying, modifying, or distributing it.'",
+        "pep-0437": "Open Publication License",
+        "pep-0483": "Open Publication License",
+        "pep-0551": "Copyright Microsoft Corporation; distribution subject to Open Publication License",
+        "pep-0578": "Copyright Microsoft Corporation; distribution subject to Open Publication License",
+        "pep-3145": "Open Publication License"
+      },
+      "documents": 6,
+      "records": 51,
+      "tokens": 13173
+    },
+    "method": "Applied scripts.scrapers.prose_plus_code.classify_pep_license to all 745 PEP .rst files (excluding pep-0000) and joined results to pilot records by document_id.",
+    "no_copyright_heading": {
+      "documents": 26,
+      "documents_with_candidate_records": 25,
+      "documents_without_candidate_records": 1,
+      "records": 187,
+      "tokens": 38591
+    },
+    "pep_1_evidence": "PEP 1 requires a dual public-domain/CC0 license only for new PEPs; it does not establish a repository-wide license for all historical PEPs. The PEPs clone has no LICENSE file.",
+    "peps_examined": 745,
+    "pilot_assertion": "Every PEP record is stamped 'Public domain / CC0-1.0' at source level; 33 documents lack per-document support for that assertion.",
+    "review_documents_with_candidate_records": 32,
+    "review_documents_without_candidate_records": 1,
+    "review_documents_without_candidate_records_list": [
+      "pep-0210"
+    ],
+    "review_records": 250,
+    "review_required": 33,
+    "review_tokens": 54794
+  },
+  "recommendation": {
+    "canonical_implementation": "scripts/scrapers/prose_docs.py",
+    "conditions": [
+      "Per-document fail-closed PEP license gate; exclude the 33 review-required documents until resolved.",
+      "Add required contract fields/aliases without removing legacy fields.",
+      "Emit rejected-record JSONL with reason codes and reconcile counts.",
+      "Verify clone HEAD equals the acquisition manifest commit before processing.",
+      "Resolve or document multi-part prose/code attachment break (pep-0101 part 2 starts with code).",
+      "Apply a versioned exact-dedupe policy only with kept_source/discarded_sources provenance."
+    ],
+    "exact_next_action": "Coordinator must ratify prose_docs.py as canonical and authorize the P0 license/schema/rejection/drift fixes; then rerun to a new versioned destination using the existing clones. No new acquisition and no scikit-learn/SymPy work until the RST path passes acceptance.",
+    "not_recommended": [
+      "Promoting the existing 10,240-record pilot as-is.",
+      "Adopting prose_plus_code.py's RST parser; use its license/schema/acquisition features as reference only.",
+      "Creating a candidate corpus artifact before license policy and schema fixes are ratified."
+    ],
+    "status": "HOLD_PROMOTION"
+  },
+  "report_id": "RECON-PROSE-VERIFY-001",
+  "reproducibility": {
+    "byte_difference_reason": "retrieved_at is wall-clock time at record construction; all other fields match.",
+    "byte_identical_rerun": false,
+    "canonicalized_content_sha256_excluding_retrieved_at": {
+      "cpython_devguide": "d2292b033eb413e2cb15cf8b5f6f20520d4c12d7a2630129439e63945735fdbf",
+      "peps": "87ca750c80d64326960fee9c9cad3d242dbc487f1405f2bca6e1116e9e1bc871"
+    },
+    "conclusion": "The pilot is content-deterministic. Byte-level reproducibility is not achievable without pinning or excluding retrieved_at.",
+    "field_differences_excluding_retrieved_at": 0,
+    "method": "Re-ran scripts.scrapers.prose_docs against read-only symlinks to the existing data/raw/{peps,devguide} clones. raw_root and stage1_root were under /tmp/opencode/prose_repro; no repository data path was written. Symlinks only exposed existing repo/ and ACQUISITION_MANIFEST.json files.",
+    "records": 10240,
+    "records_identical_excluding_retrieved_at": {
+      "cpython_devguide": 402,
+      "peps": 9838
+    },
+    "rerun_id": "repro-reconciliation-v1",
+    "rerun_location": "/tmp/opencode/prose_repro",
+    "source_revisions_match_original_report": true,
+    "stats_match_original_report": true
+  },
+  "schema_contract": {
+    "alias_caveat": "exact_hash hashes rendered content including the '## section_path' header and '(part i/n)' marker; it is not a pure content hash and is not the global_dedup.normalized_hash contract for Python code.",
+    "contract_path": "research/data_contract.md",
+    "global_dedup_contract": "scripts/processors/global_dedup.py normalizes Python code (line endings, trailing whitespace, blank lines) and requires ProvenancePreserver.kept_source/discarded_sources. Neither pilot hash implements that normalized_hash contract, and the pilot does not emit dedup provenance.",
+    "missing_recommended": [
+      "license_status",
+      "token_count_status",
+      "provenance",
+      "validator_version"
+    ],
+    "missing_required": [
+      "source_type",
+      "source_url",
+      "acquisition_date",
+      "record_id",
+      "content_hash"
+    ],
+    "pilot_aliases_available": {
+      "acquisition_date": "retrieved_at",
+      "content_hash": "exact_hash",
+      "record_id": "id",
+      "source_url": "document_url",
+      "source_version": "source_revision",
+      "token_count": "provisional_token_count"
+    },
+    "present_in_pilot": [
+      "source",
+      "license"
+    ],
+    "quality_gate_note": "scripts/quality_gate.py reads a top-level 'code' field; the prose schema exposes 'code_blocks' instead.",
+    "required_fields": [
+      "source",
+      "source_type",
+      "source_url",
+      "acquisition_date",
+      "license",
+      "record_id",
+      "content_hash"
+    ],
+    "status": "NON_COMPLIANT"
+  },
+  "schema_version": "1.0",
+  "scope": "Independent read-only verification supporting research/workstreams/prose_extractor_reconciliation_v1.md. This artifact does not replace that report and does not authorize promotion.",
+  "tests": {
+    "combined_with_scientific_docs_and_python_docs_scraper": {
+      "failed": 0,
+      "passed": 51
+    },
+    "pre_existing_full_suite_failures": [
+      "tests/test_path_config.py::TestPathsWithPYTHIA_DATA_ROOT::test_with_pythia_data_root_cloud",
+      "4 tests in tests/test_pypi_remote_wiring.py (RemotePathMappingError: Path is not under the canonical PyPI root)"
+    ],
+    "test_prose_docs": {
+      "failed": 0,
+      "passed": 29
+    },
+    "test_prose_plus_code": {
+      "failed": 0,
+      "passed": 38
+    }
+  },
+  "version": "v1",
+  "writes": {
+    "canonical_pilot_outputs_modified": false,
+    "commits": false,
+    "created": [
+      "research/reports/prose_duplicate_analysis_v1.json",
+      "research/reports/prose_pilot_reproducibility_v1.json"
+    ],
+    "modified": [],
+    "new_acquisition": false,
+    "scrapers_modified": false,
+    "shared_status_files_modified": false,
+    "temporary_workspace": "/tmp/opencode/prose_repro",
+    "tests_modified": false
+  }
+}
