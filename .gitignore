@@ -9,3 +9,12 @@ logs/*.log
 data/raw/
 scripts/data/raw/
 tmp_test.jsonl
+
+# Local archive of superseded/stray data (see data/archive/ARCHIVE_MANIFEST.json)
+data/archive/
+
+# transient HF shard staging
+.ingest/
+
+# tokenizer workspace (sample, model artifacts)
+.tokenizer/
