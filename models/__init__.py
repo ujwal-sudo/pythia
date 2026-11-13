@@ -1,11 +1,31 @@
+"""Pythia-160M: decoder-only transformer.
+
+12 layers, d_model 768, 12 Q heads / 2 KV heads (GQA), head_dim 64, SwiGLU FFN 4320,
+pre-norm RMSNorm, RoPE (theta 1e6), tied embeddings. Attention backend falls back
+flash -> sdpa -> eager.
+
+Parameter counts (fp32, default config):
+    total          160,549,632   (tied embedding counted once)
+    non-embedding  135,973,632   (total - 32,000 x 768)
+Always report both; see `count_parameters`.
+"""
+
 import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+try:  # optional; only used on CUDA with fp16/bf16
+    from flash_attn import flash_attn_func
+except ImportError:
+    flash_attn_func = None
+
+ATTN_IMPLS = ("auto", "flash", "sdpa", "eager")
+
 
 class RMSNorm(nn.Module):
-    """Root Mean Square Layer Normalization."""
+    """Root Mean Square Layer Normalization (statistics in fp32)."""
 
     def __init__(self, dim: int, eps: float = 1e-6):
         super().__init__()
@@ -13,75 +33,60 @@ class RMSNorm(nn.Module):
         self.weight = nn.Parameter(torch.ones(dim))
 
     def forward(self, x):
-        norm = x.float().pow_(2).mean(-1, keepdim=True).add_(self.eps).rsqrt_()
-        return (x.float() * norm).type(x.dtype) * self.weight
-
-
-class RoPE:
-    """Rotary Position Embedding.
-
-    Precomputes cos/sin embeddings for given sequence length and applies them
-    to query and key vectors in attention.
-    """
-
-    def __init__(self, dim: int, theta: float = 1_000_000):
-        self.dim = dim
-        self.theta = theta
-        inv_freq = 1.0 / (theta ** (torch.arange(0, dim, 2).float() / dim))
-        self.register_buffer("inv_freq", inv_freq, persistent=False)
-
-    def __call__(self, seq_len: int, device: torch.device, dtype: torch.dtype):
-        t = torch.arange(seq_len, device=device, dtype=dtype)
-        freqs = t[:, None] * self.inv_freq[None, :]
-        emb = torch.cat((freqs, freqs), dim=-1)
-        cos = emb.cos()
-        sin = emb.sin()
-        return cos, sin
+        xf = x.float()  # out-of-place: for fp32 input this is `x` itself, so never mutate it
+        normed = xf * torch.rsqrt(xf.pow(2).mean(-1, keepdim=True) + self.eps)
+        return normed.type_as(x) * self.weight
 
 
 def rotate_half(x):
-    """Rotate half the hidden dims of the input."""
-    x1 = x[..., ::2]
-    x2 = x[..., 1::2]
-    return torch.cat((-x2, x1), dim=-1)
+    """Half-split rotation: (x1, x2) -> (-x2, x1). Matches RoPE's cat(freqs, freqs) layout."""
+    half = x.shape[-1] // 2
+    return torch.cat((-x[..., half:], x[..., :half]), dim=-1)
 
 
 def apply_rope(x, cos, sin):
-    """Apply RoPE to the input tensor.
+    """x: (batch, heads, seq, head_dim); cos/sin: (seq, head_dim)."""
+    xf = x.float()
+    return (xf * cos + rotate_half(xf) * sin).type_as(x)
 
-    x: (batch, n_heads, seq_len, head_dim)
-    cos, sin: (1, 1, seq_len, head_dim)
+
+class RoPE(nn.Module):
+    """Rotary position embedding tables for one head_dim, shared by every layer.
+
+    shortcut: cos/sin are buffers, so model.to(bfloat16) would round them; train with
+    fp32 weights + autocast (the plan) or revisit before pure-bf16 weights.
     """
-    # x shape: (batch, n_heads, seq_len, head_dim)
-    # cos/sin shape after unsqueeze: (1, 1, seq_len, head_dim)
-    cos = cos.expand(x.shape[0], x.shape[1], -1, -1)
-    sin = sin.expand(x.shape[0], x.shape[1], -1, -1)
 
-    # Apply rotation: x * cos + rotate_half(x) * sin
-    rotated = rotate_half(x)
-    return x * cos + rotated * sin
+    def __init__(self, head_dim: int, max_seq_len: int, theta: float = 1_000_000.0):
+        super().__init__()
+        assert head_dim % 2 == 0, "head_dim must be even for RoPE"
+        inv_freq = 1.0 / (theta ** (torch.arange(0, head_dim, 2).float() / head_dim))
+        freqs = torch.outer(torch.arange(max_seq_len).float(), inv_freq)
+        emb = torch.cat((freqs, freqs), dim=-1)
+        self.register_buffer("cos", emb.cos(), persistent=False)
+        self.register_buffer("sin", emb.sin(), persistent=False)
+        self.max_seq_len = max_seq_len
+
+    def forward(self, x):
+        seq = x.shape[-2]
+        if seq > self.max_seq_len:
+            raise ValueError(f"sequence length {seq} exceeds max_seq_len {self.max_seq_len}")
+        return apply_rope(x, self.cos[:seq], self.sin[:seq])
 
 
 class GQAAttention(nn.Module):
-    """Grouped-Query Attention.
+    """Causal grouped-query self-attention with RoPE on Q and K."""
 
-    Supports multiple query heads per key/value head (GQA).
-    With n_q_heads=12 and n_kv_heads=2, grouping factor is 6.
-    """
-
-    def __init__(self, hidden_size: int, n_q_heads: int, n_kv_heads: int):
+    def __init__(self, hidden_size: int, n_q_heads: int, n_kv_heads: int, impl: str = "auto"):
         super().__init__()
+        assert hidden_size % n_q_heads == 0, f"hidden_size {hidden_size} not divisible by n_q_heads {n_q_heads}"
+        assert n_q_heads % n_kv_heads == 0, f"n_q_heads {n_q_heads} not divisible by n_kv_heads {n_kv_heads}"
+        assert impl in ATTN_IMPLS, f"impl must be one of {ATTN_IMPLS}"
         self.n_q_heads = n_q_heads
         self.n_kv_heads = n_kv_heads
         self.head_dim = hidden_size // n_q_heads
         self.n_rep = n_q_heads // n_kv_heads
-
-        assert hidden_size % n_q_heads == 0, (
-            f"hidden_size {hidden_size} must be divisible by n_q_heads {n_q_heads}"
-        )
-        assert n_q_heads % n_kv_heads == 0, (
-            f"n_q_heads {n_q_heads} must be divisible by n_kv_heads {n_kv_heads}"
-        )
+        self.impl = impl
 
         self.q_proj = nn.Linear(hidden_size, n_q_heads * self.head_dim, bias=False)
         self.k_proj = nn.Linear(hidden_size, n_kv_heads * self.head_dim, bias=False)
@@ -89,62 +94,47 @@ class GQAAttention(nn.Module):
         self.o_proj = nn.Linear(n_q_heads * self.head_dim, hidden_size, bias=False)
 
     def _repeat_kv(self, x):
-        """Repeat key/value heads to match number of query heads.
-
-        x: (batch, n_kv_heads, seq_len, head_dim)
-        Returns: (batch, n_q_heads, seq_len, head_dim)
-        """
-        bs, n_kv, slen, head_dim = x.shape
+        """(b, n_kv, s, d) -> (b, n_q, s, d); query head i uses kv head i // n_rep."""
         if self.n_rep == 1:
             return x
-        return (
-            x[:, :, :, None, :]
-            .expand(bs, n_kv, slen, self.n_rep, head_dim)
-            .reshape(bs, n_kv * self.n_rep, slen, head_dim)
-        )
+        b, n_kv, s, d = x.shape
+        return x[:, :, None].expand(b, n_kv, self.n_rep, s, d).reshape(b, n_kv * self.n_rep, s, d)
 
-    def forward(self, q, k, v):
-        """Forward pass for GQA attention.
+    def _resolve_impl(self, x):
+        if self.impl == "flash" and flash_attn_func is None:
+            raise RuntimeError("attn impl 'flash' requested but flash_attn is not installed")
+        if self.impl != "auto":
+            return self.impl
+        if flash_attn_func is not None and x.is_cuda and x.dtype in (torch.float16, torch.bfloat16):
+            return "flash"
+        return "sdpa"
 
-        q, k, v: (batch, seq_len, hidden_size)
-        Returns: (batch, seq_len, hidden_size)
-        """
-        bs = q.shape[0]
+    def forward(self, x, rope):
+        b, s, _ = x.shape
+        q = self.q_proj(x).view(b, s, self.n_q_heads, self.head_dim).transpose(1, 2)
+        k = self.k_proj(x).view(b, s, self.n_kv_heads, self.head_dim).transpose(1, 2)
+        v = self.v_proj(x).view(b, s, self.n_kv_heads, self.head_dim).transpose(1, 2)
+        q, k = rope(q), rope(k)
 
-        # Project and reshape: (bs, seq_len, n_heads * head_dim) -> (bs, seq_len, n_heads, head_dim)
-        q = self.q_proj(q).view(bs, -1, self.n_q_heads, self.head_dim).transpose(1, 2)
-        k = self.k_proj(k).view(bs, -1, self.n_kv_heads, self.head_dim).transpose(1, 2)
-        v = self.v_proj(v).view(bs, -1, self.n_kv_heads, self.head_dim).transpose(1, 2)
-
-        # Repeat K/V to match Q heads
-        k = self._repeat_kv(k)
-        v = self._repeat_kv(v)
-
-        # Scaled dot-product attention
-        # q: (bs, n_q_heads, seq_len, head_dim), k: (bs, n_q_heads, seq_len, head_dim)
-        scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(self.head_dim)
-
-        # Causal mask
-        seq_len = scores.shape[-1]
-        causal_mask = torch.triu(
-            torch.full((seq_len, seq_len), float("-inf"), device=scores.device),
-            diagonal=1,
-        )
-        scores = scores + causal_mask
-
-        attn = F.softmax(scores, dim=-1)
-        output = torch.matmul(attn, v)
-
-        # Reshape output: (bs, n_q_heads, seq_len, head_dim) -> (bs, seq_len, n_q_heads * head_dim)
-        output = output.transpose(1, 2).contiguous().view(bs, -1, self.n_q_heads * self.head_dim)
-        return self.o_proj(output)
+        impl = self._resolve_impl(x)
+        if impl == "flash":  # untested until a CUDA + flash_attn machine is available
+            out = flash_attn_func(q.transpose(1, 2), k.transpose(1, 2), v.transpose(1, 2), causal=True)
+            out = out.reshape(b, s, -1)
+        else:
+            k, v = self._repeat_kv(k), self._repeat_kv(v)
+            if impl == "sdpa":
+                out = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+            else:  # eager reference
+                scores = (q @ k.transpose(-2, -1)) / math.sqrt(self.head_dim)
+                mask = torch.ones(s, s, dtype=torch.bool, device=x.device).triu(1)
+                scores = scores.float().masked_fill(mask, float("-inf"))
+                out = torch.softmax(scores, dim=-1).type_as(v) @ v
+            out = out.transpose(1, 2).reshape(b, s, -1)
+        return self.o_proj(out)
 
 
 class SwiGLU(nn.Module):
-    """Swish-Gated Linear Unit activation function.
-
-    Compute: gate = silo(W_gate @ x), up = W_up @ x, output = W_down @ (gate * up)
-    """
+    """down(silu(gate(x)) * up(x))."""
 
     def __init__(self, hidden_size: int, ffn_size: int):
         super().__init__()
@@ -153,138 +143,88 @@ class SwiGLU(nn.Module):
         self.down_proj = nn.Linear(ffn_size, hidden_size, bias=False)
 
     def forward(self, x):
-        gate = F.silu(self.gate_proj(x))
-        up = self.up_proj(x)
-        return self.down_proj(gate * up)
+        return self.down_proj(F.silu(self.gate_proj(x)) * self.up_proj(x))
 
 
 class TransformerBlock(nn.Module):
-    """Pre-norm Transformer block.
+    """Pre-norm block: x + attn(norm(x)), then x + ffn(norm(x))."""
 
-    Architecture: RMSNorm → RoPE → GQA → residual,
-                    RMSNorm → SwiGLU → residual
-    """
-    def __init__(self, hidden_size: int, n_q_heads: int, n_kv_heads: int, ffn_size: int):
+    def __init__(self, hidden_size: int, n_q_heads: int, n_kv_heads: int, ffn_size: int, attn_impl: str = "auto"):
         super().__init__()
         self.norm1 = RMSNorm(hidden_size)
-        self.attn = GQAAttention(hidden_size, n_q_heads, n_kv_heads)
+        self.attn = GQAAttention(hidden_size, n_q_heads, n_kv_heads, attn_impl)
         self.norm2 = RMSNorm(hidden_size)
         self.ffn = SwiGLU(hidden_size, ffn_size)
-        self.rope = RoPE(hidden_size, 1_000_000)
 
-    def forward(self, x, seq_len: int = None):
-        # Pre-norm attention branch
-        residual = x
-        x = self.norm1(x)
-        # Apply RoPE
-        cos, sin = self.rope(seq_len or x.shape[1], x.device, x.dtype)
-        # x shape for attention: (batch, seq_len, hidden)
-        # We need to transpose to (batch, head, seq_len, head_dim) inside attention
-        # But attention expects (batch, seq_len, hidden) and handles internally
-        # So we just pass x as-is and let attention handle the reshaping
-        x = self.attn(x, x, x)
-        x = x + residual
-
-        # Pre-norm FFN branch
-        residual = x
-        x = self.norm2(x)
-        x = self.ffn(x)
-        x = x + residual
-
-        return x
+    def forward(self, x, rope):
+        x = x + self.attn(self.norm1(x), rope)
+        return x + self.ffn(self.norm2(x))
 
 
 class PythiaModel(nn.Module):
-    """Pythia language model with 160.55M parameters.
+    """Decoder-only LM with tied input/output embeddings."""
 
-    Architecture:
-    - Token embedding (tied with LM head)
-    - 12 Transformer blocks (RMSNorm → RoPE → GQA → SwiGLU)
-    - Final RMSNorm
-    - LM head (weight-tied to embedding)
-    """
-
-    def __init__(self, vocab_size: int = 32_000, hidden_size: int = 768,
-                 num_layers: int = 12, n_q_heads: int = 12, n_kv_heads: int = 2,
-                 ffn_size: int = 4320):
+    def __init__(self, vocab_size: int = 32_000, hidden_size: int = 768, num_layers: int = 12,
+                 n_q_heads: int = 12, n_kv_heads: int = 2, ffn_size: int = 4320,
+                 max_seq_len: int = 2048, rope_theta: float = 1_000_000.0, attn_impl: str = "auto"):
         super().__init__()
-
         self.config = dict(
-            vocab_size=vocab_size,
-            hidden_size=hidden_size,
-            num_layers=num_layers,
-            n_q_heads=n_q_heads,
-            n_kv_heads=n_kv_heads,
-            ffn_size=ffn_size,
-            head_dim=hidden_size // n_q_heads,
+            vocab_size=vocab_size, hidden_size=hidden_size, num_layers=num_layers,
+            n_q_heads=n_q_heads, n_kv_heads=n_kv_heads, ffn_size=ffn_size,
+            head_dim=hidden_size // n_q_heads, max_seq_len=max_seq_len,
+            rope_theta=rope_theta, attn_impl=attn_impl,
         )
-
-        # Token embeddings (tied with lm_head)
         self.embed = nn.Embedding(vocab_size, hidden_size)
-
-        # Transformer blocks
-        self.blocks = nn.ModuleList([
-            TransformerBlock(hidden_size, n_q_heads, n_kv_heads, ffn_size)
-            for _ in range(num_layers)
-        ])
-
-        # Final norm
+        self.rope = RoPE(hidden_size // n_q_heads, max_seq_len, rope_theta)
+        self.blocks = nn.ModuleList(
+            TransformerBlock(hidden_size, n_q_heads, n_kv_heads, ffn_size, attn_impl) for _ in range(num_layers)
+        )
         self.norm = RMSNorm(hidden_size)
-
-        # LM head (weights tied with embedding)
         self.lm_head = nn.Linear(hidden_size, vocab_size, bias=False)
-        self.lm_head.weight = self.embed.weight  # Weight tying
+        self.lm_head.weight = self.embed.weight  # tie
 
-    def forward(self, idx, targets=None, seq_len: int = None):
-        """Forward pass.
+        self.apply(self._init_weights)
+        # GPT-2 style: scale residual-branch output projections by 1/sqrt(2 * layers)
+        for name, p in self.named_parameters():
+            if name.endswith(("o_proj.weight", "down_proj.weight")):
+                nn.init.normal_(p, mean=0.0, std=0.02 / math.sqrt(2 * num_layers))
 
-        idx: (batch, seq_len) tensor of token IDs
-        targets: (batch, seq_len) optional target token IDs for loss computation
+    @staticmethod
+    def _init_weights(module):
+        if isinstance(module, (nn.Linear, nn.Embedding)):
+            nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
-        Returns: (logits, loss) where loss is cross-entropy loss
-        """
-        # Embed tokens
-        x = self.embed(idx)  # (batch, seq_len, hidden)
-
-        # Pass through transformer blocks
+    def set_attn_impl(self, impl: str):
+        assert impl in ATTN_IMPLS
         for block in self.blocks:
-            x = block(x, seq_len=seq_len)
+            block.attn.impl = impl
 
-        # Final norm
-        x = self.norm(x)
+    def forward(self, idx, targets=None):
+        """idx: (batch, seq) token ids. Returns (logits, loss).
 
-        # LM head
-        logits = self.lm_head(x)  # (batch, seq_len, vocab_size)
+        If `targets` is given it must be the SAME tokens as `idx` (not pre-shifted):
+        the loss shifts internally (logits[:, :-1] vs targets[:, 1:]).
+        """
+        x = self.embed(idx)
+        for block in self.blocks:
+            x = block(x, self.rope)
+        logits = self.lm_head(self.norm(x))
 
-        # Compute loss if targets provided
         loss = None
         if targets is not None:
-            # Shift logits and targets for next-token prediction
-            shift_logits = logits[:, :-1, :].contiguous()
-            shift_targets = targets[:, 1:].contiguous()
             loss = F.cross_entropy(
-                shift_logits.view(-1, shift_logits.size(-1)),
-                shift_targets.view(-1),
+                logits[:, :-1].reshape(-1, logits.size(-1)),
+                targets[:, 1:].reshape(-1),
             )
-
         return logits, loss
 
-    def get_num_params(self):
-        """Count total parameters (excluding tied weights double-count)."""
-        n_params = sum(p.numel() for p in self.parameters())
-        # Subtract the tied weight (lm_head.weight is same as embed.weight)
-        # lm_head has hidden_size * vocab_size params, embed has same
-        # We count them once, so subtract one copy
-        tied_reduction = self.embed.weight.numel()
-        return n_params - tied_reduction
 
+def count_parameters(model) -> dict:
+    """Parameter counts. `parameters()` already counts the tied embedding once.
 
-def count_parameters(model):
-    """Count model parameters, handling weight tying correctly."""
+    Returns total, embedding (vocab x hidden) and non_embedding (= total - embedding).
+    Report both total and non_embedding; never collapse them into one number.
+    """
     total = sum(p.numel() for p in model.parameters())
-    # Weight tying: lm_head.weight shares with embed.weight
-    # We counted embed.weight params once via model.parameters(), but lm_head also references it
-    # So we need to subtract the duplicate count
-    if hasattr(model, 'lm_head') and hasattr(model, 'embed'):
-        total -= model.embed.weight.numel()  # Remove duplicate count
-    return total
+    embedding = model.embed.weight.numel()
+    return {"total": total, "embedding": embedding, "non_embedding": total - embedding}

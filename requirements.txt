@@ -17,3 +17,7 @@ datasets
 huggingface_hub
 jsonlines
 tqdm
+
+# Model / tokenizer (Phase 1-3). torch: install the build matching your hardware (CPU or CUDA).
+torch
+tokenizers
