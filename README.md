@@ -27,6 +27,11 @@ Feedback / Regeneration
 
 ## Data Pipeline
 
+Data lives on the `pythia:Pythia` rclone remote; every path goes through
+`scripts/storage`. See **[DATASET.md](DATASET.md)** for the store contract, the
+canonical file list, the license policy, and the current snapshot.
+
+
 The high-level data pipeline is:
 
 ```text
