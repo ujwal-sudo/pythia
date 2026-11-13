@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import math
 import sys
@@ -28,12 +29,20 @@ from pathlib import Path
 WORK = Path(__file__).resolve().parents[2] / ".tokenizer"
 
 # Byte-level BPE never needs <unk>; ids are fixed so they survive re-training.
-SPECIAL_TOKENS = [
-    "<|pad|>",
-    "<|endoftext|>",
-    "<|fim_prefix|>",
-    "<|fim_middle|>",
-    "<|fim_suffix|>",
+NAMED_SPECIALS = [
+    "<|pad|>",          # 0
+    "<|bos|>",          # 1
+    "<|endoftext|>",    # 2  (EOS / document separator)
+    "<|fim_prefix|>",   # 3
+    "<|fim_middle|>",   # 4
+    "<|fim_suffix|>",   # 5
+]
+# 6 named + 122 reserved = 128 slots at the front of the vocab. Reserved ids
+# are unused in v1 and let later ablations (INDENT/DEDENT, markers) land
+# without resizing the embedding matrix. Total vocab stays 32,000 (= 250 * 128).
+N_SPECIAL_SLOTS = 128
+SPECIAL_TOKENS = NAMED_SPECIALS + [
+    f"<|reserved_{i:03d}|>" for i in range(N_SPECIAL_SLOTS - len(NAMED_SPECIALS))
 ]
 
 # Share of the sample by source family. Prose gets more than its corpus share
@@ -152,6 +161,9 @@ def train(
     trainer = BpeTrainer(
         vocab_size=vocab_size,
         special_tokens=SPECIAL_TOKENS,
+        # Without this the trainer only learns bytes it happened to see, so
+        # rare characters could not be encoded (the first tokenizer lacked 28).
+        initial_alphabet=ByteLevel.alphabet(),
         min_frequency=2,
         show_progress=True,
     )
@@ -174,9 +186,59 @@ def train(
         "algorithm": "byte-level BPE, no normaliser, add_prefix_space=False",
         "files": files,
         "path": str(out_dir / "tokenizer.json"),
+        "sha256": _sha256(out_dir / "tokenizer.json"),
+        "tokenizers_version": __import__("tokenizers").__version__,
     }
     (out_dir / "train_report.json").write_text(json.dumps(info, indent=2) + "\n")
     return info
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def holdout(store, *, mb_per_shard: int = 4, out: Path | None = None) -> dict:
+    """Write a JSONL held-out set from the LAST shard of every batch.
+
+    `sample` only reads shard 0 of each batch, so these shards are disjoint
+    from the tokenizer training text (asserted below).
+    """
+    from scripts.corpus.batch import load_registry
+
+    out = out or WORK / "holdout.jsonl"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    batches = load_registry(store)["batches"]
+    used = {b["shards"][0]["rel"] for b in batches}
+    budget = mb_per_shard * 1024 * 1024
+    counts: dict[str, dict] = {}
+    with out.open("w", encoding="utf-8") as handle:
+        for batch in batches:
+            rel = batch["shards"][-1]["rel"]
+            assert rel not in used, f"{rel} overlaps the training sample"
+            got = records = 0
+            with store.open(rel) as stream:
+                for raw in stream:
+                    if got >= budget:
+                        break
+                    try:
+                        record = json.loads(raw)
+                    except json.JSONDecodeError:
+                        continue
+                    text = record.get("text") or ""
+                    if not text:
+                        continue
+                    source = (record.get("meta") or {}).get("source", "unknown")
+                    handle.write(json.dumps({"text": text, "source": source, "shard": rel}, ensure_ascii=False) + "\n")
+                    got += len(text.encode("utf-8"))
+                    records += 1
+            counts[rel] = {"records": records, "bytes": got}
+    stats = {"file": str(out), "bytes": out.stat().st_size, "shards": counts, "sha256": _sha256(out)}
+    (WORK / "holdout_stats.json").write_text(json.dumps(stats, indent=2) + "\n")
+    return stats
 
 
 def evaluate(
@@ -194,16 +256,27 @@ def evaluate(
 
     chars = tokens = records = 0
     per_source = collections.defaultdict(lambda: [0, 0])  # chars, tokens
-    stream = (
-        ({"text": part, "meta": {"source": "holdout"}} for part in _split_docs(file))
-        if file is not None
-        else _iter_held_out(store, shards)
-    )
+    if file is not None and file.suffix == ".jsonl":
+        stream = (
+            {"text": r["text"], "meta": {"source": r.get("source", "holdout")}}
+            for r in map(json.loads, file.open(encoding="utf-8"))
+        )
+    elif file is not None:
+        stream = ({"text": part, "meta": {"source": "holdout"}} for part in _split_docs(file))
+    else:
+        stream = _iter_held_out(store, shards)
+    roundtrip_failures: list[str] = []
+    special_string_records = 0
     for record in stream:
         text = record.get("text") or ""
         if not text:
             continue
         encoded = tokenizer.encode(text)
+        # skip_special_tokens=False so literal "<|endoftext|>" in text survives.
+        if tokenizer.decode(encoded.ids, skip_special_tokens=False) != text:
+            roundtrip_failures.append(text[:80])
+        if any(t in text for t in SPECIAL_TOKENS[:N_SPECIAL_SLOTS]):
+            special_string_records += 1
         chars += len(text)
         tokens += len(encoded.ids)
         records += 1
@@ -213,7 +286,12 @@ def evaluate(
 
     ratio = chars / tokens if tokens else 0.0
     report = {
+        "sha256": _sha256(tokenizer_path),
+        "vocab_size": tokenizer.get_vocab_size(),
         "records": records,
+        "roundtrip_failures": len(roundtrip_failures),
+        "roundtrip_failure_examples": roundtrip_failures[:3],
+        "records_containing_special_strings": special_string_records,
         "chars": chars,
         "tokens": tokens,
         "chars_per_token": round(ratio, 3),
@@ -268,6 +346,9 @@ def main(argv: list[str] | None = None) -> int:
     sample_cmd.add_argument("--stack-mb", type=int, default=500)
     sample_cmd.add_argument("--mixed-mb", type=int, default=100)
 
+    hold_cmd = sub.add_parser("holdout")
+    hold_cmd.add_argument("--mb-per-shard", type=int, default=4)
+
     train_cmd = sub.add_parser("train")
     train_cmd.add_argument("--vocab", type=int, default=32000)
     train_cmd.add_argument("--sample", default=None)
@@ -285,6 +366,8 @@ def main(argv: list[str] | None = None) -> int:
     store = open_store(args.store, args.root)
     if args.command == "sample":
         print(json.dumps(sample(store, total_mb=args.total_mb, stack_mb=args.stack_mb, mixed_mb=args.mixed_mb), indent=2))
+    elif args.command == "holdout":
+        print(json.dumps(holdout(store, mb_per_shard=args.mb_per_shard), indent=2))
     elif args.command == "train":
         print(json.dumps(train(
             vocab_size=args.vocab,
