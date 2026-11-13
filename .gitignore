@@ -18,3 +18,4 @@ data/archive/
 
 # tokenizer workspace (sample, model artifacts)
 .tokenizer/
+data/tokenized/
