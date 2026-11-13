@@ -1,0 +1,14 @@
+{
+  "name": "pythia-bpe-32k-v1",
+  "frozen": "2026-11-13",
+  "tokenizer_json_sha256": "ea9ef95d73129379040cfda85d4a18c73b50f244eff2495692f033309b8dfcf1",
+  "vocab_size": 32000,
+  "special_ids": {"<|pad|>": 0, "<|bos|>": 1, "<|endoftext|>": 2, "<|fim_prefix|>": 3, "<|fim_middle|>": 4, "<|fim_suffix|>": 5},
+  "reserved_ids": "6-127 (<|reserved_000|>..<|reserved_121|>), unused in v1",
+  "byte_alphabet": "all 256 byte-level symbols at ids 128-383",
+  "training": "scripts/corpus/tokenizer.py train --vocab 32000 --sample .tokenizer/sample.txt (563 MB sample, no prose upsampling, tokenizers 0.23.3)",
+  "heldout_chars_per_token": 3.323,
+  "heldout_note": "disjoint last-shard-per-batch holdout (25.1M chars, 8,721 records); no prose; holdout sha256 in holdout_stats.json",
+  "roundtrip_failures": "0 / 8721",
+  "caveat": "literal special-token strings inside corpus text are parsed as special tokens; Phase 2 must scan/escape"
+}

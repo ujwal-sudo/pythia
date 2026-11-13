@@ -95,3 +95,22 @@ Notes:
 - **Output artifacts:** `data/filtered/stage1/prose_docs_prose-20261022T100121Z-f5fc9a3b_peps.jsonl` (9,838 records, 48,460,837 B, SHA-256 `ad3c6356…62fcda`); `..._cpython_devguide.jsonl` (402 records, 2,050,105 B, SHA-256 `3ed29176…452549`); `data/raw/prose_docs/reports/prose-20261022T100121Z-f5fc9a3b/`
 - **Result:** 808 documents examined (789 with records), 15,059 sections seen, 10,240 retained (9,838 + 402), 6,542 code blocks (2,994 AST-valid, 146 invalid fragments), 1,675,740 prose tokens + 206,189 code tokens = 1,881,929 provisional tokens; 0 within-document duplicates; 49 cross-document exact-hash repeats in PEPs (identical governance text, distinct provenance); max record 2,025 tokens.
 - **Notes:** Superseded in-session runs `prose-20261022T095336Z-f5fc9a3b`, `prose-20261022T095601Z-f5fc9a3b`, and `prose-20261022T095715Z-f5fc9a3b` are retained as evidence. No writes to CodeSearchNet/PyPI outputs. Untracked concurrent `scripts/scrapers/prose_plus_code.py` was not used. Not promoted to `data/final/`.
+
+### TOK-V1-2026-11-13 — freeze pythia-bpe-32k-v1
+```text
+Run/Experiment ID: TOK-V1-2026-11-13
+Date: 2026-11-13
+Owner: Ujwal
+Git commit: UNKNOWN (recorded in the commit that adds tokenizer/pythia-bpe-32k-v1/)
+Dataset version: batches 001-006; train text = .tokenizer/sample.txt (563 MB, shard 0 of batches 001-005 heads); holdout = last shard of each of 6 batches (4 MB each)
+Tokenizer version: pythia-bpe-32k-v1, sha256 ea9ef95d73129379040cfda85d4a18c73b50f244eff2495692f033309b8dfcf1
+Model version: n/a
+Hardware: local CPU
+Software environment: Python 3.12.11, tokenizers 0.23.3
+Random seed: none (BPE training is deterministic)
+Command: python -m scripts.corpus.tokenizer {holdout --mb-per-shard 4 | train --vocab 32000 | train --vocab 16000 | evaluate --file .tokenizer/holdout.jsonl}
+Input artifacts: .tokenizer/sample.txt, .tokenizer/holdout.jsonl (sha256 in holdout_stats.json)
+Output artifacts: tokenizer/pythia-bpe-32k-v1/ (git), pythia:Pythia/tokenizer/pythia-bpe-32k-v1/ (Drive)
+Result: 32K 3.323 chars/token, 0/8721 round-trip failures; 16K 3.210 (3.4% worse, rejected); old v0 3.321 with 1/8721 round-trip failure
+Notes: Earlier 3.687 was measured on the tail of the training sample (not disjoint) and is superseded. v0 lacked 28 of 256 byte tokens, BOS and reserved ids. Holdout has no prose. Corpus token estimate becomes ~3.96B (13.17B chars x 0.3009), an estimate.
+```

@@ -1,0 +1,26 @@
+{
+  "sha256": "61c8ac3cc85a9e5493ca485492ba23a450108c6d1fb84ef94b10c48d36186cbf",
+  "vocab_size": 32000,
+  "records": 8721,
+  "roundtrip_failures": 1,
+  "roundtrip_failure_examples": [
+    "#!/usr/bin/env python3\n\n#\n# units.py - Units test harness for ctags\n#\n# Copyrigh"
+  ],
+  "records_containing_special_strings": 0,
+  "chars": 25123912,
+  "tokens": 7565787,
+  "chars_per_token": 3.321,
+  "tokens_per_char": 0.3011,
+  "by_source": {
+    "codesearchnet": {
+      "chars": 4195327,
+      "tokens": 1143741,
+      "chars_per_token": 3.668
+    },
+    "the_stack_dedup": {
+      "chars": 20928585,
+      "tokens": 6422046,
+      "chars_per_token": 3.259
+    }
+  }
+}

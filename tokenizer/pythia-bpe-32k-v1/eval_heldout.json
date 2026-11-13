@@ -1,0 +1,24 @@
+{
+  "sha256": "ea9ef95d73129379040cfda85d4a18c73b50f244eff2495692f033309b8dfcf1",
+  "vocab_size": 32000,
+  "records": 8721,
+  "roundtrip_failures": 0,
+  "roundtrip_failure_examples": [],
+  "records_containing_special_strings": 0,
+  "chars": 25123912,
+  "tokens": 7560066,
+  "chars_per_token": 3.323,
+  "tokens_per_char": 0.3009,
+  "by_source": {
+    "codesearchnet": {
+      "chars": 4195327,
+      "tokens": 1143440,
+      "chars_per_token": 3.669
+    },
+    "the_stack_dedup": {
+      "chars": 20928585,
+      "tokens": 6416626,
+      "chars_per_token": 3.262
+    }
+  }
+}
