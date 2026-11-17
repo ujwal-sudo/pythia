@@ -36,9 +36,9 @@ class ParamCounts(unittest.TestCase):
         with torch.device("meta"):
             m = PythiaModel()
         c = count_parameters(m)
-        self.assertEqual(c["total"], 160_549_632)
+        self.assertEqual(c["total"], 162_233_088)
         self.assertEqual(c["embedding"], 32_000 * 768)
-        self.assertEqual(c["non_embedding"], 135_973_632)
+        self.assertEqual(c["non_embedding"], 137_657_088)
         self.assertEqual(c["total"] - c["embedding"], c["non_embedding"])
 
     def test_tied_weights_are_same_tensor(self):

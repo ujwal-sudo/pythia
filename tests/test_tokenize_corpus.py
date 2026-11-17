@@ -29,7 +29,7 @@ class TokenizeCorpus(unittest.TestCase):
         train_urls = [u for u in (f"o/r{i}" for i in range(500)) if not tc.is_val(rec("", u))][:2]
         texts = ["def a():\n    return 1\n", "héllo 🐍\r\n\t"]
         recs = [rec(t, u, f"id{i}") for i, (t, u) in enumerate(zip(texts, train_urls))]
-        train, val, excluded, docs = tc.encode_records(self.tok, recs)
+        train, val, excluded, docs, _ = tc.encode_records(self.tok, recs)
         self.assertEqual((len(val), excluded, docs), (0, [], {"train": 2, "val": 0}))
         eos = self.tok.token_to_id(tc.EOS)
         self.assertEqual(train.count(eos), 2)
@@ -40,7 +40,7 @@ class TokenizeCorpus(unittest.TestCase):
     def test_special_string_docs_excluded_not_parsed(self):
         bad = rec("x = '<|endoftext|>'", "o/r", "bad")
         good = rec("y = 1", "o/r", "good")
-        train, val, excluded, docs = tc.encode_records(self.tok, [bad, good])
+        train, val, excluded, docs, _ = tc.encode_records(self.tok, [bad, good])
         self.assertEqual(excluded, ["bad"])
         eos = self.tok.token_to_id(tc.EOS)
         self.assertEqual((train + val).count(eos), 1)

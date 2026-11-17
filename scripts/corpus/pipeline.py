@@ -21,6 +21,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from scripts.corpus.license import DEFAULT_POLICY, Decision, Policy, classify
+from scripts.corpus.quality import reject_reason
 from scripts.corpus.schema import CanonicalRecord, normalize_text, normalized_hash, spec_for
 from scripts.storage import RootedStore
 
@@ -117,6 +118,7 @@ class CurationRun:
                 "duplicates": 0,
                 "license_hold": 0,
                 "license_deny": 0,
+                "quality_drop": 0,
                 "text_missing": 0,
                 "parse_errors": 0,
                 "chars_kept": 0,
@@ -155,6 +157,13 @@ class CurationRun:
                 self.holders[f"{verdict.spdx}: {verdict.reason}"] += 1
             return None
 
+        extra = {key: spec.field(record, field_name) for key, field_name in spec.extra}
+        reason = reject_reason(text, spec.family, extra.get("repo_path") or "")
+        if reason is not None:
+            row["quality_drop"] += 1
+            self.totals[f"quality_{reason}"] += 1
+            return None
+
         normalised = normalize_text(text)
         digest = normalized_hash(normalised)
         origin = self.index.origin(digest)
@@ -173,7 +182,6 @@ class CurationRun:
         self.index.add(digest, spec.name, rel, line_number)
         self._new_hashes.append(digest)
         record_id = spec.record_id(record) or f"sha256:{digest[:16]}"
-        extra = {key: spec.field(record, field_name) for key, field_name in spec.extra}
         canonical = CanonicalRecord(
             text=normalised,
             source=spec.name,

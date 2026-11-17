@@ -80,6 +80,10 @@ Rules the code enforces:
 - Normalisation is fixed: CRLF→LF, trailing whitespace stripped, runs of blank
   lines collapsed. Two records differing only in that whitespace are one record.
 - `verify` recomputes each shard's sha256 and record count from the archive.
+- Code records pass `scripts/corpus/quality.py` (syntax, size, line length,
+  generated/migration files, secrets). New batches apply it while cleaning;
+  batch-001..006 predate it, so `tokenize_corpus` applies it to them. Shards
+  record `quality_filter`, and `finalize` refuses mixed versions.
 
 **Current state: 2,947,277 records / 13.17 B chars / 3.57 B tokens (measured).**
 

@@ -1,12 +1,12 @@
 """Pythia-160M: decoder-only transformer.
 
-12 layers, d_model 768, 12 Q heads / 2 KV heads (GQA), head_dim 64, SwiGLU FFN 4320,
+20 layers, d_model 768, 12 Q heads / 4 KV heads (GQA), head_dim 64, SwiGLU FFN 2304,
 pre-norm RMSNorm, RoPE (theta 1e6), tied embeddings. Attention backend falls back
 flash -> sdpa -> eager.
 
 Parameter counts (fp32, default config):
-    total          160,549,632   (tied embedding counted once)
-    non-embedding  135,973,632   (total - 32,000 x 768)
+    total          162,233,088   (tied embedding counted once)
+    non-embedding  137,657,088   (total - 32,000 x 768)
 Always report both; see `count_parameters`.
 """
 
@@ -164,8 +164,8 @@ class TransformerBlock(nn.Module):
 class PythiaModel(nn.Module):
     """Decoder-only LM with tied input/output embeddings."""
 
-    def __init__(self, vocab_size: int = 32_000, hidden_size: int = 768, num_layers: int = 12,
-                 n_q_heads: int = 12, n_kv_heads: int = 2, ffn_size: int = 4320,
+    def __init__(self, vocab_size: int = 32_000, hidden_size: int = 768, num_layers: int = 20,
+                 n_q_heads: int = 12, n_kv_heads: int = 4, ffn_size: int = 2304,
                  max_seq_len: int = 2048, rope_theta: float = 1_000_000.0, attn_impl: str = "auto"):
         super().__init__()
         self.config = dict(

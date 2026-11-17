@@ -30,6 +30,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from scripts.corpus.quality import QUALITY_VERSION, reject_reason
 from scripts.corpus.tokenizer import SPECIAL_TOKENS, WORK
 
 TOK_DIR = Path(__file__).resolve().parents[2] / "tokenizer" / "pythia-bpe-32k-v1"
@@ -52,15 +53,22 @@ def has_special_string(text: str) -> bool:
 
 
 def encode_records(tokenizer, records: list[dict]):
-    """Return (train_ids, val_ids, excluded_record_ids, doc_counts) for parsed records."""
+    """Return (train_ids, val_ids, excluded_record_ids, doc_counts, quality_drops)."""
+    from collections import Counter
+
     eos = tokenizer.token_to_id(EOS)
-    kept, excluded = [], []
+    kept, excluded, dropped = [], [], Counter()
     for record in records:
         text = record.get("text") or ""
         if not text:
             continue
         if has_special_string(text):
             excluded.append((record.get("meta") or {}).get("record_id", "?"))
+            continue
+        meta = record.get("meta") or {}
+        reason = reject_reason(text, meta.get("source_family", ""), meta.get("repo_path") or "")
+        if reason is not None:
+            dropped[reason] += 1
             continue
         kept.append(record)
     from array import array
@@ -75,7 +83,7 @@ def encode_records(tokenizer, records: list[dict]):
             side.extend(enc.ids)
             side.append(eos)
             docs[split] += 1
-    return train, val, excluded, docs
+    return train, val, excluded, docs, dict(dropped)
 
 
 def _to_bytes(ids) -> bytes:
@@ -127,7 +135,7 @@ def _shard_stem(rel: str) -> str:
     return f"{parts[1]}-{Path(parts[2]).stem}"
 
 
-def _upload(store, stem, shard, sha, tok_sha, blobs, counts, excluded, encode_s) -> int:
+def _upload(store, stem, shard, sha, tok_sha, blobs, counts, excluded, dropped, encode_s) -> int:
     t0 = time.time()
     outputs = {}
     for split, blob in blobs.items():
@@ -141,6 +149,7 @@ def _upload(store, stem, shard, sha, tok_sha, blobs, counts, excluded, encode_s)
     info = {
         "input": shard["rel"], "input_sha256": sha, "tokenizer_sha256": tok_sha,
         "outputs": outputs, "excluded_special_string_docs": excluded,
+        "quality_filter": QUALITY_VERSION, "quality_dropped_docs": dropped,
         "encode_seconds": encode_s, "upload_seconds": round(time.time() - t0, 1),
     }
     # The json is written last: its existence marks the shard complete.
@@ -183,7 +192,7 @@ def run(store, *, batches: list[str] | None = None, limit_shards: int | None = N
             if sha != shard["sha256"]:
                 raise RuntimeError(f"input hash mismatch for {shard['rel']}: {sha} != {shard['sha256']}")
             t0 = time.time()
-            train, val, excluded, docs = encode_records(tokenizer, _parse(raw))
+            train, val, excluded, docs, dropped = encode_records(tokenizer, _parse(raw))
             del raw
             encode_s = round(time.time() - t0, 1)
             stem = _shard_stem(shard["rel"])
@@ -194,9 +203,9 @@ def run(store, *, batches: list[str] | None = None, limit_shards: int | None = N
             if uploading is not None:
                 uploaded = uploading.result()
                 done_tokens += uploaded
-            uploading = uploader.submit(_upload, store, stem, shard, sha, tok_sha, blobs, counts, excluded, encode_s)
+            uploading = uploader.submit(_upload, store, stem, shard, sha, tok_sha, blobs, counts, excluded, dropped, encode_s)
             print(f"[{index + 1}/{len(todo)}] {stem}: encoded {sum(c[0] for c in counts.values()):,} tok "
-                  f"in {encode_s}s, excluded={len(excluded)}, elapsed {time.time() - started:.0f}s", flush=True)
+                  f"in {encode_s}s, excluded={len(excluded)}, quality_dropped={sum(dropped.values())}, elapsed {time.time() - started:.0f}s", flush=True)
         if uploading is not None:
             done_tokens += uploading.result()
     return {"shards_done": len(todo), "tokens": done_tokens, "seconds": round(time.time() - started, 1)}
@@ -207,7 +216,7 @@ def finalize(store) -> dict:
 
     tok_sha = _load_tokenizer()[1]
     registry = load_registry(store)
-    shards, totals = [], {"train_tokens": 0, "val_tokens": 0, "train_docs": 0, "val_docs": 0, "excluded_docs": 0}
+    shards, totals = [], {"train_tokens": 0, "val_tokens": 0, "train_docs": 0, "val_docs": 0, "excluded_docs": 0, "quality_dropped_docs": 0}
     missing = []
     for batch in registry["batches"]:
         for shard in batch["shards"]:
@@ -219,12 +228,15 @@ def finalize(store) -> dict:
                 info = json.loads(handle.read())
             if info["tokenizer_sha256"] != tok_sha:
                 raise RuntimeError(f"{rel} was made with a different tokenizer")
+            if info.get("quality_filter") != QUALITY_VERSION:
+                raise RuntimeError(f"{rel} predates quality filter {QUALITY_VERSION}; delete it and re-run")
             shards.append(info)
             totals["train_tokens"] += info["outputs"]["train"]["tokens"]
             totals["val_tokens"] += info["outputs"]["val"]["tokens"]
             totals["train_docs"] += info["outputs"]["train"]["docs"]
             totals["val_docs"] += info["outputs"]["val"]["docs"]
             totals["excluded_docs"] += len(info["excluded_special_string_docs"])
+            totals["quality_dropped_docs"] += sum(info["quality_dropped_docs"].values())
     manifest = {
         "tokenizer": "pythia-bpe-32k-v1", "tokenizer_sha256": tok_sha, "dtype": "uint16 little-endian",
         "doc_boundary": "each document followed by <|endoftext|> (id 2); no BOS in data",
