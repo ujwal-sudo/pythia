@@ -66,5 +66,27 @@ class TokenizerTraining(unittest.TestCase):
         self.assertEqual(len(self.info["sha256"]), 64)
 
 
+class PreTokenizer(unittest.TestCase):
+    def split(self, text):
+        return [w.replace("Ġ", " ").replace("Ċ", "\n") for w, _ in tk.pre_tokenizer().pre_tokenize_str(text)]
+
+    def test_digits_split_singly_keeping_space(self):
+        self.assertEqual(self.split("x = 2024"), ["x", " =", " 2", "0", "2", "4"])
+
+    def test_underscores_join_following_letters(self):
+        self.assertEqual(self.split("get_user(__init__)"), ["get", "_user", "(", "__init", "__", ")"])
+        self.assertEqual(self.split("self._cache"), ["self", ".", "_cache"])
+
+    def test_newline_and_indent_kept_together_for_merges(self):
+        self.assertEqual(self.split("if x:\n    return"), ["if", " x", ":", "\n   ", " return"])
+
+    def test_frozen_v2_uses_this_regex(self):
+        import json
+        root = Path(__file__).resolve().parents[1] / "tokenizer" / "pythia-bpe-32k-v2"
+        pre = json.loads((root / "tokenizer.json").read_text())["pre_tokenizer"]["pretokenizers"]
+        self.assertEqual(pre[0]["pattern"]["Regex"], tk.PRETOKENIZER_REGEX)
+        self.assertFalse(pre[1]["use_regex"])
+
+
 if __name__ == "__main__":
     unittest.main()

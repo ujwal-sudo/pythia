@@ -40,3 +40,21 @@ def test_wsd_schedule():
     a = train.parse_args(["--data", "x", "--out", "y", "--max-steps", "100", "--warmup", "10", "--lr", "1.0"])
     assert train.lr_at(0, a) == 0.1 and train.lr_at(50, a) == 1.0
     assert abs(train.lr_at(100, a) - 0.1) < 1e-9 and train.lr_at(90, a) < 1.0
+
+
+def test_byte_lengths_count_exact_bytes():
+    from tokenizers import Tokenizer
+    path = "tokenizer/pythia-bpe-32k-v1/tokenizer.json"
+    table = train.byte_lengths(path)
+    text = "def f(x):\n    return x * 2  # caf\u00e9 \u2603\n"
+    ids = Tokenizer.from_file(path).encode(text + "<|endoftext|>", add_special_tokens=False).ids
+    assert table[ids].sum().item() == len(text.encode("utf-8"))  # EOS counts 0 bytes
+
+
+def test_val_bpb_logged(tmp_path):
+    import torch
+    out = tmp_path / "o"
+    train.main(TINY + ["--data", _data(tmp_path), "--out", str(out), "--max-steps", "3",
+                       "--tokenizer", "tokenizer/pythia-bpe-32k-v1/tokenizer.json"])
+    rows = [r for r in map(json.loads, (out / "log.jsonl").read_text().splitlines()) if "val_bpb" in r]
+    assert rows and 0 < rows[-1]["val_bpb"] < 100 and torch.isfinite(torch.tensor(rows[-1]["val_bpb"]))

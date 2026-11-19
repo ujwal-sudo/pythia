@@ -12,3 +12,6 @@ for run in sorted(p for p in root.iterdir() if (p / "log.jsonl").exists()):
     status = "done" if (run / "DONE").exists() else f"at step {train[-1]['step'] if train else 0}"
     print(f"{run.name:10s} {status:14s} median tok/s {speed[len(speed) // 2]:6d}  "
           + "  ".join(f"s{s}:{v:.3f}" for s, v in val))
+    bpb = [(r["step"], r["val_bpb"]) for r in rows if "val_bpb" in r]
+    if bpb:
+        print(f"{'':10s} {'bits/byte':14s} {'':19s}" + "  ".join(f"s{s}:{v:.4f}" for s, v in bpb))

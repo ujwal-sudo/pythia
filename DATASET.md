@@ -85,7 +85,7 @@ Rules the code enforces:
   batch-001..006 predate it, so `tokenize_corpus` applies it to them. Shards
   record `quality_filter`, and `finalize` refuses mixed versions.
 
-**Current state: 2,947,277 records / 13.17 B chars / 3.57 B tokens (measured).**
+**Current state: 2,947,277 records / 13.17 B chars / ~3.57 B tokens (estimated, before the q1 quality filter).**
 
 | Batch | Source | Records | Chars | Dedup vs earlier | Licence held |
 |---|---|---:|---:|---:|---:|
@@ -96,9 +96,13 @@ Rules the code enforces:
 | batch-005 | The Stack, shards 18–23 | 524,874 | 2.598 B | 173 | 15,049 |
 | batch-006 | The Stack, shards 24–29 | 524,948 | 2.564 B | 198 | 14,950 |
 
-The token figure is measured, not estimated: the 32 K byte-level BPE encodes
-held-out text at **3.687 chars/token** (22.5 M chars → 6.11 M tokens), so
-13.17 B chars is **3.57 B tokens**. Dedup against earlier batches is low
+The token figure is an estimate from a clean held-out set: the frozen tokenizer
+`pythia-bpe-32k-v2` encodes `.tokenizer/holdout.jsonl` (8,721 records, 25.1 M
+chars, disjoint from the tokenizer sample) at **3.689 chars/token**, so 13.17 B
+chars is **~3.57 B tokens**; the q1 quality filter will lower it, and the exact
+figure comes from `tokenize_corpus finalize`. (The earlier 3.687 for v0 was
+measured on `holdout.txt`, which is contained in the training sample, so it was
+inflated; v1 measures 3.323 on the clean set.) Dedup against earlier batches is low
 (26–198 records) because The Stack is already deduplicated and each chunk sees
 distinct shards.
 

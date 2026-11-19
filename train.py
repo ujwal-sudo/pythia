@@ -59,6 +59,8 @@ def parse_args(argv=None):
     p.add_argument("--log-every", type=int, default=10)
     p.add_argument("--eval-every", type=int, default=200)
     p.add_argument("--eval-batches", type=int, default=20)
+    p.add_argument("--tokenizer", default=None,
+                   help="tokenizer.json of the data; enables val_bpb over the full val set (comparable across tokenizers)")
     p.add_argument("--ckpt-every", type=int, default=500, help="0 = never save (benchmarks)")
     p.add_argument("--resume", action="store_true")
     p.add_argument("--overfit", action="store_true")
@@ -123,6 +125,36 @@ def evaluate(model, data, a, device, ctx) -> float:
     return sum(losses) / len(losses)
 
 
+def byte_lengths(tokenizer_json) -> torch.Tensor:
+    """Bytes each token id stands for. Byte-level BPE maps one byte to one char; specials are 0."""
+    d = json.loads(Path(tokenizer_json).read_text())
+    special = {t["id"] for t in d["added_tokens"]}
+    table = torch.zeros(max(d["model"]["vocab"].values()) + 1, dtype=torch.float64)
+    for tok, i in d["model"]["vocab"].items():
+        if i not in special:
+            table[i] = len(tok)
+    return table
+
+
+@torch.no_grad()
+def evaluate_bpb(model, data, a, device, ctx, byte_len) -> float:
+    """Bits per byte over every non-overlapping seq_len window of every val shard."""
+    model.eval()
+    nll = nbytes = 0.0
+    for shard in data.shards:
+        n = len(shard) // a.seq_len  # shortcut: drops each shard's final partial window (<0.5% of val)
+        for i in range(0, n, a.micro_batch):
+            x = torch.stack([shard[j * a.seq_len:(j + 1) * a.seq_len].to(torch.int64)
+                             for j in range(i, min(i + a.micro_batch, n))])
+            with ctx:
+                logits = model(x.to(device))[0]
+            nll += torch.nn.functional.cross_entropy(logits[:, :-1].float().reshape(-1, logits.size(-1)),
+                                                     x[:, 1:].reshape(-1).to(device), reduction="sum").item()
+            nbytes += byte_len[x[:, 1:]].sum().item()
+    model.train()
+    return nll / math.log(2) / nbytes
+
+
 def main(argv=None):
     a = parse_args(argv)
     out = Path(a.out)
@@ -150,6 +182,7 @@ def main(argv=None):
            else torch.autocast(device.type, enabled=False))
     scaler = torch.amp.GradScaler(enabled=a.dtype == "fp16")
     fwd = torch.compile(model) if a.compile else model
+    byte_len = byte_lengths(a.tokenizer) if a.tokenizer else None
 
     step, ckpt_path, log_path = 0, out / "ckpt.pt", out / "log.jsonl"
     if a.resume and ckpt_path.exists():
@@ -209,6 +242,8 @@ def main(argv=None):
             t0 = time.time()
         if val is not None and (step % a.eval_every == 0 or step == a.max_steps):
             rec = {"step": step, "val_loss": round(evaluate(fwd, val, a, device, ctx), 4)}
+            if byte_len is not None:  # eager model: the compiled graph is specialised to (x, x) training calls
+                rec["val_bpb"] = round(evaluate_bpb(model, val, a, device, ctx, byte_len), 5)
             print(json.dumps(rec), flush=True)
             log.write(json.dumps(rec) + "\n")
             t0 = time.time()

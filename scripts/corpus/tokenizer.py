@@ -45,6 +45,44 @@ SPECIAL_TOKENS = NAMED_SPECIALS + [
     f"<|reserved_{i:03d}|>" for i in range(N_SPECIAL_SLOTS - len(NAMED_SPECIALS))
 ]
 
+# v2 pre-tokenizer: GPT-2's regex with two changes, chosen by the 2026-11-18 audit
+# (data/tokenizer-candidates/) and an LM pilot (runs/tok, equal bits/byte to v1):
+#   * digits one at a time, keeping their leading space (" 2", "0", "2", "4"),
+#     so every number splits the same way;
+#   * underscores join the letters after them (" _init", "_user"); bare runs
+#     ("_", "__") get their own rule instead of gluing onto punctuation.
+PRETOKENIZER_REGEX = (
+    r"""'s|'t|'re|'ve|'m|'ll|'d| ?_*\p{L}+| ?\p{N}| ?_+| ?[^\s\p{L}\p{N}_]+|\s+(?!\S)|\s+"""
+)
+
+
+def pre_tokenizer():
+    from tokenizers import Regex
+    from tokenizers.pre_tokenizers import ByteLevel, Sequence, Split
+
+    # use_regex=False: the Split above replaces ByteLevel's built-in GPT-2 regex.
+    return Sequence([Split(Regex(PRETOKENIZER_REGEX), behavior="isolated"),
+                     ByteLevel(add_prefix_space=False, use_regex=False)])
+
+
+def _doc_chunks(path: Path, size: int = 1 << 20):
+    """Yield ~1 MB pieces cut at document boundaries ("\n\n", as `sample` writes them).
+
+    tokenizer.train(files) feeds the trainer one *line* at a time, so a newline
+    never sits next to the indentation after it and v1 learned 0 newline merges.
+    """
+    buf = ""
+    with path.open(encoding="utf-8") as handle:
+        while block := handle.read(size):
+            buf += block
+            cut = buf.rfind("\n\n")
+            if cut > 0:  # shortcut: a single document > 1 MB is held whole in memory; fine for sampled text
+                yield buf[:cut]
+                buf = buf[cut + 2:]
+    if buf:
+        yield buf
+
+
 # Share of the sample by source family. Prose gets more than its corpus share
 # on purpose: it is under-represented, and the tokenizer must handle it well.
 SAMPLE_QUOTAS = {
@@ -156,7 +194,7 @@ def train(
     out_dir.mkdir(parents=True, exist_ok=True)
 
     tokenizer = Tokenizer(BPE(unk_token=None))
-    tokenizer.pre_tokenizer = ByteLevel(add_prefix_space=False)
+    tokenizer.pre_tokenizer = pre_tokenizer()
     tokenizer.decoder = ByteLevelDecoder()
     trainer = BpeTrainer(
         vocab_size=vocab_size,
@@ -174,7 +212,7 @@ def train(
             files.extend([str(extra)] * max(1, extra_repeat))
 
     started = time.time()
-    tokenizer.train(files, trainer)
+    tokenizer.train_from_iterator((c for f in files for c in _doc_chunks(Path(f))), trainer)
     elapsed = time.time() - started
     tokenizer.save(str(out_dir / "tokenizer.json"))
 
@@ -183,7 +221,8 @@ def train(
         "sample_bytes": sample_path.stat().st_size,
         "seconds": round(elapsed, 1),
         "specials": SPECIAL_TOKENS,
-        "algorithm": "byte-level BPE, no normaliser, add_prefix_space=False",
+        "algorithm": "byte-level BPE, no normaliser, PRETOKENIZER_REGEX split, trained on document chunks",
+        "pretokenizer_regex": PRETOKENIZER_REGEX,
         "files": files,
         "path": str(out_dir / "tokenizer.json"),
         "sha256": _sha256(out_dir / "tokenizer.json"),

@@ -1,0 +1,46 @@
+{
+  "what": "160M shape-C LM, 1500 steps x 32,768 tokens, lr 6e-4 WSD, same documents (batch-002 shards 0000-0001, pre-q1-filter), single seed",
+  "script": "scripts/experiments/tokenizer_pilot.sh",
+  "runs": "runs/tok/{v1,D}",
+  "v1": {
+    "val_bpb": {
+      "250": 1.98493,
+      "500": 1.71202,
+      "750": 1.39527,
+      "1000": 1.23308,
+      "1250": 1.11037,
+      "1500": 0.99773
+    },
+    "val_loss_per_token": {
+      "250": 4.6576,
+      "500": 4.0066,
+      "750": 3.3001,
+      "1000": 2.9328,
+      "1250": 2.643,
+      "1500": 2.3852
+    }
+  },
+  "D": {
+    "val_bpb": {
+      "250": 1.99544,
+      "500": 1.76334,
+      "750": 1.41509,
+      "1000": 1.23216,
+      "1250": 1.10726,
+      "1500": 1.00255
+    },
+    "val_loss_per_token": {
+      "250": 5.125,
+      "500": 4.5183,
+      "750": 3.6784,
+      "1000": 3.2504,
+      "1250": 2.9585,
+      "1500": 2.6908
+    }
+  },
+  "train_tokens": {
+    "v1": 114667153,
+    "D": 106078166
+  },
+  "verdict": "tie: final bits/byte v1 0.9977 vs D 1.0026 (gap 0.005 < 0.01 noise threshold); D needs 7.5% fewer tokens for the same text"
+}

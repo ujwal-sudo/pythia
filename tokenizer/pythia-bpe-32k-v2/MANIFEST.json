@@ -1,0 +1,18 @@
+{
+  "name": "pythia-bpe-32k-v2",
+  "frozen": "2026-11-19",
+  "supersedes": "pythia-bpe-32k-v1 (kept unchanged; existing v1 shards stay under tokenized/pythia-bpe-32k-v1)",
+  "tokenizer_json_sha256": "fe70557576cb6211a799671afb0edd7ffd31d59006f3ca408fe03507808bc507",
+  "vocab_size": 32000,
+  "special_ids": {"<|pad|>": 0, "<|bos|>": 1, "<|endoftext|>": 2, "<|fim_prefix|>": 3, "<|fim_middle|>": 4, "<|fim_suffix|>": 5},
+  "reserved_ids": "6-127 (<|reserved_000|>..<|reserved_121|>), unused",
+  "byte_alphabet": "all 256 byte-level symbols at ids 128-383 (identical to v1)",
+  "pretokenizer": "Split(scripts.corpus.tokenizer.PRETOKENIZER_REGEX, isolated) + ByteLevel(use_regex=False): single digits keeping their leading space; underscores join following letters; bare _ runs separate",
+  "training": "python -m scripts.corpus.tokenizer train --vocab 32000 (same 563 MB .tokenizer/sample.txt as v1, fed as ~1 MB document chunks via train_from_iterator so newline+indent merges are learned; tokenizers 0.23.3; retrain reproduces this sha)",
+  "heldout_chars_per_token": 3.689,
+  "heldout_vs_v1": "3.689 vs 3.323 chars/token (-9.9% tokens); bare '_' tokens 0.23% vs 5.84%; Python-token edges on a BPE edge 84.8% vs 84.2%",
+  "heldout_note": "same disjoint holdout as v1 (25.1M chars, 8,721 records); sha256 in holdout_stats.json",
+  "roundtrip_failures": "0 / 8721",
+  "lm_pilot": "equal bits/byte to v1 at equal compute (1.0026 vs 0.9977, single seed, gap < noise); see pilot_lm.json",
+  "caveat": "literal special-token strings inside corpus text are parsed as special tokens; tokenize_corpus excludes such documents"
+}

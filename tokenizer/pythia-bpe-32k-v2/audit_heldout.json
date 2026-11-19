@@ -1,0 +1,17 @@
+{
+  "records": 8721,
+  "roundtrip_failures": 0,
+  "fail_examples": [],
+  "chars": 25123912,
+  "tokens": 6810243,
+  "chars_per_token": 3.6891,
+  "bytes_per_token": 3.6988,
+  "by_source": {
+    "codesearchnet": 4.203,
+    "the_stack_dedup": 3.601
+  },
+  "underscore_token_share": 0.0023,
+  "alignment_files": 2177,
+  "bpe_tokens_spanning_2plus_python_tokens": 0.0733,
+  "python_token_edges_on_bpe_edge": 0.8484
+}

@@ -8,9 +8,9 @@
     "current_tokens_est": 3570000000,
     "tokenizer": {
       "vocab": 32000,
-      "chars_per_token": 3.687,
-      "measured_at": "2026-11-13",
-      "artifact": "tokenizer/pythia-bpe-32k/tokenizer.json"
+      "chars_per_token": 3.689,
+      "measured_at": "2026-11-19",
+      "artifact": "tokenizer/pythia-bpe-32k-v2/tokenizer.json"
     }
   },
   "sources": [

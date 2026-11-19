@@ -3,7 +3,8 @@
     python -m scripts.corpus.tokenize_corpus run [--limit-shards N] [--batches batch-002 ...]
     python -m scripts.corpus.tokenize_corpus finalize
 
-Per input shard it writes, under ``tokenized/<tokenizer-name>/`` in the store:
+Per input shard it writes, under ``tokenized/<tokenizer-name>/`` in the store
+(name = $PYTHIA_TOKENIZER, default pythia-bpe-32k-v2):
     <batch>-<shard>.train.bin / .val.bin   raw little-endian uint16 token ids
     <batch>-<shard>.json                   counts + hashes (its presence == shard done)
 Each document is its token ids followed by one <|endoftext|> (EOS).
@@ -24,6 +25,7 @@ import argparse
 import hashlib
 import sys as _sys
 import json
+import os
 import shutil
 import sys
 import time
@@ -33,8 +35,10 @@ from pathlib import Path
 from scripts.corpus.quality import QUALITY_VERSION, reject_reason
 from scripts.corpus.tokenizer import SPECIAL_TOKENS, WORK
 
-TOK_DIR = Path(__file__).resolve().parents[2] / "tokenizer" / "pythia-bpe-32k-v1"
-OUT_ROOT = "tokenized/pythia-bpe-32k-v1"
+# Frozen tokenizer under tokenizer/<name>/; outputs never mix versions (separate OUT_ROOT).
+TOKENIZER_NAME = os.environ.get("PYTHIA_TOKENIZER", "pythia-bpe-32k-v2")
+TOK_DIR = Path(__file__).resolve().parents[2] / "tokenizer" / TOKENIZER_NAME
+OUT_ROOT = f"tokenized/{TOKENIZER_NAME}"
 SCRATCH = WORK / "phase2_tmp"
 EOS = "<|endoftext|>"
 VAL_PERMILLE = 2          # 0.2% of repos -> validation
@@ -238,7 +242,7 @@ def finalize(store) -> dict:
             totals["excluded_docs"] += len(info["excluded_special_string_docs"])
             totals["quality_dropped_docs"] += sum(info["quality_dropped_docs"].values())
     manifest = {
-        "tokenizer": "pythia-bpe-32k-v1", "tokenizer_sha256": tok_sha, "dtype": "uint16 little-endian",
+        "tokenizer": TOKENIZER_NAME, "tokenizer_sha256": tok_sha, "dtype": "uint16 little-endian",
         "doc_boundary": "each document followed by <|endoftext|> (id 2); no BOS in data",
         "val_rule": f"sha256(meta.source_url or record_id)[:8] % 1000 < {VAL_PERMILLE} (repo-level)",
         "complete": not missing, "missing_shards": missing, "totals": totals, "shards": shards,

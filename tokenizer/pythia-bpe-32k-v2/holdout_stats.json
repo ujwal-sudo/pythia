@@ -1,0 +1,31 @@
+{
+  "file": "/home/ujwal-mahajan/Desktop/Pythia/pythia-data-pipeline/.tokenizer/holdout.jsonl",
+  "bytes": 27010738,
+  "shards": {
+    "batches/batch-001/shard-0002.jsonl": {
+      "records": 4399,
+      "bytes": 4195873
+    },
+    "batches/batch-002/shard-0013.jsonl": {
+      "records": 1081,
+      "bytes": 4196077
+    },
+    "batches/batch-003/shard-0013.jsonl": {
+      "records": 847,
+      "bytes": 4212125
+    },
+    "batches/batch-004/shard-0013.jsonl": {
+      "records": 936,
+      "bytes": 4196002
+    },
+    "batches/batch-005/shard-0014.jsonl": {
+      "records": 735,
+      "bytes": 4195447
+    },
+    "batches/batch-006/shard-0013.jsonl": {
+      "records": 723,
+      "bytes": 4194500
+    }
+  },
+  "sha256": "38c601b19e493bc0df0517505d09a3de8f489a5176f1b12769550f45d8c86fe9"
+}
