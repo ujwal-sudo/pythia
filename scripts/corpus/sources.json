@@ -5,7 +5,7 @@
     "target_tokens": 4000000000,
     "current_records": 2947277,
     "current_chars": 13172179900,
-    "current_tokens_est": 3570000000,
+    "current_tokens_est": 2748481785,
     "tokenizer": {
       "vocab": 32000,
       "chars_per_token": 3.689,

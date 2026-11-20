@@ -85,7 +85,7 @@ Rules the code enforces:
   batch-001..006 predate it, so `tokenize_corpus` applies it to them. Shards
   record `quality_filter`, and `finalize` refuses mixed versions.
 
-**Current state: 2,947,277 records / 13.17 B chars / ~3.57 B tokens (estimated, before the q1 quality filter).**
+**Current state: 2,947,277 records / 13.17 B chars. Tokenized (v2, q1 filter): 2.743 B train + 5.5 M val tokens (measured, 2026-11-19).**
 
 | Batch | Source | Records | Chars | Dedup vs earlier | Licence held |
 |---|---|---:|---:|---:|---:|
@@ -96,13 +96,15 @@ Rules the code enforces:
 | batch-005 | The Stack, shards 18–23 | 524,874 | 2.598 B | 173 | 15,049 |
 | batch-006 | The Stack, shards 24–29 | 524,948 | 2.564 B | 198 | 14,950 |
 
-The token figure is an estimate from a clean held-out set: the frozen tokenizer
-`pythia-bpe-32k-v2` encodes `.tokenizer/holdout.jsonl` (8,721 records, 25.1 M
-chars, disjoint from the tokenizer sample) at **3.689 chars/token**, so 13.17 B
-chars is **~3.57 B tokens**; the q1 quality filter will lower it, and the exact
-figure comes from `tokenize_corpus finalize`. (The earlier 3.687 for v0 was
-measured on `holdout.txt`, which is contained in the training sample, so it was
-inflated; v1 measures 3.323 on the clean set.) Dedup against earlier batches is low
+The token figure is measured: `tokenize_corpus finalize` over all 74 shards
+(`tokenized/pythia-bpe-32k-v2/manifest.json`) counts **2,742,951,811 train /
+5,529,974 val tokens** in 2,609,455 / 5,386 documents. The q1 filter dropped
+332,258 documents (11.3 %, but ~23 % of tokens: it removes long files) and 178
+were excluded for literal special-token strings. Before filtering, v2's
+**3.689 chars/token** on the clean held-out set (`.tokenizer/holdout.jsonl`,
+8,721 records, disjoint from the tokenizer sample) predicted ~3.57 B. (The
+earlier 3.687 for v0 was measured on `holdout.txt`, which is contained in the
+training sample; v1 measures 3.323 on the clean set.) Dedup against earlier batches is low
 (26–198 records) because The Stack is already deduplicated and each chunk sees
 distinct shards.
 
